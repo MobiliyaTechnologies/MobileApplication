@@ -20,7 +20,6 @@ namespace CSU_APP.Windows
         public MainPage()
         {
             this.InitializeComponent();
-
             LoadApplication(new CSU_APP.App());
         }
     }

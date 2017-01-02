@@ -19,7 +19,8 @@ namespace CSU_APP
         public void setDataForTableRow()
         {
             cellModel model = new cellModel();
-            var result = JsonConvert.DeserializeObject<List<cellModel>>("[{\"title\":\"Reset Password\",\"thumbnailUrl\":\"\"},{\"title\":\"Logout\",\"thumbnailUrl\":\"\"}]");
+            var result = JsonConvert.DeserializeObject<List<cellModel>>(
+                "[{\"title\":\"Reports\",\"thumbnailUrl\":\"\"},{\"title\":\"Change Password\",\"thumbnailUrl\":\"\"},{\"title\":\"Logout\",\"thumbnailUrl\":\"\"}]");
             foreach (cellModel item in result)
             {
                 cellData.Add(item);

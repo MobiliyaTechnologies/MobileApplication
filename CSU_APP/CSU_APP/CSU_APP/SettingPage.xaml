@@ -4,12 +4,15 @@
              x:Class="CSU_APP.SettingPage">
   <ContentPage.Content>
     <StackLayout Padding="0,20,0,0" Spacing="10">
-      <ListView ItemsSource="{Binding cellData}" x:Name="SettingList">
+      <ListView ItemsSource="{Binding cellData}" 
+                x:Name="SettingList"
+                SeparatorColor="Transparent">
         <ListView.ItemTemplate>
           <DataTemplate>
             <ImageCell ImageSource="{Binding thumbnailUrl}"
-								Text="{Binding title}" x:Name="itemClicked"
-								 >
+                       Text="{Binding title}" 
+                       x:Name="itemClicked"
+                       TextColor="#5B5857">
 
             </ImageCell>
 

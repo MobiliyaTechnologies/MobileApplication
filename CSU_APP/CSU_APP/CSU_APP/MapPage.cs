@@ -1,6 +1,7 @@
 ﻿using CSU_APP.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,19 +10,45 @@ using Xamarin.Forms.Maps;
 
 namespace CSU_APP
 {
-    public partial class MainPage : ContentPage
+
+    class MapPage : ContentPage
     {
 
         IList<Models.MeterDetails> meterList = null;
         IList<Models.MonthlyConsumptionDetails> monthlyConsumptionList = null;
+        CustomMap map;
+        StackLayout stack;
+        ActivityIndicator indicator;
 
-        public MainPage()
+        public MapPage()
         {
-            InitializeComponent();
+            this.Title = "CSU";
+            indicator = new ActivityIndicator
+            {
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                Color = Color.Gray,
+                IsVisible = false
+            };
+
+            map = new CustomMap(
+                MapSpan.FromCenterAndRadius(
+                        new Position(40.571276, -105.085522), Distance.FromMiles(0.1)))
+            {
+                IsShowingUser = true,
+                WidthRequest = 960,     // App.ScreenWidth,
+                HeightRequest = 100,    // App.ScreenHeight
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
             
-            var position = new Position(40.571276, -105.08552);
             map.MapType = MapType.Satellite;
-            map.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMiles(0.1)));
+
+            stack = new StackLayout { Spacing = 0 };
+            stack.Children.Add(indicator);
+            stack.Children.Add(map);
+            Content = stack;
+
+            indicator.IsRunning = true;
+            indicator.IsVisible = true;
 
             var preferenceHandler = DependencyService.Get<IPreferencesHandler>();
             int userId = preferenceHandler.GetUserDetails().User_Id;
@@ -86,9 +113,13 @@ namespace CSU_APP
 
         private void addPinAndCircle()
         {
-
+            
             if (meterList != null && monthlyConsumptionList != null)
             {
+
+                indicator.IsRunning = false;
+                indicator.IsVisible = false;
+
                 List<CustomCircle> cList = new List<CustomCircle>();
                 for (int i = 0; i < meterList.Count; i++)
                 {
@@ -106,12 +137,9 @@ namespace CSU_APP
                     addPin(map, meterList[i]);
                 }
 
-                var position = new Position(40.571276, -105.08552);
-                map.MoveToRegion(MapSpan.FromCenterAndRadius(position, Distance.FromMiles(0.1)));
-                /*stack = new StackLayout { Spacing = 0 };
+                stack = new StackLayout { Spacing = 0 };
                 stack.Children.Add(map);
-                Content = stack;*/
-                Content = map;
+                Content = stack;
             }
         }
 
@@ -119,9 +147,9 @@ namespace CSU_APP
         {
             double Monthly_KWH_Consumption = 0;
 
-            for (int i = 0; i < monthlyConsumptionList.Count; i++)
+            for (int i=0; i<monthlyConsumptionList.Count; i++)
             {
-                if (monthlyConsumptionList[i].Powerscout.Equals(meter.Serial))
+                if(monthlyConsumptionList[i].Powerscout.Equals(meter.Serial))
                 {
                     Monthly_KWH_Consumption = monthlyConsumptionList[i].Monthly_KWH_Consumption;
                     break;

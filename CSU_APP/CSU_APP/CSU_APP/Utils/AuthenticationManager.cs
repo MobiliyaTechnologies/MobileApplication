@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
+using System.Collections.Generic;
+using CSU_APP.Models;
 
 namespace CSU_APP
 {
@@ -16,7 +18,7 @@ namespace CSU_APP
         private static AuthenticationManager instance = null;
         private static readonly object padlock = new object();
         public AccessTokenResponse localToken;
-        public LoginResponse userData;
+        public Models.UserDetails userData;
 
         AuthenticationManager()
         {
@@ -35,15 +37,6 @@ namespace CSU_APP
                     return instance;
                 }
             }
-        }
-        public class LoginResponse
-        {
-            public int Status_Code;
-            public string Message;
-            public string First_Name;
-            public string Last_Name;
-            public string Email;
-            public int User_Id;
         }
 
         public class ResetPasswordResponse
@@ -73,27 +66,27 @@ namespace CSU_APP
 
 
 
-        public async Task<LoginResponse> performInternalLogin(string u, string p)
+        public async Task<Models.UserDetails> performInternalLogin(string u, string p)
         {
             Contract.Ensures(Contract.Result<Task>() != null);
             try
             {
+                if (u == null || u == "" || p == null || p == "")
+                {
+                    return null;
+                }
+
                 HttpClient client = new HttpClient();
-                string uri = "http://powergridrestservice.azurewebsites.net/api/signin";
+                string uri = Utils.Constants.SERVER_BASE_URL + Utils.Constants.API_SIGN_IN;
+
                 string sContentType = "application/json";
                 string postData = "{\"Email\":\"" + u + "\",\"Password\":\"" + p + "\"}";
-                if (u == "" || u == null)
-                {
-                    postData = "{\"Email\":\"sss@123.com\",\"Password\":\"sss@123\"}";
-                }
-                //sss@123.com
-                //sss@123
                 var oTaskPostAsync = client.PostAsync(uri, new StringContent(postData, Encoding.UTF8, sContentType));
 
                 HttpResponseMessage response = await oTaskPostAsync;
                 string responseStr = await response.Content.ReadAsStringAsync();
 
-                LoginResponse loginResponce = Newtonsoft.Json.JsonConvert.DeserializeObject<LoginResponse>(responseStr);
+                Models.UserDetails loginResponce = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.UserDetails>(responseStr);
                 Debug.WriteLine("###\n" + responseStr + "\n###" + loginResponce.First_Name);
                 this.userData = loginResponce;
 
@@ -116,15 +109,16 @@ namespace CSU_APP
             }
         }
 
-        public async Task<bool> performInternalLogOut()
+        public async Task<bool> performInternalLogOut(string email)
         {
             Contract.Ensures(Contract.Result<Task>() != null);
             try
             {
                 HttpClient client = new HttpClient();
-                string uri = "http://powergridrestservice.azurewebsites.net/api/signout";
+                string uri = Utils.Constants.SERVER_BASE_URL + Utils.Constants.API_SIGN_OUT;
+
                 string sContentType = "application/json";
-                string postData = "{\"Email\":\"" + this.userData.Email + "\"}";
+                string postData = "{\"Email\":\"" + email + "\"}";
                 var oTaskPostAsync = client.PostAsync(uri, new StringContent(postData, Encoding.UTF8, sContentType));
 
                 HttpResponseMessage response = await oTaskPostAsync;
@@ -145,9 +139,6 @@ namespace CSU_APP
                 Debug.WriteLine(ex);
                 return false;
             }
-            //string responseStr = await response.Content.ReadAsStringAsync();
-            //LoginResponse loginResponce = Newtonsoft.Json.JsonConvert.DeserializeObject<LoginResponse>(responseStr);
-
         }
 
         public AccessTokenResponse getAccessTokenContent()
@@ -169,14 +160,6 @@ namespace CSU_APP
                 Debug.WriteLine(response);
                 return null;
             }
-            //
-            //var client = new HttpClient();
-            //var photosResponse = await client.GetStringAsync("http://csuwebapp.azurewebsites.net/PowerBIService.asmx/GetAccessToken");
-            //var homeJson = await photosResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            //AccessTokenResponse tokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(photosResponse);
-            //this.localToken = tokenResponse;
-            //return tokenResponse.tokens
         }
 
         public string getBIReportContent()
@@ -240,19 +223,20 @@ namespace CSU_APP
 
         }
 
-        public async Task<bool> resetPassword(string oldPW, string newPW)
+        public async Task<bool> changePassword(string email, string oldPW, string newPW)
         {
-            //http://powergridrestservice.azurewebsites.net/api/changepassword
+            if (email == null || email == "" || oldPW == null || oldPW == "" || newPW == null || newPW == "")
+            {
+                return false;
+            }
 
             HttpClient client = new HttpClient();
-            string uri = "http://powergridrestservice.azurewebsites.net/api/changepassword";
+            //string uri = "http://powergridrestservice.azurewebsites.net/api/changepassword";
+            string uri = Utils.Constants.SERVER_BASE_URL + Utils.Constants.API_CHANGE_PASSWORD;
+
             string sContentType = "application/json";
 
-            string postData = "{\"Email\":\"" + this.userData.Email + "\",\"Password\":\"" + oldPW + "\",\"New_Password\":\"" + newPW + "\"}";
-            if (oldPW == "" || oldPW == "")
-            {
-                postData = "{\"Email\":\"sss@123.com\",\"Password\":\"sss@123\",\"New_Password\":\"sss@123\"}";
-            }
+            string postData = "{\"Email\":\"" + email + "\",\"Password\":\"" + oldPW + "\",\"New_Password\":\"" + newPW + "\"}";
             var oTaskPostAsync = client.PostAsync(uri, new StringContent(postData, Encoding.UTF8, sContentType));
 
             HttpResponseMessage response = await oTaskPostAsync;
@@ -271,7 +255,128 @@ namespace CSU_APP
             {
                 return false;
             }
+        }
 
+        public async Task<ForgotPasswordModel> forgotPassword(string email)
+        {
+            if (email == null || email == "")
+            {
+                return null;
+            }
+
+            HttpClient client = new HttpClient();
+            string uri = Utils.Constants.SERVER_BASE_URL + Utils.Constants.API_FORGOT_PASSWORD;
+
+            string sContentType = "application/json";
+
+            string postData = "{\"Email\":\"" + this.userData.Email + "\"}";
+            var oTaskPostAsync = client.PostAsync(uri, new StringContent(postData, Encoding.UTF8, sContentType));
+
+            HttpResponseMessage response = await oTaskPostAsync;
+            string responseStr = await response.Content.ReadAsStringAsync();
+
+            ForgotPasswordModel resp = JsonConvert.DeserializeObject<ForgotPasswordModel>(responseStr);
+            Debug.WriteLine("Forgot Password Response\n" + responseStr);
+
+
+            if (resp.Status_Code == 200)
+            {
+                Debug.WriteLine("Forgot Password Response\n" + responseStr + "\n###" + resp.Message);
+                return resp;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<IList<Models.MeterDetails>> getMeterDetails(int userId)
+        {
+            Contract.Ensures(Contract.Result<Task>() != null);
+            IList<Models.MeterDetails> meterList = null;
+            try
+            {
+                HttpClient client = new HttpClient();
+                string uri = Utils.Constants.SERVER_BASE_URL + 
+                    Utils.Constants.API_GET_METER_LIST + "/" + userId;
+               
+                var oTaskGetAsync = client.GetAsync(uri);
+
+                HttpResponseMessage response = await oTaskGetAsync;
+                string responseStr = await response.Content.ReadAsStringAsync();
+                if (responseStr != null) { 
+
+                    JArray array = JArray.Parse(responseStr);
+                    meterList = array.ToObject<IList<Models.MeterDetails>>();
+                }
+                return meterList;
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public async Task<IList<Models.MonthlyConsumptionDetails>> getMonthlyConsumptionDetails(int userId)
+        {
+            Contract.Ensures(Contract.Result<Task>() != null);
+            IList<Models.MonthlyConsumptionDetails> monthlyList = null;
+            try
+            {
+                HttpClient client = new HttpClient();
+                string uri = Utils.Constants.SERVER_BASE_URL +
+                    Utils.Constants.API_GET_MONTHLY_CONSUMPTION + "/" + userId;
+
+                var oTaskGetAsync = client.GetAsync(uri);
+
+                HttpResponseMessage response = await oTaskGetAsync;
+                string responseStr = await response.Content.ReadAsStringAsync();
+                if (responseStr != null)
+                {
+
+                    JArray array = JArray.Parse(responseStr);
+                    monthlyList = array.ToObject<IList<Models.MonthlyConsumptionDetails>>();
+                }
+                return monthlyList;
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public async Task<Models.MeterReports> getMeterReports(int userId, string meterSerial)
+        {
+            Contract.Ensures(Contract.Result<Task>() != null);
+            Models.MeterReports meterReports = null;
+            try
+            {
+                HttpClient client = new HttpClient();
+                string uri = Utils.Constants.SERVER_BASE_URL +
+                    Utils.Constants.API_GET_METER_REPORTS + "/" + userId + "/" + meterSerial;
+
+                var oTaskGetAsync = client.GetAsync(uri);
+
+                HttpResponseMessage response = await oTaskGetAsync;
+                string responseStr = await response.Content.ReadAsStringAsync();
+                if (responseStr != null)
+                {
+                    meterReports = JsonConvert.DeserializeObject<Models.MeterReports>(responseStr);
+                    Debug.WriteLine(meterReports);
+
+                }
+                return meterReports;
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
         }
     }
 }
