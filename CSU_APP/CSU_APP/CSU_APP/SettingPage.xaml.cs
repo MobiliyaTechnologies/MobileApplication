@@ -15,7 +15,7 @@ namespace CSU_APP
             settingViewModel vm;
             BindingContext = vm = new settingViewModel();
             InitializeComponent();
-            this.Title = "Settings";
+            this.Title = "Menu";
             vm.setDataForTableRow();
             SettingList.ItemTapped += async (object sender, ItemTappedEventArgs e) => {
 
@@ -23,18 +23,28 @@ namespace CSU_APP
                 if (model.title == "Logout")
                 {
                     IsBusy = true;
-                    AuthenticationManager manager = AuthenticationManager.Instance;
-                    bool responseObj = await manager.performInternalLogOut();
-                    if (responseObj)
+
+                    var preferenceHandler = DependencyService.Get<IPreferencesHandler>();
+                    string email = preferenceHandler.GetUserDetails().Email;
+                    if (email != null && email != "")
                     {
-                        IsBusy = false;
-                        await Application.Current.MainPage.Navigation.PopToRootAsync();
+                        AuthenticationManager manager = AuthenticationManager.Instance;
+                        bool responseObj = await manager.performInternalLogOut(email);
+                        if (responseObj)
+                        {
+                            IsBusy = false;
+                            await Application.Current.MainPage.Navigation.PopToRootAsync();
+                        }
+                        else
+                        {
+                            IsBusy = false;
+                            await DisplayAlert("Alert", "Failed to logout", "OK");
+                        }
                     }
-                    else
-                    {
-                        IsBusy = false;
-                        await DisplayAlert("Alert", "Failed to logout", "OK");
-                    }
+                }
+                else if(model.title == "Reports")
+                {
+                    await Application.Current.MainPage.Navigation.PushAsync(new CommonReportsPage());
                 }
                 else
                 {

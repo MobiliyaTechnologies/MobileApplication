@@ -24,6 +24,10 @@ namespace CSU_APP.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
+            Xamarin.FormsMaps.Init();
+
+            App.ScreenWidth = UIScreen.MainScreen.Bounds.Width;
+            App.ScreenHeight = UIScreen.MainScreen.Bounds.Height;
 
             return base.FinishedLaunching(app, options);
         }

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:local="clr-namespace:CSU_APP" 
+             x:Class="CSU_APP.MS_POCPage">
+  <AbsoluteLayout
+          HorizontalOptions="FillAndExpand"
+          VerticalOptions="FillAndExpand">
+    
+      <StackLayout Spacing="20" Padding="40"
+          HorizontalOptions="FillAndExpand"
+          VerticalOptions="FillAndExpand"
+          AbsoluteLayout.LayoutFlags="All"
+          AbsoluteLayout.LayoutBounds="0,0,1,1">
+        
+          <Label Text="Login"/>
+          <Entry Placeholder="Username"
+                 Text="{Binding Username}" 
+                 x:Name="Uname"/>
+          <Entry Placeholder="Password"
+                 Text="{Binding Password}"
+                 IsPassword="true" 
+                 x:Name="pword"/>
+          <Button Text="Login" 
+                  TextColor="White" 
+                  x:Name="performLogin"
+                  BackgroundColor="#77D065"
+                  Command="{Binding LoginCommand}"/>
+
+          <Button Text="Forgot Password"
+                 TextColor="Blue"
+                 x:Name="performForgotPassword"
+                  BackgroundColor="#00000000"
+                 Command="{Binding ForgotPasswordCommand}"/>
+
+      </StackLayout>
+
+    <ContentView x:Name="actIndBackground"
+         BackgroundColor="#222222"
+         Opacity="0.5"
+         AbsoluteLayout.LayoutFlags="All"
+         AbsoluteLayout.LayoutBounds="0,0,1,1"
+         IsVisible="{Binding IsLoading}">
+    </ContentView>
+    <ActivityIndicator x:Name="actInd"
+         AbsoluteLayout.LayoutFlags="PositionProportional"
+         AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+         IsRunning="{Binding IsLoading}"
+         IsVisible="{Binding IsLoading}" />
+    
+  </AbsoluteLayout>
+</ContentPage>
