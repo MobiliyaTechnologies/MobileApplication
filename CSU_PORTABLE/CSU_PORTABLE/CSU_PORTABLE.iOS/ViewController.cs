@@ -9,18 +9,34 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-	public partial class ViewController : UIViewController
-	{
+    public partial class ViewController : UIViewController
+    {
 
-		public ViewController (IntPtr handle) : base (handle)
-		{
-		}
+        public ViewController(IntPtr handle) : base(handle)
+        {
+        }
 
-		public override void ViewDidLoad ()
-		{
-			base.ViewDidLoad ();
-            TextFieldUsername.Text = "aaa@111.com";
-            TextFieldPassword.Text = "111";
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
+            //TextFieldUsername.Text = "aaa@111.com";
+            //TextFieldPassword.Text = "111";
+            MessageLabel.Text = " ";
+
+            TextFieldUsername.ShouldReturn = delegate
+            {
+                // Changed this slightly to move the text entry to the next field.
+                TextFieldPassword.BecomeFirstResponder();
+                return true;
+            };
+
+            TextFieldPassword.ShouldReturn = delegate
+            {
+                TextFieldPassword.ResignFirstResponder();
+                return true;
+            };
+
             ButtonLogin.TouchUpInside += delegate {
 
                 string username = TextFieldUsername.Text;
@@ -38,13 +54,13 @@ namespace CSU_PORTABLE.iOS
                     ShowMessage("Enter valid username and password");
                 }
             };
-		}
+        }
 
-		public override void DidReceiveMemoryWarning ()
-		{
-			base.DidReceiveMemoryWarning ();
-			// Release any cached data, images, etc that aren't in use.
-		}
+        public override void DidReceiveMemoryWarning()
+        {
+            base.DidReceiveMemoryWarning();
+            // Release any cached data, images, etc that aren't in use.
+        }
 
         public void Login(LoginModel loginModel)
         {
@@ -68,12 +84,13 @@ namespace CSU_PORTABLE.iOS
                     //RunOnUiThread(() => {
                     //    LoginResponse((RestResponse)response);
                     //});
-
-                    LoginResponse((RestResponse)response);
+                    InvokeOnMainThread(() => {
+                        LoginResponse((RestResponse)response);
+                    });
                 }
             });
         }
-        
+
         private void LoginResponse(RestResponse restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
@@ -84,9 +101,8 @@ namespace CSU_PORTABLE.iOS
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
                     //Log.Debug(TAG, "Login Successful");
-                    ShowMessage("Login Successful");
-                    PreferenceHandler preferenceHandler = new PreferenceHandler();
-                    preferenceHandler.SaveUserDetails(response);
+                    //ShowMessage("Login Successful");
+                    SaveUserData(response);
                     //progressBar.Visibility = ViewStates.Gone;
                     //StartActivity(new Intent(Application.Context, typeof(MainActivity)));
                 }
@@ -109,16 +125,34 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
+        private void SaveUserData(UserDetails userDetails)
+        {
+            //store data in preferences
+
+            PreferenceHandler preferenceHandler = new PreferenceHandler();
+            preferenceHandler.SaveUserDetails(userDetails);
+            ShowMap();
+        }
+
+        private void ShowMap()
+        {
+            // Launches a new instance of CallHistoryController
+            MapViewController mapView = this.Storyboard.InstantiateViewController("MapViewController") as MapViewController;
+            if (mapView != null)
+            {
+                this.NavigationController.PushViewController(mapView, true);
+            }
+        }
         private void ShowMessage(string v)
         {
             //BTProgressHUD.ShowToast("Hello from Toast");
-            MessageLabel.Text = v;
-            /*UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
+            MessageLabel.Text = " " + v;
+            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
 
             alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
 
             PresentViewController(alertController, true, null);
-            */
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Foundation;
+﻿using CSU_PORTABLE.iOS.Utils;
+using Foundation;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -17,9 +18,22 @@ namespace CSU_PORTABLE.iOS
 
 		public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
 		{
-			// Override point for customization after application launch.
-			// If not required for your application you can safely delete this method
-			return true;
+            // Override point for customization after application launch.
+            // If not required for your application you can safely delete this method
+
+            PreferenceHandler preferenceHandler = new PreferenceHandler();
+            UIStoryboard storyBoard = UIStoryboard.FromName("Main", null);
+            UIViewController vc;
+            if (preferenceHandler.IsLoggedIn())
+            {     
+                vc = storyBoard.InstantiateViewController("MapViewController") as MapViewController;
+       
+            } else
+            {
+                vc = storyBoard.InstantiateViewController("ViewController") as ViewController;
+            }
+            this.Window.RootViewController = new UINavigationController(vc);
+            return true;
 		}
 
 		public override void OnResignActivation (UIApplication application)
