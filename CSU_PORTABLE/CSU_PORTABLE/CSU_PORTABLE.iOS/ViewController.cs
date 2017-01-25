@@ -65,25 +65,16 @@ namespace CSU_PORTABLE.iOS
         public void Login(LoginModel loginModel)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            //Log.Debug(TAG, "Login() " + loginModel.ToString());
-
+            
             var request = new RestRequest(Constants.API_SIGN_IN, Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(loginModel);
-
-            //progressBar.Visibility = ViewStates.Visible;
-            //buttonLogin.Visibility = ViewStates.Gone;
-            //RestResponse restResponse = (RestResponse)client.Execute(request);
-            //LoginResponse(restResponse);
+            
             client.ExecuteAsync(request, response =>
             {
                 Console.WriteLine(response);
                 if (response.StatusCode != 0)
                 {
-                    //Log.Debug(TAG, "async Response : " + response.ToString());
-                    //RunOnUiThread(() => {
-                    //    LoginResponse((RestResponse)response);
-                    //});
                     InvokeOnMainThread(() => {
                         LoginResponse((RestResponse)response);
                     });
