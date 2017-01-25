@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_number": "107379564375",
+    "firebase_url": "https://csu-android-app.firebaseio.com",
+    "project_id": "csu-android-app",
+    "storage_bucket": "csu-android-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107379564375:android:4b44ba0db8a92617",
+        "android_client_info": {
+          "package_name": "com.mobiliya.csu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "107379564375-cptn1rt9a19gl3g8p3gl6qotg765lltv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobiliya.csu",
+            "certificate_hash": "BBD3BB4B8C00A64E625F00A6226DAAFAB47F14C8"
+          }
+        },
+        {
+          "client_id": "107379564375-fatnh2thavibobeok0tcsmg6pncceln9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "107379564375-fatnh2thavibobeok0tcsmg6pncceln9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

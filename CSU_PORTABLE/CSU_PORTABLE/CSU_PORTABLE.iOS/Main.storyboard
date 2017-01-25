@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6750" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="175">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6735"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oBE-Ac-vcx">
+                                <rect key="frame" x="20" y="277" width="335" height="30"/>
+                                <state key="normal" title="Forgot Password">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <rect key="frame" x="20" y="339" width="335" height="30"/>
+                                </variation>
+                                <connections/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="12" translatesAutoresizingMaskIntoConstraints="NO" text="Response will appear here..">
+                                <rect key="frame" x="20" y="350" width="335" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <rect key="frame" x="20" y="399" width="335" height="21"/>
+                                </variation>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="20" y="223" width="335" height="30"/>
+                                <state key="normal" title="Login">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <rect key="frame" x="20" y="283" width="335" height="30"/>
+                                </variation>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Password" borderStyle="roundedRect" minimumFontSize="17" id="7" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="20" y="171" width="335" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <rect key="frame" x="20" y="210" width="335" height="30"/>
+                                </variation>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Username" borderStyle="roundedRect" minimumFontSize="17" id="6" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="20" y="114" width="335" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <rect key="frame" x="20" y="155" width="335" height="30"/>
+                                    <mask key="constraints">
+                                        <include reference="147"/>
+                                    </mask>
+                                </variation>
+                                <constraints>
+                                    <constraint id="147" firstAttribute="width" constant="335"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="147"/>
+                                    </mask>
+                                </variation>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="20" y="73" width="335" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <rect key="frame" x="20" y="112" width="335" height="20"/>
+                                    <mask key="constraints">
+                                        <include reference="115"/>
+                                    </mask>
+                                </variation>
+                                <constraints>
+                                    <constraint id="115" firstAttribute="width" constant="335"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="115"/>
+                                    </mask>
+                                </variation>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint id="134" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="oBE-Ac-vcx" secondAttribute="trailing" constant="20"/>
+                            <constraint id="140" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" constant="20"/>
+                            <constraint id="141" firstItem="3" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="112"/>
+                            <constraint id="145" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="6" secondAttribute="trailing" constant="20"/>
+                            <constraint id="148" firstItem="6" firstAttribute="top" secondItem="3" secondAttribute="bottom" constant="23"/>
+                            <constraint id="149" firstItem="3" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
+                            <constraint id="150" firstItem="6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
+                            <constraint id="151" firstItem="7" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
+                            <constraint id="152" firstItem="8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
+                            <constraint id="153" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" constant="20"/>
+                            <constraint id="154" firstItem="oBE-Ac-vcx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
+                            <constraint id="155" firstItem="12" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
+                            <constraint id="156" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="12" secondAttribute="trailing" constant="20"/>
+                            <constraint id="157" firstItem="7" firstAttribute="top" secondItem="6" secondAttribute="bottom" constant="25"/>
+                            <constraint id="158" firstItem="8" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="43"/>
+                            <constraint id="159" firstItem="oBE-Ac-vcx" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="26"/>
+                            <constraint id="160" firstItem="12" firstAttribute="top" secondItem="oBE-Ac-vcx" secondAttribute="bottom" constant="30"/>
+                            <constraint id="161" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" constant="20"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="134"/>
+                                <exclude reference="140"/>
+                                <exclude reference="141"/>
+                                <exclude reference="145"/>
+                                <exclude reference="148"/>
+                                <exclude reference="149"/>
+                                <exclude reference="150"/>
+                                <exclude reference="151"/>
+                                <exclude reference="152"/>
+                                <exclude reference="153"/>
+                                <exclude reference="154"/>
+                                <exclude reference="155"/>
+                                <exclude reference="156"/>
+                                <exclude reference="157"/>
+                                <exclude reference="158"/>
+                                <exclude reference="159"/>
+                                <exclude reference="160"/>
+                                <exclude reference="161"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="134"/>
+                                <include reference="140"/>
+                                <include reference="141"/>
+                                <include reference="145"/>
+                                <include reference="148"/>
+                                <include reference="149"/>
+                                <include reference="150"/>
+                                <include reference="151"/>
+                                <include reference="152"/>
+                                <include reference="153"/>
+                                <include reference="154"/>
+                                <include reference="155"/>
+                                <include reference="156"/>
+                                <include reference="157"/>
+                                <include reference="158"/>
+                                <include reference="159"/>
+                                <include reference="160"/>
+                                <include reference="161"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="TextFieldUsername" destination="6" id="name-outlet-6"/>
+                        <outlet property="TextFieldPassword" destination="7" id="name-outlet-7"/>
+                        <outlet property="ButtonLogin" destination="8" id="name-outlet-8"/>
+                        <outlet property="MessageLabel" destination="12" id="name-outlet-12"/>
+                        <outlet property="ButtonForgotPassword" destination="oBE-Ac-vcx" id="name-outlet-oBE-Ac-vcx"/>
+                    </connections>
+                    <navigationItem title="CSU" id="299" key="navigationItem"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-83" y="-15"/>
+        </scene>
+        <scene sceneID="174">
+            <objects>
+                <navigationController id="175" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="177">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue id="300" destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="178" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-730" y="-13"/>
+        </scene>
+        <scene sceneID="547">
+            <objects>
+                <viewController id="548" sceneMemberID="viewController" title="CSU MAP" customClass="MapViewController" storyboardIdentifier="MapViewController" useStoryboardIdentifierAsRestorationIdentifier="YES">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="545"/>
+                        <viewControllerLayoutGuide type="bottom" id="546"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="549">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Map View" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="552" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                <rect key="frame" x="20" y="318" width="335" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="550" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="460" y="-17"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedScreenMetrics key="destination" type="retina47"/>
+    </simulatedMetricsContainer>
+</document>
