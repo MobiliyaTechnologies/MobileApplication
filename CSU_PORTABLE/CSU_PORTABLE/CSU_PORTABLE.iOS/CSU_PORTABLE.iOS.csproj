@@ -150,12 +150,17 @@
     <Compile Include="Call.designer.cs">
       <DependentUpon>Call.cs</DependentUpon>
     </Compile>
+    <Compile Include="ForgotPasswordController.cs" />
+    <Compile Include="ForgotPasswordController.designer.cs">
+      <DependentUpon>ForgotPasswordController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="MapViewController.cs" />
     <Compile Include="MapViewController.designer.cs">
       <DependentUpon>MapViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\LoadingOverlay.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />
     <Compile Include="ViewController.cs" />
     <Compile Include="ViewController.designer.cs">
