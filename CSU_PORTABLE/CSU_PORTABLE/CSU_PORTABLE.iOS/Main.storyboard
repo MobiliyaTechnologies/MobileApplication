@@ -24,7 +24,9 @@
                                 <variation key="heightClass=regular-widthClass=compact">
                                     <rect key="frame" x="20" y="339" width="335" height="30"/>
                                 </variation>
-                                <connections/>
+                                <connections>
+                                    <segue id="673" destination="561" kind="show"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="12" translatesAutoresizingMaskIntoConstraints="NO" text="Response will appear here..">
                                 <rect key="frame" x="20" y="350" width="335" height="21"/>
@@ -210,6 +212,43 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="550" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="460" y="-17"/>
+        </scene>
+        <scene sceneID="560">
+            <objects>
+                <viewController id="561" sceneMemberID="viewController" title="ForgotPassword" customClass="ForgotPasswordController" storyboardIdentifier="ForgotPasswordController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="558"/>
+                        <viewControllerLayoutGuide type="bottom" id="559"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="562">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="693" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" placeholder="Username">
+                                <rect key="frame" x="40" y="155" width="295" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="694" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                <rect key="frame" x="40" y="247" width="295" height="30"/>
+                                <state key="normal" title="Submit">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="ForgotButton_TouchUpInside:" destination="561" id="695" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="Email" destination="693" id="name-outlet-693"/>
+                        <outlet property="ForgotButton" destination="694" id="name-outlet-694"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="563" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-98" y="744"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
