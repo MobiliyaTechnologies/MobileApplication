@@ -154,6 +154,10 @@
     <Compile Include="ForgotPasswordController.designer.cs">
       <DependentUpon>ForgotPasswordController.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalReportsController.cs" />
+    <Compile Include="GlobalReportsController.designer.cs">
+      <DependentUpon>GlobalReportsController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="MapViewController.cs" />
@@ -163,6 +167,10 @@
     <Compile Include="MeterReportController.cs" />
     <Compile Include="MeterReportController.designer.cs">
       <DependentUpon>MeterReportController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReportController.cs" />
+    <Compile Include="ReportController.designer.cs">
+      <DependentUpon>ReportController.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\LoadingOverlay.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />

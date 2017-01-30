@@ -164,6 +164,12 @@ namespace CSU_PORTABLE.iOS
                 repotrView.meterSerialNumber = meterSerial;
                 this.NavigationController.PushViewController(repotrView, true);
             }
+
+            /*ReportController reportView = this.Storyboard.InstantiateViewController("ReportController") as ReportController;
+            if (reportView != null)
+            {
+                this.NavigationController.PushViewController(reportView, true);
+            }*/
         }
 
         private void addPinAndCircle()
