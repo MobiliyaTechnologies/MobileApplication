@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6750" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="175">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6750" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6735"/>
     </dependencies>
@@ -46,7 +46,7 @@
                                     <rect key="frame" x="20" y="283" width="335" height="30"/>
                                 </variation>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Password" borderStyle="roundedRect" minimumFontSize="17" id="7" translatesAutoresizingMaskIntoConstraints="NO">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="7" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Password">
                                 <rect key="frame" x="20" y="171" width="335" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -54,7 +54,7 @@
                                     <rect key="frame" x="20" y="210" width="335" height="30"/>
                                 </variation>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Username" borderStyle="roundedRect" minimumFontSize="17" id="6" translatesAutoresizingMaskIntoConstraints="NO">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="6" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Username">
                                 <rect key="frame" x="20" y="114" width="335" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -215,7 +215,7 @@
         </scene>
         <scene sceneID="560">
             <objects>
-                <viewController id="561" sceneMemberID="viewController" title="ForgotPassword" customClass="ForgotPasswordController" storyboardIdentifier="ForgotPasswordController">
+                <viewController id="561" sceneMemberID="viewController" title="Forgot Password" customClass="ForgotPasswordController" storyboardIdentifier="ForgotPasswordController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="558"/>
                         <viewControllerLayoutGuide type="bottom" id="559"/>
@@ -225,13 +225,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="693" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" placeholder="Username">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="693" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Username">
                                 <rect key="frame" x="40" y="155" width="295" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="694" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
-                                <rect key="frame" x="40" y="247" width="295" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="694" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                                <rect key="frame" x="40" y="228" width="295" height="30"/>
                                 <state key="normal" title="Submit">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -240,6 +240,14 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <constraints>
+                            <constraint id="765" firstItem="693" firstAttribute="leading" secondItem="562" secondAttribute="leading" constant="40"/>
+                            <constraint id="766" firstItem="562" firstAttribute="trailing" secondItem="693" secondAttribute="trailing" constant="40"/>
+                            <constraint id="767" firstItem="693" firstAttribute="top" secondItem="558" secondAttribute="bottom" constant="91"/>
+                            <constraint id="768" firstItem="694" firstAttribute="top" secondItem="693" secondAttribute="bottom" constant="62"/>
+                            <constraint id="769" firstItem="562" firstAttribute="trailing" secondItem="694" secondAttribute="trailing" constant="40"/>
+                            <constraint id="770" firstItem="694" firstAttribute="leading" secondItem="562" secondAttribute="leading" constant="40"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="Email" destination="693" id="name-outlet-693"/>
@@ -249,6 +257,183 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="563" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-98" y="744"/>
+        </scene>
+        <scene sceneID="720">
+            <objects>
+                <viewController id="721" sceneMemberID="viewController" customClass="ContentController" storyboardIdentifier="ContentController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="718"/>
+                        <viewControllerLayoutGuide type="bottom" id="719"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="722">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews/>
+                    </view>
+                    <connections/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="723" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="449" y="750"/>
+        </scene>
+        <scene sceneID="751">
+            <objects>
+                <viewController id="752" sceneMemberID="viewController" customClass="MyMenuController" storyboardIdentifier="MyMenuController" title="CSU Menu">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="749"/>
+                        <viewControllerLayoutGuide type="bottom" id="750"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="753">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="783" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                                <rect key="frame" x="20" y="389" width="276" height="50"/>
+                                <state key="normal" title="Logout ">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <connections/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" id="784" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                                <rect key="frame" x="20" y="318" width="276" height="50"/>
+                                <state key="normal" title="Change Password">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="830" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                                <rect key="frame" x="20" y="189" width="276" height="50"/>
+                                <state key="normal" title="Reports">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <connections>
+                                    <action selector="ReportsButton_TouchUpInside:" destination="752" id="856" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="831" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                                <rect key="frame" x="20" y="254" width="276" height="50"/>
+                                <state key="normal" title="Alerts">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </button>
+                            <view contentMode="scaleToFill" id="866" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="0.0" y="28" width="375" height="135"/>
+                                <color key="backgroundColor" colorSpace="calibratedWhite" white="0.666666666666667" alpha="1"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="855" translatesAutoresizingMaskIntoConstraints="NO" textAlignment="center">
+                                        <rect key="frame" x="0.0" y="67" width="375" height="22"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="highlightedColor"/>
+                                        <color key="backgroundColor" colorSpace="calibratedWhite" white="0.666666666666667" alpha="1"/>
+                                        <constraints>
+                                            <constraint id="894" firstAttribute="width" constant="375"/>
+                                            <constraint id="895" firstAttribute="height" constant="22"/>
+                                        </constraints>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint id="885" firstAttribute="width" constant="375"/>
+                                    <constraint id="886" firstAttribute="height" constant="135"/>
+                                    <constraint id="892" firstItem="866" firstAttribute="trailing" secondItem="855" secondAttribute="trailing"/>
+                                    <constraint id="893" firstItem="866" firstAttribute="bottom" secondItem="855" secondAttribute="bottom" constant="46"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint id="834" firstItem="784" firstAttribute="top" secondItem="831" secondAttribute="bottom" constant="35"/>
+                            <constraint id="835" firstItem="783" firstAttribute="top" secondItem="784" secondAttribute="bottom" constant="21"/>
+                            <constraint id="836" firstItem="831" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="837" firstItem="753" firstAttribute="trailing" secondItem="831" secondAttribute="trailing" constant="79"/>
+                            <constraint id="847" firstItem="830" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="848" firstItem="753" firstAttribute="trailing" secondItem="830" secondAttribute="trailing" constant="79"/>
+                            <constraint id="849" firstItem="831" firstAttribute="top" secondItem="830" secondAttribute="bottom" constant="15"/>
+                            <constraint id="850" firstItem="753" firstAttribute="trailing" secondItem="784" secondAttribute="trailing" constant="79"/>
+                            <constraint id="851" firstItem="784" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="852" firstItem="753" firstAttribute="trailing" secondItem="783" secondAttribute="trailing" constant="79"/>
+                            <constraint id="853" firstItem="783" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="883" firstItem="753" firstAttribute="trailing" secondItem="866" secondAttribute="trailing"/>
+                            <constraint id="884" firstItem="866" firstAttribute="top" secondItem="753" secondAttribute="top" constant="28"/>
+                            <constraint id="891" firstItem="830" firstAttribute="top" secondItem="866" secondAttribute="bottom" constant="26"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="LogOutButton" destination="783" id="name-outlet-783"/>
+                        <outlet property="ChangePasswordButton" destination="784" id="name-outlet-784"/>
+                        <outlet property="AlertsButton" destination="831" id="name-outlet-831"/>
+                        <outlet property="ReportsButton" destination="830" id="name-outlet-830"/>
+                        <outlet property="Username" destination="855" id="name-outlet-855"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="754" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="929" y="743"/>
+        </scene>
+        <scene sceneID="804">
+            <objects>
+                <viewController id="805" sceneMemberID="viewController" customClass="ChangePasswordController" storyboardIdentifier="ChangePasswordController" title="Change Password">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="802"/>
+                        <viewControllerLayoutGuide type="bottom" id="803"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="806">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="809" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES" placeholder="Password">
+                                <rect key="frame" x="57" y="208" width="261" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="813" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES" placeholder="Confirm Password">
+                                <rect key="frame" x="57" y="285" width="261" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="817" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                                <rect key="frame" x="57" y="127" width="261" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="818" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                                <rect key="frame" x="57" y="465" width="261" height="30"/>
+                                <state key="normal" title="Submit">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="Submit_TouchUpInside:" destination="805" id="819" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint id="811" firstItem="806" firstAttribute="trailing" secondItem="809" secondAttribute="trailing" constant="57"/>
+                            <constraint id="812" firstItem="809" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57"/>
+                            <constraint id="814" firstItem="806" firstAttribute="trailing" secondItem="813" secondAttribute="trailing" constant="57"/>
+                            <constraint id="815" firstItem="813" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57"/>
+                            <constraint id="816" firstItem="813" firstAttribute="top" secondItem="809" secondAttribute="bottom" constant="49"/>
+                            <constraint id="820" firstItem="817" firstAttribute="top" secondItem="802" secondAttribute="bottom" constant="107"/>
+                            <constraint id="821" firstItem="809" firstAttribute="top" secondItem="817" secondAttribute="bottom" constant="45"/>
+                            <constraint id="822" firstItem="818" firstAttribute="top" secondItem="813" secondAttribute="bottom" constant="150"/>
+                            <constraint id="823" firstItem="806" firstAttribute="trailing" secondItem="818" secondAttribute="trailing" constant="57"/>
+                            <constraint id="824" firstItem="818" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="Password" destination="809" id="name-outlet-809"/>
+                        <outlet property="ConfirmPassword" destination="813" id="name-outlet-813"/>
+                        <outlet property="Username" destination="817" id="name-outlet-817"/>
+                        <outlet property="Submit" destination="818" id="name-outlet-818"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="807" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1581" y="727"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

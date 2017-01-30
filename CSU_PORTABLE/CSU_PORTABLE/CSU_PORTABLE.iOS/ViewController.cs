@@ -37,7 +37,8 @@ namespace CSU_PORTABLE.iOS
                 return true;
             };
 
-            ButtonLogin.TouchUpInside += delegate {
+            ButtonLogin.TouchUpInside += delegate
+            {
 
                 string username = TextFieldUsername.Text;
                 string password = TextFieldPassword.Text;
@@ -65,17 +66,18 @@ namespace CSU_PORTABLE.iOS
         public void Login(LoginModel loginModel)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            
+
             var request = new RestRequest(Constants.API_SIGN_IN, Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(loginModel);
-            
+
             client.ExecuteAsync(request, response =>
             {
                 Console.WriteLine(response);
                 if (response.StatusCode != 0)
                 {
-                    InvokeOnMainThread(() => {
+                    InvokeOnMainThread(() =>
+                    {
                         LoginResponse((RestResponse)response);
                     });
                 }
@@ -86,33 +88,20 @@ namespace CSU_PORTABLE.iOS
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                //Log.Debug(TAG, restResponse.Content.ToString());
                 UserDetails response = JsonConvert.DeserializeObject<UserDetails>(restResponse.Content);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
-                    //Log.Debug(TAG, "Login Successful");
-                    //ShowMessage("Login Successful");
                     SaveUserData(response);
-                    //progressBar.Visibility = ViewStates.Gone;
-                    //StartActivity(new Intent(Application.Context, typeof(MainActivity)));
                 }
                 else
                 {
-                    //Log.Debug(TAG, "Login Failed");
                     ShowMessage("Login Failed");
-                    //progressBar.Visibility = ViewStates.Gone;
-                    //buttonLogin.Visibility = ViewStates.Visible;
-                    //ShowToast("Either username or password is incorrect !");
                 }
             }
             else
             {
-                //Log.Debug(TAG, "Login Failed");
                 ShowMessage("Login Failed");
-                //progressBar.Visibility = ViewStates.Gone;
-                //buttonLogin.Visibility = ViewStates.Visible;
-                //ShowToast("Error while login. Please try again.");
             }
         }
 
@@ -131,6 +120,8 @@ namespace CSU_PORTABLE.iOS
             MapViewController mapView = this.Storyboard.InstantiateViewController("MapViewController") as MapViewController;
             if (mapView != null)
             {
+                mapView.NavigationItem.SetHidesBackButton(true, false);
+                
                 this.NavigationController.PushViewController(mapView, true);
             }
         }
