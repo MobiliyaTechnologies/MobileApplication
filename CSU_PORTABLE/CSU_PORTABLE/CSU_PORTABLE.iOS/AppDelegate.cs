@@ -27,9 +27,7 @@ namespace CSU_PORTABLE.iOS
             UIViewController vc;
             if (preferenceHandler.IsLoggedIn())
             {
-                vc = storyBoard.InstantiateViewController("ViewController") as ViewController;
-                //vc = storyBoard.InstantiateViewController("MapViewController") as MapViewController;
-
+                vc = storyBoard.InstantiateViewController("MapViewController") as MapViewController;
             }
             else
             {

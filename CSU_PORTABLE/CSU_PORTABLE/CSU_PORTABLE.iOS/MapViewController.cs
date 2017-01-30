@@ -22,6 +22,12 @@ namespace CSU_PORTABLE.iOS
         {
         }
 
+        public override void ViewDidAppear(bool animated)
+        {
+            base.ViewDidAppear(animated);
+            addPinAndCircle();
+        }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
@@ -35,8 +41,11 @@ namespace CSU_PORTABLE.iOS
 
             MKCoordinateSpan span = new MKCoordinateSpan(0.004, 0.004);
             map.Region = new MKCoordinateRegion(coordinate, span);
-            map.Delegate = new MyMapDelegate();
 
+            var mapViewDelegate = new MyMapDelegate();
+            mapViewDelegate.AnnotationTapped += TheMapView_OnAnnotationTapped;
+            map.Delegate = mapViewDelegate;
+            
             View = map;
 
             var preferenceHandler = new PreferenceHandler();
@@ -52,6 +61,22 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
+        private void TheMapView_OnAnnotationTapped(object sender, EventArgs args)
+        {
+            var annotView = sender as MKAnnotationView;
+            if (annotView != null) { }
+            var meterAnotation = annotView.Annotation as MKPointAnnotation;
+
+            if (meterAnotation != null)
+            {
+                string serial = meterAnotation.Subtitle;
+                if (serial != null && serial.Length > 0)
+                {
+                    ShowMeterReports(meterAnotation.Title, serial);
+                }
+            }
+        }
+        
         private void ShowMessage(string v)
         {
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
@@ -129,10 +154,32 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
+        private void ShowMeterReports(string meterName, string meterSerial)
+        {
+            // Launches a new instance of CallHistoryController
+            MeterReportController repotrView = this.Storyboard.InstantiateViewController("MeterReportController") as MeterReportController;
+            if (repotrView != null)
+            {
+                repotrView.meterName = meterName;
+                repotrView.meterSerialNumber = meterSerial;
+                this.NavigationController.PushViewController(repotrView, true);
+            }
+        }
+
         private void addPinAndCircle()
         {
             if (meterList != null && monthlyConsumptionList != null && map != null)
             {
+                IMKAnnotation[] an = map.Annotations;
+                if (an != null)
+                {
+                    map.RemoveAnnotations(an);
+                }
+                IMKOverlay[] ov = map.Overlays;
+                if (ov != null)
+                {
+                    map.RemoveOverlays(map.Overlays);
+                }
                 for (int i = 0; i < meterList.Count; i++)
                 {
                     var meter = meterList[i];
@@ -148,9 +195,7 @@ namespace CSU_PORTABLE.iOS
                     var circleOverlay = MKCircle.Circle(coordinate, getRadius(meter));
                     circleOverlay.Subtitle = meter.Serial;
                     map.AddOverlay(circleOverlay);
-                    
                 }
-                //map.InfoWindowClick += MapOnInfoWindowClick;
             }
         }
 
@@ -236,8 +281,8 @@ namespace CSU_PORTABLE.iOS
 
         class MyMapDelegate : MKMapViewDelegate
         {
+            public event EventHandler AnnotationTapped;
             string pId = "PinAnnotation";
-            string mId = "MonkeyAnnotation";
 
             public override MKAnnotationView GetViewForAnnotation(MKMapView mapView, IMKAnnotation annotation)
             {
@@ -252,19 +297,17 @@ namespace CSU_PORTABLE.iOS
 
                 ((MKPinAnnotationView)pinView).PinColor = MKPinAnnotationColor.Red;
                 pinView.CanShowCallout = true;
-
+                pinView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
                 return pinView;
             }
 
             public override void CalloutAccessoryControlTapped(MKMapView mapView, MKAnnotationView view, UIControl control)
             {
-                var monkeyAn = view.Annotation as MKAnnotation;
 
-                if (monkeyAn != null)
+                if (AnnotationTapped != null)
                 {
-                    var alert = new UIAlertView("Monkey Annotation", monkeyAn.Title, null, "OK");
-                    alert.Show();
-                }
+                    AnnotationTapped(view, new EventArgs());
+                } 
             }
 
             public override MKOverlayView GetViewForOverlay(MKMapView mapView, IMKOverlay overlay)

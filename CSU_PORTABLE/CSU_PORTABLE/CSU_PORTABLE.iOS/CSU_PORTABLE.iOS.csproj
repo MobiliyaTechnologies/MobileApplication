@@ -160,6 +160,10 @@
     <Compile Include="MapViewController.designer.cs">
       <DependentUpon>MapViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="MeterReportController.cs" />
+    <Compile Include="MeterReportController.designer.cs">
+      <DependentUpon>MeterReportController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\LoadingOverlay.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />
     <Compile Include="ViewController.cs" />
