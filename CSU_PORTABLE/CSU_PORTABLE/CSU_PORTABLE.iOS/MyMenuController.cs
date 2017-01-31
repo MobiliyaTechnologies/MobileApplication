@@ -17,10 +17,25 @@ namespace CSU_PORTABLE.iOS
             base.ViewDidLoad();
             PreferenceHandler preferenceHandler = new PreferenceHandler();
             UserDetails User = preferenceHandler.GetUserDetails();
-            Username.Text = string.Empty;
-            Username.Text = User.First_Name + " " + User.Last_Name;
+            ProfileName.SetTitle(User.First_Name + " " + User.Last_Name, UIControlState.Normal);
             ChangePasswordButton.TouchUpInside += ChangePasswordButton_TouchUpInside;
             LogOutButton.TouchUpInside += LogOutButton_TouchUpInside;
+            ReportsButton.TouchUpInside += ReportsButton_TouchUpInside;
+            AlertsButton.TouchUpInside += AlertsButton_TouchUpInside;
+        }
+
+        private void AlertsButton_TouchUpInside(object sender, EventArgs e)
+        {
+            var AlertsController = (AlertsController)Storyboard.InstantiateViewController("AlertsController");
+            NavController.PushViewController(AlertsController, false);
+            SidebarController.CloseMenu();
+        }
+
+        private void ReportsButton_TouchUpInside(object sender, EventArgs e)
+        {
+            var ReportController = (ReportController)Storyboard.InstantiateViewController("ReportController");
+            NavController.PushViewController(ReportController, false);
+            SidebarController.CloseMenu();
         }
 
         private void ChangePasswordButton_TouchUpInside(object sender, EventArgs e)
@@ -42,6 +57,6 @@ namespace CSU_PORTABLE.iOS
 
         }
 
-     
+
     }
 }

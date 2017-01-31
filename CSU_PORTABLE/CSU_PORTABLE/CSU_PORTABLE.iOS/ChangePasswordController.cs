@@ -29,6 +29,18 @@ namespace CSU_PORTABLE.iOS
 
             Password.AutocorrectionType = UITextAutocorrectionType.No;
             ConfirmPassword.AutocorrectionType = UITextAutocorrectionType.No;
+            Password.ShouldReturn = delegate
+            {
+                // Changed this slightly to move the text entry to the next field.
+                ConfirmPassword.BecomeFirstResponder();
+                return true;
+            };
+            ConfirmPassword.ShouldReturn = delegate
+            {
+                // Changed this slightly to move the text entry to the next field.
+                ConfirmPassword.BecomeFirstResponder();
+                return true;
+            };
         }
 
         partial void Submit_TouchUpInside(UIButton sender)

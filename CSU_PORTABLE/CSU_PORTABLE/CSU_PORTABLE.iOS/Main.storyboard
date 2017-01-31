@@ -270,76 +270,76 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="783" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="783" translatesAutoresizingMaskIntoConstraints="NO">
                                 <rect key="frame" x="20" y="389" width="276" height="50"/>
                                 <state key="normal" title="Logout ">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections/>
+                                <constraints>
+                                    <constraint id="960" firstAttribute="width" constant="276"/>
+                                    <constraint id="961" firstAttribute="height" constant="50"/>
+                                </constraints>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" id="784" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" id="784" translatesAutoresizingMaskIntoConstraints="NO">
                                 <rect key="frame" x="20" y="318" width="276" height="50"/>
                                 <state key="normal" title="Change Password">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <constraints>
+                                    <constraint id="956" firstAttribute="width" constant="276"/>
+                                    <constraint id="957" firstAttribute="height" constant="50"/>
+                                </constraints>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="830" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                            <view contentMode="scaleToFill" id="866" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                <rect key="frame" x="0.0" y="28" width="375" height="135"/>
+                                <color key="backgroundColor" colorSpace="calibratedWhite" white="0.666666666666667" alpha="1"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="993" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES">
+                                        <rect key="frame" x="20" y="35" width="276" height="50"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <connections/>
+                                    </button>
+                                </subviews>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="830" translatesAutoresizingMaskIntoConstraints="NO">
                                 <rect key="frame" x="20" y="189" width="276" height="50"/>
                                 <state key="normal" title="Reports">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <connections>
-                                    <action selector="ReportsButton_TouchUpInside:" destination="752" id="856" eventType="touchUpInside"/>
-                                </connections>
+                                <connections/>
+                                <constraints>
+                                    <constraint id="948" firstAttribute="width" constant="276"/>
+                                    <constraint id="949" firstAttribute="height" constant="50"/>
+                                </constraints>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="831" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="831" translatesAutoresizingMaskIntoConstraints="NO">
                                 <rect key="frame" x="20" y="254" width="276" height="50"/>
                                 <state key="normal" title="Alerts">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <inset key="contentEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
-                            </button>
-                            <view contentMode="scaleToFill" id="866" translatesAutoresizingMaskIntoConstraints="NO">
-                                <rect key="frame" x="0.0" y="28" width="375" height="135"/>
-                                <color key="backgroundColor" colorSpace="calibratedWhite" white="0.666666666666667" alpha="1"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="855" translatesAutoresizingMaskIntoConstraints="NO" textAlignment="center">
-                                        <rect key="frame" x="0.0" y="67" width="375" height="22"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="highlightedColor"/>
-                                        <color key="backgroundColor" colorSpace="calibratedWhite" white="0.666666666666667" alpha="1"/>
-                                        <constraints>
-                                            <constraint id="894" firstAttribute="width" constant="375"/>
-                                            <constraint id="895" firstAttribute="height" constant="22"/>
-                                        </constraints>
-                                    </label>
-                                </subviews>
                                 <constraints>
-                                    <constraint id="885" firstAttribute="width" constant="375"/>
-                                    <constraint id="886" firstAttribute="height" constant="135"/>
-                                    <constraint id="892" firstItem="866" firstAttribute="trailing" secondItem="855" secondAttribute="trailing"/>
-                                    <constraint id="893" firstItem="866" firstAttribute="bottom" secondItem="855" secondAttribute="bottom" constant="46"/>
+                                    <constraint id="952" firstAttribute="width" constant="276"/>
+                                    <constraint id="953" firstAttribute="height" constant="50"/>
                                 </constraints>
-                            </view>
+                            </button>
                         </subviews>
                         <constraints>
-                            <constraint id="834" firstItem="784" firstAttribute="top" secondItem="831" secondAttribute="bottom" constant="35"/>
-                            <constraint id="835" firstItem="783" firstAttribute="top" secondItem="784" secondAttribute="bottom" constant="21"/>
-                            <constraint id="836" firstItem="831" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
-                            <constraint id="837" firstItem="753" firstAttribute="trailing" secondItem="831" secondAttribute="trailing" constant="79"/>
-                            <constraint id="847" firstItem="830" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
-                            <constraint id="848" firstItem="753" firstAttribute="trailing" secondItem="830" secondAttribute="trailing" constant="79"/>
-                            <constraint id="849" firstItem="831" firstAttribute="top" secondItem="830" secondAttribute="bottom" constant="15"/>
-                            <constraint id="850" firstItem="753" firstAttribute="trailing" secondItem="784" secondAttribute="trailing" constant="79"/>
-                            <constraint id="851" firstItem="784" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
-                            <constraint id="852" firstItem="753" firstAttribute="trailing" secondItem="783" secondAttribute="trailing" constant="79"/>
-                            <constraint id="853" firstItem="783" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
-                            <constraint id="883" firstItem="753" firstAttribute="trailing" secondItem="866" secondAttribute="trailing"/>
-                            <constraint id="884" firstItem="866" firstAttribute="top" secondItem="753" secondAttribute="top" constant="28"/>
-                            <constraint id="891" firstItem="830" firstAttribute="top" secondItem="866" secondAttribute="bottom" constant="26"/>
+                            <constraint id="946" firstItem="830" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="947" firstItem="830" firstAttribute="top" secondItem="753" secondAttribute="top" constant="189"/>
+                            <constraint id="950" firstItem="831" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="951" firstItem="831" firstAttribute="top" secondItem="753" secondAttribute="top" constant="254"/>
+                            <constraint id="954" firstItem="784" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="955" firstItem="753" firstAttribute="bottom" secondItem="784" secondAttribute="bottom" constant="299"/>
+                            <constraint id="958" firstItem="783" firstAttribute="leading" secondItem="753" secondAttribute="leading" constant="20"/>
+                            <constraint id="959" firstItem="753" firstAttribute="bottom" secondItem="783" secondAttribute="bottom" constant="228"/>
                         </constraints>
                     </view>
                     <connections>
@@ -347,7 +347,8 @@
                         <outlet property="ChangePasswordButton" destination="784" id="name-outlet-784"/>
                         <outlet property="AlertsButton" destination="831" id="name-outlet-831"/>
                         <outlet property="ReportsButton" destination="830" id="name-outlet-830"/>
-                        <outlet property="Username" destination="855" id="name-outlet-855"/>
+                        <outlet property="ProfileBack" destination="866" id="name-outlet-866"/>
+                        <outlet property="ProfileName" destination="993" id="name-outlet-993"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="754" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -417,6 +418,70 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="807" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1581" y="727"/>
+        </scene>
+        <scene sceneID="704">
+            <objects>
+                <viewController id="705" sceneMemberID="viewController" customClass="MeterReportController" storyboardIdentifier="MeterReportController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="702"/>
+                        <viewControllerLayoutGuide type="bottom" id="703"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="706">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="707" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="460" y="737"/>
+        </scene>
+        <scene sceneID="728">
+            <objects>
+                <viewController id="729" sceneMemberID="viewController" customClass="ReportController" storyboardIdentifier="ReportController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="726"/>
+                        <viewControllerLayoutGuide type="bottom" id="727"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="730">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="731" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-735" y="730"/>
+        </scene>
+        <scene sceneID="920">
+            <objects>
+                <viewController id="921" sceneMemberID="viewController" customClass="AlertsController" storyboardIdentifier="AlertsController" title="Alerts">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="918"/>
+                        <viewControllerLayoutGuide type="bottom" id="919"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="922">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Coming Soon !!!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="925" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="38" y="167" width="300" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint id="929" firstItem="925" firstAttribute="top" secondItem="918" secondAttribute="bottom" constant="147"/>
+                            <constraint id="930" firstItem="925" firstAttribute="leading" secondItem="922" secondAttribute="leading" constant="38"/>
+                            <constraint id="931" firstItem="922" firstAttribute="trailing" secondItem="925" secondAttribute="trailing" constant="37"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="923" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2183" y="693"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

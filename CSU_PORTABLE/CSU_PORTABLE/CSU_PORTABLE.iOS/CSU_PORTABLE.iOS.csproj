@@ -61,6 +61,14 @@
     <MtouchDebug>true</MtouchDebug>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.13.8.999, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.8\lib\Xamarin.iOS10\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.13.8.999, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.8\lib\Xamarin.iOS10\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -150,6 +158,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlertsController.cs" />
+    <Compile Include="AlertsController.designer.cs">
+      <DependentUpon>AlertsController.cs</DependentUpon>
+    </Compile>
     <Compile Include="BaseController.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="Call.designer.cs">
@@ -179,6 +191,14 @@
     </Compile>
     <Compile Include="NavController.cs" />
     <Compile Include="RootViewController.cs" />
+    <Compile Include="MeterReportController.cs" />
+    <Compile Include="MeterReportController.designer.cs">
+      <DependentUpon>MeterReportController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReportController.cs" />
+    <Compile Include="ReportController.designer.cs">
+      <DependentUpon>ReportController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\LoadingOverlay.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />
     <Compile Include="ViewController.cs" />

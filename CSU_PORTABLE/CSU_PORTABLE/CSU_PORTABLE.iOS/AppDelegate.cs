@@ -24,6 +24,7 @@ namespace CSU_PORTABLE.iOS
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
+
             //PreferenceHandler preferenceHandler = new PreferenceHandler();
             //UIStoryboard storyBoard = UIStoryboard.FromName("Main", null);
             //UIViewController vc;
@@ -42,6 +43,7 @@ namespace CSU_PORTABLE.iOS
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
             Window.RootViewController = new RootViewController();
             this.Window.MakeKeyAndVisible();
+
             return true;
         }
 

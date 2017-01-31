@@ -28,15 +28,15 @@ namespace CSU_PORTABLE.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton ReportsButton { get; set; }
+        UIKit.UIView ProfileBack { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel Username { get; set; }
+        UIKit.UIButton ProfileName { get; set; }
 
-        [Action ("ReportsButton_TouchUpInside:")]
+        [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        partial void ReportsButton_TouchUpInside (UIKit.UIButton sender);
+        UIKit.UIButton ReportsButton { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
@@ -55,14 +55,19 @@ namespace CSU_PORTABLE.iOS
                 LogOutButton = null;
             }
 
+            if (ProfileBack != null) {
+                ProfileBack.Dispose ();
+                ProfileBack = null;
+            }
+
+            if (ProfileName != null) {
+                ProfileName.Dispose ();
+                ProfileName = null;
+            }
+
             if (ReportsButton != null) {
                 ReportsButton.Dispose ();
                 ReportsButton = null;
-            }
-
-            if (Username != null) {
-                Username.Dispose ();
-                Username = null;
             }
         }
     }
