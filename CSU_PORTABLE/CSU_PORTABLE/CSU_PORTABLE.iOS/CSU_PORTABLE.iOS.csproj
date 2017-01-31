@@ -61,6 +61,14 @@
     <MtouchDebug>true</MtouchDebug>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.13.8.999, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.8\lib\Xamarin.iOS10\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.13.8.999, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.8\lib\Xamarin.iOS10\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -72,6 +80,10 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
+    <Reference Include="Xamarin-Sidebar-Unified, Version=1.0.6186.35166, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SidebarNavigation.1.9.3\lib\Xamarin.iOS10\Xamarin-Sidebar-Unified.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
@@ -146,17 +158,26 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlertsController.cs" />
+    <Compile Include="AlertsController.designer.cs">
+      <DependentUpon>AlertsController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BaseController.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="Call.designer.cs">
       <DependentUpon>Call.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChangePasswordController.cs" />
+    <Compile Include="ChangePasswordController.designer.cs">
+      <DependentUpon>ChangePasswordController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ContentController.cs" />
+    <Compile Include="ContentController.designer.cs">
+      <DependentUpon>ContentController.cs</DependentUpon>
+    </Compile>
     <Compile Include="ForgotPasswordController.cs" />
     <Compile Include="ForgotPasswordController.designer.cs">
       <DependentUpon>ForgotPasswordController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GlobalReportsController.cs" />
-    <Compile Include="GlobalReportsController.designer.cs">
-      <DependentUpon>GlobalReportsController.cs</DependentUpon>
     </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
@@ -164,6 +185,12 @@
     <Compile Include="MapViewController.designer.cs">
       <DependentUpon>MapViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="MyMenuController.cs" />
+    <Compile Include="MyMenuController.designer.cs">
+      <DependentUpon>MyMenuController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NavController.cs" />
+    <Compile Include="RootViewController.cs" />
     <Compile Include="MeterReportController.cs" />
     <Compile Include="MeterReportController.designer.cs">
       <DependentUpon>MeterReportController.cs</DependentUpon>
@@ -184,6 +211,9 @@
       <Visible>False</Visible>
       <Version>105.2.3</Version>
     </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\threelines.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

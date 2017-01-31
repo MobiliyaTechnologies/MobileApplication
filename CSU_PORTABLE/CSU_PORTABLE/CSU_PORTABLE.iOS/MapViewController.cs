@@ -12,7 +12,7 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    public partial class MapViewController : UIViewController
+    public partial class MapViewController : BaseController
     {
         MKMapView map;
         List<MeterDetails> meterList = null;
@@ -31,11 +31,12 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
+            this.SidebarController.MenuWidth = 250;
             map = new MKMapView(UIScreen.MainScreen.Bounds);
             map.MapType = MKMapType.Standard; //road map    
             map.ZoomEnabled = true;
             map.ScrollEnabled = true;
+           
 
             CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(40.571276, -105.085522);
 

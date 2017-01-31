@@ -17,23 +17,33 @@ namespace CSU_PORTABLE.iOS
             set;
         }
 
+        public RootViewController RootViewController { get { return Window.RootViewController as RootViewController; } }
+
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
 
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
-            UIStoryboard storyBoard = UIStoryboard.FromName("Main", null);
-            UIViewController vc;
-            if (preferenceHandler.IsLoggedIn())
-            {
-                vc = storyBoard.InstantiateViewController("MapViewController") as MapViewController;
-            }
-            else
-            {
-                vc = storyBoard.InstantiateViewController("ViewController") as ViewController;
-            }
-            this.Window.RootViewController = new UINavigationController(vc);
+
+            //PreferenceHandler preferenceHandler = new PreferenceHandler();
+            //UIStoryboard storyBoard = UIStoryboard.FromName("Main", null);
+            //UIViewController vc;
+            //if (preferenceHandler.IsLoggedIn())
+            //{
+            //    vc = storyBoard.InstantiateViewController("ViewController") as ViewController;
+            //    //vc = storyBoard.InstantiateViewController("MapViewController") as MapViewController;
+
+            //}
+            //else
+            //{
+            //    vc = storyBoard.InstantiateViewController("ViewController") as ViewController;
+            //}
+            //this.Window.RootViewController = new UINavigationController(vc);
+            //// set our root view controller with the sidebar menu as the apps root view controller
+            Window = new UIWindow(UIScreen.MainScreen.Bounds);
+            Window.RootViewController = new RootViewController();
+            this.Window.MakeKeyAndVisible();
+
             return true;
         }
 

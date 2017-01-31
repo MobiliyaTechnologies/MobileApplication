@@ -11,9 +11,11 @@ namespace CSU_PORTABLE.iOS
 {
     public partial class ViewController : UIViewController
     {
+        LoadingOverlay loadingOverlay;
 
         public ViewController(IntPtr handle) : base(handle)
         {
+            
         }
 
         public override void ViewDidLoad()
@@ -22,8 +24,7 @@ namespace CSU_PORTABLE.iOS
 
             //TextFieldUsername.Text = "aaa@111.com";
             //TextFieldPassword.Text = "111";
-            MessageLabel.Text = " ";
-
+            //MessageLabel.Text = " ";
             TextFieldUsername.ShouldReturn = delegate
             {
                 // Changed this slightly to move the text entry to the next field.
@@ -36,9 +37,18 @@ namespace CSU_PORTABLE.iOS
                 TextFieldPassword.ResignFirstResponder();
                 return true;
             };
+            TextFieldUsername.AutocorrectionType = UITextAutocorrectionType.No;
+            TextFieldPassword.AutocorrectionType = UITextAutocorrectionType.No;
+            TextFieldPassword.SecureTextEntry = true;
+           
 
-            ButtonLogin.TouchUpInside += delegate {
-
+            ButtonLogin.TouchUpInside += delegate
+            {
+                // Added for showing loading screen
+                var bounds = UIScreen.MainScreen.Bounds;
+                // show the loading overlay on the UI thread using the correct orientation sizing
+                loadingOverlay = new LoadingOverlay(bounds);
+                View.Add(loadingOverlay);
                 string username = TextFieldUsername.Text;
                 string password = TextFieldPassword.Text;
 
@@ -46,7 +56,7 @@ namespace CSU_PORTABLE.iOS
                 {
                     //buttonLogin.Visibility = ViewStates.Gone;
                     //progressBar.Visibility = ViewStates.Visible;
-                    MessageLabel.Text = "Logging in...";
+                    //MessageLabel.Text = "Logging in...";
                     Login(new LoginModel(username, password));
                 }
                 else
@@ -65,17 +75,18 @@ namespace CSU_PORTABLE.iOS
         public void Login(LoginModel loginModel)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            
+
             var request = new RestRequest(Constants.API_SIGN_IN, Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(loginModel);
-            
+
             client.ExecuteAsync(request, response =>
             {
                 Console.WriteLine(response);
                 if (response.StatusCode != 0)
                 {
-                    InvokeOnMainThread(() => {
+                    InvokeOnMainThread(() =>
+                    {
                         LoginResponse((RestResponse)response);
                     });
                 }
@@ -86,33 +97,20 @@ namespace CSU_PORTABLE.iOS
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                //Log.Debug(TAG, restResponse.Content.ToString());
                 UserDetails response = JsonConvert.DeserializeObject<UserDetails>(restResponse.Content);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
-                    //Log.Debug(TAG, "Login Successful");
-                    //ShowMessage("Login Successful");
                     SaveUserData(response);
-                    //progressBar.Visibility = ViewStates.Gone;
-                    //StartActivity(new Intent(Application.Context, typeof(MainActivity)));
                 }
                 else
                 {
-                    //Log.Debug(TAG, "Login Failed");
                     ShowMessage("Login Failed");
-                    //progressBar.Visibility = ViewStates.Gone;
-                    //buttonLogin.Visibility = ViewStates.Visible;
-                    //ShowToast("Either username or password is incorrect !");
                 }
             }
             else
             {
-                //Log.Debug(TAG, "Login Failed");
                 ShowMessage("Login Failed");
-                //progressBar.Visibility = ViewStates.Gone;
-                //buttonLogin.Visibility = ViewStates.Visible;
-                //ShowToast("Error while login. Please try again.");
             }
         }
 
@@ -131,6 +129,8 @@ namespace CSU_PORTABLE.iOS
             MapViewController mapView = this.Storyboard.InstantiateViewController("MapViewController") as MapViewController;
             if (mapView != null)
             {
+                mapView.NavigationItem.SetHidesBackButton(true, false);
+                
                 this.NavigationController.PushViewController(mapView, true);
             }
         }
@@ -138,7 +138,8 @@ namespace CSU_PORTABLE.iOS
         private void ShowMessage(string v)
         {
             //BTProgressHUD.ShowToast("Hello from Toast");
-            MessageLabel.Text = " " + v;
+            loadingOverlay.Hide();
+            //MessageLabel.Text = " " + v;
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
 
             alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));

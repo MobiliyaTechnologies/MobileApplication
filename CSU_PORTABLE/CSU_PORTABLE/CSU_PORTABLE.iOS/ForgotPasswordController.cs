@@ -14,7 +14,19 @@ namespace CSU_PORTABLE.iOS
         LoadingOverlay loadingOverlay;
         public ForgotPasswordController(IntPtr handle) : base(handle)
         {
-            
+
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+            Email.AutocorrectionType = UITextAutocorrectionType.No;
+            Email.ShouldReturn = delegate
+            {
+                // Changed this slightly to move the text entry to the next field.
+                Email.BecomeFirstResponder();
+                return true;
+            };
         }
 
         partial void ForgotButton_TouchUpInside(UIButton sender)
@@ -24,7 +36,7 @@ namespace CSU_PORTABLE.iOS
             // show the loading overlay on the UI thread using the correct orientation sizing
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
-            
+
             if (string.IsNullOrEmpty(Email.Text.Trim()))
             {
                 loadingOverlay.Hide();
@@ -39,6 +51,7 @@ namespace CSU_PORTABLE.iOS
         // shows pop up messages
         private void ShowMessage(string v)
         {
+
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
             alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
             PresentViewController(alertController, true, null);
@@ -48,7 +61,7 @@ namespace CSU_PORTABLE.iOS
 
         public void SubmitEmail(ForgotPasswordModel objModel)
         {
-           
+
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             var request = new RestRequest(Constants.API_FORGOT_PASSWORD, Method.POST);
             request.RequestFormat = DataFormat.Json;
@@ -69,7 +82,7 @@ namespace CSU_PORTABLE.iOS
                     });
                 }
             });
-            
+
         }
 
         private void ForgotPasswordResponse(RestResponse restResponse)

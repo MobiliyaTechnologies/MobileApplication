@@ -24,10 +24,6 @@ namespace CSU_PORTABLE.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel MessageLabel { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField TextFieldPassword { get; set; }
 
         [Outlet]
@@ -44,11 +40,6 @@ namespace CSU_PORTABLE.iOS
             if (ButtonLogin != null) {
                 ButtonLogin.Dispose ();
                 ButtonLogin = null;
-            }
-
-            if (MessageLabel != null) {
-                MessageLabel.Dispose ();
-                MessageLabel = null;
             }
 
             if (TextFieldPassword != null) {
