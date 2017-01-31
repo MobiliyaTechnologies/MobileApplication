@@ -45,7 +45,7 @@
                                     <rect key="frame" x="20" y="210" width="335" height="30"/>
                                 </variation>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="6" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Username">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="6" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Email">
                                 <rect key="frame" x="20" y="114" width="335" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -171,7 +171,7 @@
         </scene>
         <scene sceneID="547">
             <objects>
-                <viewController id="548" sceneMemberID="viewController" title="CSU MAP" customClass="MapViewController" storyboardIdentifier="MapViewController" useStoryboardIdentifierAsRestorationIdentifier="YES">
+                <viewController id="548" sceneMemberID="viewController" title="DASHBOARD" customClass="MapViewController" storyboardIdentifier="MapViewController" useStoryboardIdentifierAsRestorationIdentifier="YES">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="545"/>
                         <viewControllerLayoutGuide type="bottom" id="546"/>
@@ -206,7 +206,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="693" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Username">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="693" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Email">
                                 <rect key="frame" x="40" y="155" width="295" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -434,7 +434,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="707" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="460" y="737"/>
+            <point key="canvasLocation" x="940" y="-20"/>
         </scene>
         <scene sceneID="728">
             <objects>

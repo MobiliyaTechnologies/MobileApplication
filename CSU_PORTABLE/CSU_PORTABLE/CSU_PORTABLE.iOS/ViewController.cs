@@ -61,7 +61,7 @@ namespace CSU_PORTABLE.iOS
                 }
                 else
                 {
-                    ShowMessage("Enter valid username and password");
+                    ShowMessage("Enter valid email and password");
                 }
             };
         }
