@@ -28,15 +28,6 @@
                                     <segue id="673" destination="561" kind="show"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="12" translatesAutoresizingMaskIntoConstraints="NO" text="Response will appear here..">
-                                <rect key="frame" x="20" y="350" width="335" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <rect key="frame" x="20" y="399" width="335" height="21"/>
-                                </variation>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8" translatesAutoresizingMaskIntoConstraints="NO">
                                 <rect key="frame" x="20" y="223" width="335" height="30"/>
                                 <state key="normal" title="Login">
@@ -107,12 +98,9 @@
                             <constraint id="152" firstItem="8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
                             <constraint id="153" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" constant="20"/>
                             <constraint id="154" firstItem="oBE-Ac-vcx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
-                            <constraint id="155" firstItem="12" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20"/>
-                            <constraint id="156" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="12" secondAttribute="trailing" constant="20"/>
                             <constraint id="157" firstItem="7" firstAttribute="top" secondItem="6" secondAttribute="bottom" constant="25"/>
                             <constraint id="158" firstItem="8" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="43"/>
                             <constraint id="159" firstItem="oBE-Ac-vcx" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="26"/>
-                            <constraint id="160" firstItem="12" firstAttribute="top" secondItem="oBE-Ac-vcx" secondAttribute="bottom" constant="30"/>
                             <constraint id="161" firstItem="8bC-Xf-vdC" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" constant="20"/>
                         </constraints>
                         <variation key="default">
@@ -128,12 +116,9 @@
                                 <exclude reference="152"/>
                                 <exclude reference="153"/>
                                 <exclude reference="154"/>
-                                <exclude reference="155"/>
-                                <exclude reference="156"/>
                                 <exclude reference="157"/>
                                 <exclude reference="158"/>
                                 <exclude reference="159"/>
-                                <exclude reference="160"/>
                                 <exclude reference="161"/>
                             </mask>
                         </variation>
@@ -150,12 +135,9 @@
                                 <include reference="152"/>
                                 <include reference="153"/>
                                 <include reference="154"/>
-                                <include reference="155"/>
-                                <include reference="156"/>
                                 <include reference="157"/>
                                 <include reference="158"/>
                                 <include reference="159"/>
-                                <include reference="160"/>
                                 <include reference="161"/>
                             </mask>
                         </variation>
@@ -164,7 +146,6 @@
                         <outlet property="TextFieldUsername" destination="6" id="name-outlet-6"/>
                         <outlet property="TextFieldPassword" destination="7" id="name-outlet-7"/>
                         <outlet property="ButtonLogin" destination="8" id="name-outlet-8"/>
-                        <outlet property="MessageLabel" destination="12" id="name-outlet-12"/>
                         <outlet property="ButtonForgotPassword" destination="oBE-Ac-vcx" id="name-outlet-oBE-Ac-vcx"/>
                     </connections>
                     <navigationItem title="CSU" id="299" key="navigationItem"/>
@@ -395,7 +376,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="817" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="817" translatesAutoresizingMaskIntoConstraints="NO" misplaced="YES" textAlignment="center">
                                 <rect key="frame" x="57" y="127" width="261" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -422,6 +403,8 @@
                             <constraint id="822" firstItem="818" firstAttribute="top" secondItem="813" secondAttribute="bottom" constant="150"/>
                             <constraint id="823" firstItem="806" firstAttribute="trailing" secondItem="818" secondAttribute="trailing" constant="57"/>
                             <constraint id="824" firstItem="818" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57"/>
+                            <constraint id="905" firstItem="817" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57"/>
+                            <constraint id="906" firstItem="806" firstAttribute="trailing" secondItem="817" secondAttribute="trailing" constant="57"/>
                         </constraints>
                     </view>
                     <connections>

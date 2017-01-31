@@ -17,6 +17,12 @@ namespace CSU_PORTABLE.iOS
             
         }
 
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+            Email.AutocorrectionType = UITextAutocorrectionType.No;
+        }
+
         partial void ForgotButton_TouchUpInside(UIButton sender)
         {
             // Added for showing loading screen
@@ -39,6 +45,7 @@ namespace CSU_PORTABLE.iOS
         // shows pop up messages
         private void ShowMessage(string v)
         {
+            
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
             alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
             PresentViewController(alertController, true, null);

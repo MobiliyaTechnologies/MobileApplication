@@ -11,9 +11,11 @@ namespace CSU_PORTABLE.iOS
 {
     public partial class ViewController : UIViewController
     {
+        LoadingOverlay loadingOverlay;
 
         public ViewController(IntPtr handle) : base(handle)
         {
+            
         }
 
         public override void ViewDidLoad()
@@ -22,8 +24,7 @@ namespace CSU_PORTABLE.iOS
 
             //TextFieldUsername.Text = "aaa@111.com";
             //TextFieldPassword.Text = "111";
-            MessageLabel.Text = " ";
-
+            //MessageLabel.Text = " ";
             TextFieldUsername.ShouldReturn = delegate
             {
                 // Changed this slightly to move the text entry to the next field.
@@ -36,10 +37,18 @@ namespace CSU_PORTABLE.iOS
                 TextFieldPassword.ResignFirstResponder();
                 return true;
             };
+            TextFieldUsername.AutocorrectionType = UITextAutocorrectionType.No;
+            TextFieldPassword.AutocorrectionType = UITextAutocorrectionType.No;
+            TextFieldPassword.SecureTextEntry = true;
+           
 
             ButtonLogin.TouchUpInside += delegate
             {
-
+                // Added for showing loading screen
+                var bounds = UIScreen.MainScreen.Bounds;
+                // show the loading overlay on the UI thread using the correct orientation sizing
+                loadingOverlay = new LoadingOverlay(bounds);
+                View.Add(loadingOverlay);
                 string username = TextFieldUsername.Text;
                 string password = TextFieldPassword.Text;
 
@@ -47,7 +56,7 @@ namespace CSU_PORTABLE.iOS
                 {
                     //buttonLogin.Visibility = ViewStates.Gone;
                     //progressBar.Visibility = ViewStates.Visible;
-                    MessageLabel.Text = "Logging in...";
+                    //MessageLabel.Text = "Logging in...";
                     Login(new LoginModel(username, password));
                 }
                 else
@@ -128,7 +137,8 @@ namespace CSU_PORTABLE.iOS
         private void ShowMessage(string v)
         {
             //BTProgressHUD.ShowToast("Hello from Toast");
-            MessageLabel.Text = " " + v;
+            loadingOverlay.Hide();
+            //MessageLabel.Text = " " + v;
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
 
             alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
