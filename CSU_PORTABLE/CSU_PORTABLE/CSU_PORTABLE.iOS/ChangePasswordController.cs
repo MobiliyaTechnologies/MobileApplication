@@ -55,7 +55,7 @@ namespace CSU_PORTABLE.iOS
 
             if (string.IsNullOrEmpty(User.Email))
             {
-                ShowMessage("Invalid Email Id !");
+                ShowMessage("Enter valid Email.");
             }
             else
             {

@@ -40,7 +40,7 @@ namespace CSU_PORTABLE.iOS
             if (string.IsNullOrEmpty(Email.Text.Trim()))
             {
                 loadingOverlay.Hide();
-                ShowMessage("Enter valid Email Id");
+                ShowMessage("Enter valid Email.");
             }
             else
             {

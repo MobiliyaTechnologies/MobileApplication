@@ -46,7 +46,7 @@ namespace CSU_PORTABLE.iOS
                 }
                 else
                 {
-                    ShowAlert("Invalid User Id. Please Login Again !");
+                    ShowAlert("Invalid Email. Please Login Again !");
                 }
             }
             
