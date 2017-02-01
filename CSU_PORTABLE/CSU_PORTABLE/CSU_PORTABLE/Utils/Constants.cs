@@ -19,6 +19,7 @@ namespace CSU_PORTABLE.Utils
         public static string API_GET_METER_LIST = "getmeterlist";
         public static string API_GET_MONTHLY_CONSUMPTION = "getmonthlyconsumption";
         public static string API_GET_METER_REPORTS = "getpowerbiurl";
+        public static string API_GET_GLOBAL_REPORTS = "getpowerbigeneralurl";
 
         public static string SERVER_BASE_URL_FOR_TOKEN = "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/";
         public static string API_GET_TOKEN = "GetAccessToken";

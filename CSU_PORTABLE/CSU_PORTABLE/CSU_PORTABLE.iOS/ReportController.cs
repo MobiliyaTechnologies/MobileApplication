@@ -13,6 +13,7 @@ namespace CSU_PORTABLE.iOS
     public partial class ReportController : UIViewController
     {
         private UIWebView webView;
+        private GlobalReportsModel reports;
 
         public ReportController (IntPtr handle) : base (handle)
         {
@@ -33,13 +34,64 @@ namespace CSU_PORTABLE.iOS
             int userId = preferenceHandler.GetUserDetails().User_Id;
             if (userId != -1)
             {
-                GetAccessToken();
+                getReports(userId);
             }
             else
             {
                 ShowAlert("Invalid Email. Please Login Again !");
             }
 
+        }
+
+        private void getReports(int userId)
+        {
+            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+            Console.WriteLine("getReports()");
+
+            var request = new RestRequest(
+                Constants.API_GET_GLOBAL_REPORTS + "/" + userId, Method.GET);
+
+            client.ExecuteAsync(request, response =>
+            {
+                Console.WriteLine(response);
+                if (response.StatusCode != 0)
+                {
+                    Console.WriteLine("async Response : " + response.ToString());
+                    InvokeOnMainThread(() => {
+                        GetReportsResponse((RestResponse)response);
+                    });
+                }
+            });
+        }
+
+        private void GetReportsResponse(RestResponse restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            {
+                Console.WriteLine(restResponse.Content.ToString());
+                reports = JsonConvert.DeserializeObject<GlobalReportsModel>(restResponse.Content);
+
+                if (reports != null)
+                {
+                    GetAccessToken();
+                }
+                else
+                {
+                    Console.WriteLine("GetReportsResponse() Failed");
+                    ShowAlert("Reports are not available");
+
+                    String body = "<html><body>Failed to load reports.</b></body></html>";
+                    showContentOnWebView(body);
+                }
+            }
+            else
+            {
+                Console.WriteLine("GetReportsResponse() Failed");
+                ShowAlert("Failed to load reports");
+
+                String body = "<html><body>Failed to load reports.</b></body></html>";
+                showContentOnWebView(body);
+            }
         }
 
         private void GetAccessToken()
@@ -71,7 +123,7 @@ namespace CSU_PORTABLE.iOS
 
                 if (response != null)
                 {
-                    LoadReports(response.tokens.AccessToken);
+                    LoadReports(reports, response.tokens.AccessToken);
                 }
             }
             else
@@ -96,12 +148,12 @@ namespace CSU_PORTABLE.iOS
             alert.Show();
         }
 
-        private void LoadReports(String token)
+        private void LoadReports(GlobalReportsModel reports, String token)
         {
             string html = "<html> Reports\n" +
                 "\n\n<script type=\"text/javascript\"> " +
-                "var ReportUrl1 = \"" + Constants.URL_GLOBAL_REPORT_1 + "\"; " +
-                "var ReportUrl2 = \"" + Constants.URL_GLOBAL_REPORT_1 + "\"; " +
+                "var ReportUrl1 = \"" + reports.MonthlyConsumptionKWh + "\"; " +
+                "var ReportUrl2 = \"" + reports.MonthlyConsumptionCost + "\"; " +
 
                 "\n\nvar iframe; " +
                 "\n\nvar accessToken = " + "\'" + token + "\'" + " ; " +

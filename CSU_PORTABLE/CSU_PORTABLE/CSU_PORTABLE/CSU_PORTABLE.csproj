@@ -37,6 +37,7 @@
     <Compile Include="Models\ForgotPasswordModel.cs" />
     <Compile Include="Models\ForgotPasswordResponseModel.cs" />
     <Compile Include="Models\GeneralResponseModel.cs" />
+    <Compile Include="Models\GlobalReportsModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\LogoutModel.cs" />
     <Compile Include="Models\MeterDetails.cs" />
