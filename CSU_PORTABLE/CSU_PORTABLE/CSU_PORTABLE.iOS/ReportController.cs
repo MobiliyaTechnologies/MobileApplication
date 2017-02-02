@@ -188,7 +188,7 @@ namespace CSU_PORTABLE.iOS
                     "var w = width; " +
                     "var m = { action: \"loadTile\", accessToken: accessToken, height: h, width: w }; " +
                     "var message = JSON.stringify(m); " +
-                    "iframe = document.getElementById('IFrameq'); " +
+                    "iframe = document.getElementById('IFrame1'); " +
                     "iframe.contentWindow.postMessage(message, \"*\");; " +
                 "} " +
 
