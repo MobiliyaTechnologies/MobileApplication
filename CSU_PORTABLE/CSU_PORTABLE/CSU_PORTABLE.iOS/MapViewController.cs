@@ -31,7 +31,8 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            this.SidebarController.MenuWidth = 250;
+            //this.SidebarController.MenuWidth = 250;
+            
             map = new MKMapView(UIScreen.MainScreen.Bounds);
             map.MapType = MKMapType.Standard; //road map    
             map.ZoomEnabled = true;

@@ -9,9 +9,12 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    public partial class ViewController : UIViewController
+    public partial class ViewController : BaseController
     {
         LoadingOverlay loadingOverlay;
+
+        // the sidebar controller for the app
+        //public SidebarNavigation.SidebarController SidebarController { get; private set; }
 
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -21,6 +24,13 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+
+            NavigationItem.SetRightBarButtonItem(
+                 new UIBarButtonItem(UIImage.FromBundle("a")
+                     , UIBarButtonItemStyle.Plain
+                     , (sender, args) => {
+                         SidebarController.ToggleMenu();
+                     }), true);
 
             //TextFieldUsername.Text = "aaa@111.com";
             //TextFieldPassword.Text = "111";
@@ -130,8 +140,11 @@ namespace CSU_PORTABLE.iOS
             if (mapView != null)
             {
                 mapView.NavigationItem.SetHidesBackButton(true, false);
-                
-                this.NavigationController.PushViewController(mapView, true);
+                this.NavController.PushViewController(mapView, false);
+                var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
+                SidebarController.ChangeMenuView(menuController);
+                SidebarController.MenuWidth =  250;
+                SidebarController.ReopenOnRotate = false;
             }
         }
 
