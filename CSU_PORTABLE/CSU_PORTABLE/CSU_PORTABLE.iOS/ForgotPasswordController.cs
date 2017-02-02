@@ -24,7 +24,7 @@ namespace CSU_PORTABLE.iOS
             Email.ShouldReturn = delegate
             {
                 // Changed this slightly to move the text entry to the next field.
-                Email.BecomeFirstResponder();
+                Email.ResignFirstResponder();
                 return true;
             };
         }

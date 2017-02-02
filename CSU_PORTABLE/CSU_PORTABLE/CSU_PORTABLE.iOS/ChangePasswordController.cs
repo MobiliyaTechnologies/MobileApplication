@@ -38,7 +38,7 @@ namespace CSU_PORTABLE.iOS
             ConfirmPassword.ShouldReturn = delegate
             {
                 // Changed this slightly to move the text entry to the next field.
-                ConfirmPassword.BecomeFirstResponder();
+                ConfirmPassword.ResignFirstResponder();
                 return true;
             };
         }
@@ -73,7 +73,7 @@ namespace CSU_PORTABLE.iOS
                     }
                     else
                     {
-                        ShowMessage("Enter valid new password");
+                        ShowMessage("Enter valid confirm password");
                     }
                 }
                 else
