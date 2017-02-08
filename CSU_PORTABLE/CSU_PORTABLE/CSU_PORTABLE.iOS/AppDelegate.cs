@@ -170,15 +170,14 @@ namespace CSU_PORTABLE.iOS
 		public void WillPresentNotification(UNUserNotificationCenter center, UNNotification notification, Action<UNNotificationPresentationOptions> completionHandler)
 		{
 			// Do your magic to handle the notification data
-			System.Console.WriteLine(notification.Request.Content.UserInfo);
-			//ShowMessage(notification.ToString());
+			Console.WriteLine("WillPresentNotification gaurav 1 val");
 		}
 
 		// Receive data message on iOS 10 devices.
 		public void ApplicationReceivedRemoteMessage(RemoteMessage remoteMessage)
 		{
 			Console.WriteLine(remoteMessage.AppData);
-			ShowNotification(remoteMessage.AppData);
+			Console.WriteLine("ApplicationReceivedRemoteMessage gaurav 1 val");
 		}
 
 		[Export("userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:")]
@@ -186,40 +185,13 @@ namespace CSU_PORTABLE.iOS
 		{
 			// Do your magic to handle the notification data
 			System.Console.WriteLine(response.Notification.Request.Content.UserInfo);
-			ShowNotification(response.Notification.Request.Content.UserInfo);
+			Console.WriteLine("DidReceiveNotificationResponse gaurav 1 val");
 		}
 		//FCM End
 
-		public void ShowNotification(NSDictionary dir) 
-		{ 
-			// Get current notification settings
-			UNUserNotificationCenter.Current.GetNotificationSettings((settings) =>
-			{
-				var alertsAllowed = (settings.AlertSetting == UNNotificationSetting.Enabled);
 
-				if (alertsAllowed)
-				{
-					var content = new UNMutableNotificationContent();
-					content.Title = "Notification Title";
-					content.Subtitle = "Notification Subtitle";
-					content.Body = dir.ToString();
-					content.Badge = 0;
 
-					var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
 
-					var requestID = "sampleRequest";
-					var request = UNNotificationRequest.FromIdentifier(requestID, content, trigger);
-
-					UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) =>
-					{
-						if (err != null)
-						{
-							// Do something with error...
-						}
-					});
-				}
-			});
-		}
 			
 	}
 }
