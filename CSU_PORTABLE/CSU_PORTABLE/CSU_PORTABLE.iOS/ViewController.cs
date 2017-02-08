@@ -18,7 +18,7 @@ namespace CSU_PORTABLE.iOS
 
         public ViewController(IntPtr handle) : base(handle)
         {
-            
+
         }
 
         public override void ViewDidLoad()
@@ -28,7 +28,8 @@ namespace CSU_PORTABLE.iOS
             NavigationItem.SetRightBarButtonItem(
                  new UIBarButtonItem(UIImage.FromBundle("a")
                      , UIBarButtonItemStyle.Plain
-                     , (sender, args) => {
+                     , (sender, args) =>
+                     {
                          SidebarController.ToggleMenu();
                      }), true);
 
@@ -50,7 +51,7 @@ namespace CSU_PORTABLE.iOS
             TextFieldUsername.AutocorrectionType = UITextAutocorrectionType.No;
             TextFieldPassword.AutocorrectionType = UITextAutocorrectionType.No;
             TextFieldPassword.SecureTextEntry = true;
-           
+
 
             ButtonLogin.TouchUpInside += delegate
             {
@@ -130,7 +131,25 @@ namespace CSU_PORTABLE.iOS
 
             PreferenceHandler preferenceHandler = new PreferenceHandler();
             preferenceHandler.SaveUserDetails(userDetails);
-            ShowMap();
+            if (userDetails.Role_Id == 2)
+            {
+                ShowClassRooms();
+            }
+            else
+            {
+                ShowMap();
+            }
+        }
+
+        private void ShowClassRooms()
+        {
+            ClassRoomController classRooomView = this.Storyboard.InstantiateViewController("ClassRoomController") as ClassRoomController;
+            classRooomView.NavigationItem.SetHidesBackButton(true, false);
+            this.NavController.PushViewController(classRooomView, false);
+            var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
+            SidebarController.ChangeMenuView(menuController);
+            SidebarController.MenuWidth = 250;
+            SidebarController.ReopenOnRotate = false;
         }
 
         private void ShowMap()
@@ -143,7 +162,7 @@ namespace CSU_PORTABLE.iOS
                 this.NavController.PushViewController(mapView, false);
                 var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
                 SidebarController.ChangeMenuView(menuController);
-                SidebarController.MenuWidth =  250;
+                SidebarController.MenuWidth = 250;
                 SidebarController.ReopenOnRotate = false;
             }
         }

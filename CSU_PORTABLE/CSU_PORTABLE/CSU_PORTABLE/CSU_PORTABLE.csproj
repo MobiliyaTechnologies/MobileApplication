@@ -34,6 +34,7 @@
     <Compile Include="Models\AccessTokenResponse.cs" />
     <Compile Include="Models\ChangePasswordModel.cs" />
     <Compile Include="Models\ChangePasswordResponseModel.cs" />
+    <Compile Include="Models\ClassRoomModel.cs" />
     <Compile Include="Models\ForgotPasswordModel.cs" />
     <Compile Include="Models\ForgotPasswordResponseModel.cs" />
     <Compile Include="Models\GeneralResponseModel.cs" />
