@@ -29,6 +29,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         //TextView msgText;
         const string TAG = "MainActivity";
+        public static string KEY_USER_ROLE = "user_role";
         Toast toast;
         GoogleMap map;
         MapFragment _myMapFragment;
@@ -38,6 +39,7 @@ namespace CSU_PORTABLE.Droid.UI
         DrawerLayout drawerLayout;
         NavigationView navigationView;
         LinearLayout layoutProgress;
+        int userRole;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -51,48 +53,58 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 foreach (var key in Intent.Extras.KeySet())
                 {
-                    var value = Intent.Extras.GetString(key);
-                    Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+                    //int value = Intent.Extras.GetInt(key);
+                    //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+
+                    if(key.Equals(KEY_USER_ROLE))
+                    {
+                        userRole = Intent.Extras.GetInt(key);
+                    }
+
                 }
             }
 
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Gone;
             IsPlayServicesAvailable();
-            /*
-            var logTokenButton = FindViewById<Button>(Resource.Id.logTokenButton);
-            logTokenButton.Click += delegate {
-                Log.Debug(TAG, "InstanceID token: " + FirebaseInstanceId.Instance.Token);
-            };
-
-            var subscribeButton = FindViewById<Button>(Resource.Id.subscribeButton);
-            subscribeButton.Click += delegate {
-                FirebaseMessaging.Instance.SubscribeToTopic("news");
-                Log.Debug(TAG, "Subscribed to remote notifications");
-            };
-            */
-            GoogleMapOptions mapOptions = new GoogleMapOptions()
-            .InvokeMapType(GoogleMap.MapTypeSatellite)
-            .InvokeZoomControlsEnabled(false)
-            .InvokeCompassEnabled(true);
-
-            _myMapFragment = MapFragment.NewInstance(mapOptions);
-            FragmentTransaction tx = FragmentManager.BeginTransaction();
-            tx.Add(Resource.Id.my_mapfragment_container, _myMapFragment, "map");
-            tx.Commit();
-
-            _myMapFragment.GetMapAsync(this);
-
-            var preferenceHandler = new PreferenceHandler();
-            int userId = preferenceHandler.GetUserDetails().User_Id;
-            if (userId != -1)
+            
+            if (userRole == (int)Constants.USER_ROLE.ADMIN)
             {
-                GetMeterDetails(userId);
-                GetMonthlyConsumptionDetails(userId);
+                //Show Map Fragment
+
+                GoogleMapOptions mapOptions = new GoogleMapOptions()
+                .InvokeMapType(GoogleMap.MapTypeSatellite)
+                .InvokeZoomControlsEnabled(false)
+                .InvokeCompassEnabled(true);
+
+                _myMapFragment = MapFragment.NewInstance(mapOptions);
+                FragmentTransaction tx = FragmentManager.BeginTransaction();
+                tx.Add(Resource.Id.fragment_container, _myMapFragment, "map");
+                tx.Commit();
+
+                _myMapFragment.GetMapAsync(this);
+
+                var preferenceHandler = new PreferenceHandler();
+                int userId = preferenceHandler.GetUserDetails().User_Id;
+                if (userId != -1)
+                {
+                    GetMeterDetails(userId);
+                    GetMonthlyConsumptionDetails(userId);
+                }
+                else
+                {
+                    ShowToast("Invalid User Id. Please Login Again !");
+                }
             } else
             {
-                ShowToast("Invalid User Id. Please Login Again !");
+                //Show Student Fragment
+
+                var newFragment = new StudentFragment();
+                var ft = FragmentManager.BeginTransaction();
+                ft.Add(Resource.Id.fragment_container, newFragment);
+                ft.Commit();
             }
+            
         }
 
         private void SetDrawer()

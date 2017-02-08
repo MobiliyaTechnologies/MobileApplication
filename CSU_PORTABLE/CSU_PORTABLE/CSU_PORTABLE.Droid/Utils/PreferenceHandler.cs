@@ -1,5 +1,6 @@
 using Android.Content;
 using CSU_PORTABLE.Models;
+using CSU_PORTABLE.Utils;
 
 namespace CSU_PORTABLE.Droid.Utils
 {
@@ -11,6 +12,7 @@ namespace CSU_PORTABLE.Droid.Utils
         string preferenceFirstName = "CSUPREF_first_name";
         string preferenceLastName = "CSUPREF_last_name";
         string preferenceUserId = "CSUPREF_user_id";
+        string preferenceRoleId = "CSUPREF_role_id";
 
         public bool setLoggedIn(bool value)
         {
@@ -37,6 +39,7 @@ namespace CSU_PORTABLE.Droid.Utils
                 contextEdit.PutString(preferenceFirstName, loginResponse.First_Name);
                 contextEdit.PutString(preferenceLastName, loginResponse.Last_Name);
                 contextEdit.PutInt(preferenceUserId, loginResponse.User_Id);
+                contextEdit.PutInt(preferenceRoleId, loginResponse.Role_Id);
                 contextEdit.PutBoolean(preferenceIsLoggedIn, true);
                 resp = contextEdit.Commit();
             }
@@ -51,6 +54,7 @@ namespace CSU_PORTABLE.Droid.Utils
             userDetails.First_Name = contextPref.GetString(preferenceFirstName, null);
             userDetails.Last_Name = contextPref.GetString(preferenceLastName, null);
             userDetails.User_Id = contextPref.GetInt(preferenceUserId, -1);
+            userDetails.Role_Id = contextPref.GetInt(preferenceRoleId, (int)Constants.USER_ROLE.ADMIN);
             return userDetails;
         }
     }

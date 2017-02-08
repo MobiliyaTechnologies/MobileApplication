@@ -105,10 +105,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
                     Log.Debug(TAG, "Login Successful");
-                    PreferenceHandler preferenceHandler = new PreferenceHandler();
-                    preferenceHandler.SaveUserDetails(response);
                     progressBar.Visibility = ViewStates.Gone;
-                    StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                    SaveUserData(response);
                 }
                 else
                 {
@@ -125,6 +123,40 @@ namespace CSU_PORTABLE.Droid.UI
                 buttonLogin.Visibility = ViewStates.Visible;
                 ShowToast("Error while login. Please try again.");
             }
+        }
+
+        private void SaveUserData(UserDetails userDetails)
+        {
+            //store data in preferences
+
+            PreferenceHandler preferenceHandler = new PreferenceHandler();
+            preferenceHandler.SaveUserDetails(userDetails);
+            if (userDetails.Role_Id == (int)Constants.USER_ROLE.STUDENT)
+            {
+                ShowStudentDashboard();
+            }
+            else
+            {
+                ShowAdminDashboard();
+            }
+
+
+        }
+
+        private void ShowStudentDashboard()
+        {
+            Intent intent = new Intent(Application.Context, typeof(MainActivity));
+            intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
+            StartActivity(intent);
+            Finish();
+        }
+
+        private void ShowAdminDashboard()
+        {
+            Intent intent = new Intent(Application.Context, typeof(MainActivity));
+            intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
+            StartActivity(intent);
+            Finish();
         }
 
         private void ShowToast(string message)

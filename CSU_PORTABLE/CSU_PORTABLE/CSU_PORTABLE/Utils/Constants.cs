@@ -24,5 +24,10 @@ namespace CSU_PORTABLE.Utils
 
         public static string SERVER_BASE_URL_FOR_TOKEN = "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/";
         public static string API_GET_TOKEN = "GetAccessToken";
+
+        public enum USER_ROLE {
+            ADMIN = 1,
+            STUDENT = 2
+        }
     }
 }

@@ -26,6 +26,7 @@ namespace CSU_PORTABLE.Droid.UI
         const string TAG = "GlobalReportsActivity";
         private WebView localWebView;
         private Toast toast;
+        private GlobalReportsModel reports;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -40,9 +41,69 @@ namespace CSU_PORTABLE.Droid.UI
             String body = "<html><body>Loading reports...</body></html>";
             showContentOnWebView(body);
 
-            GetAccessToken();
+            var preferenceHandler = new PreferenceHandler();
+            int userId = preferenceHandler.GetUserDetails().User_Id;
+            if (userId != -1)
+            {
+                getReports(userId);
+            }
+            else
+            {
+                ShowToast("Invalid Email. Please Login Again !");
+            }
+       }
+
+        private void getReports(int userId)
+        {
+            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+            Log.Debug(TAG, "getReports()");
+
+            var request = new RestRequest(
+                Constants.API_GET_GLOBAL_REPORTS + "/" + userId, Method.GET);
+
+            client.ExecuteAsync(request, response =>
+            {
+                Log.Debug(TAG, response.ToString());
+                if (response.StatusCode != 0)
+                {
+                    Log.Debug(TAG, "async Response : " + response.ToString());
+                    RunOnUiThread(() => {
+                        GetReportsResponse((RestResponse)response);
+                    });
+                }
+            });
         }
-                
+
+        private void GetReportsResponse(RestResponse restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            {
+                Log.Debug(TAG, restResponse.Content.ToString());
+                reports = JsonConvert.DeserializeObject<GlobalReportsModel>(restResponse.Content);
+
+                if (reports != null)
+                {
+                    GetAccessToken();
+                }
+                else
+                {
+                    Log.Debug(TAG, "GetReportsResponse() Failed");
+                    ShowToast("Reports are not available");
+
+                    String body = "<html><body>Failed to load reports.</b></body></html>";
+                    showContentOnWebView(body);
+                }
+            }
+            else
+            {
+                Log.Debug(TAG, "GetReportsResponse() Failed");
+                ShowToast("Failed to load reports");
+
+                String body = "<html><body>Failed to load reports.</b></body></html>";
+                showContentOnWebView(body);
+            }
+        }
+
         private void GetAccessToken()
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL_FOR_TOKEN);
@@ -72,7 +133,7 @@ namespace CSU_PORTABLE.Droid.UI
 
                 if (response != null)
                 {
-                    LoadReports(response.tokens.AccessToken);
+                    LoadReports(reports, response.tokens.AccessToken);
                 }
             }
             else
@@ -105,13 +166,13 @@ namespace CSU_PORTABLE.Droid.UI
             toast.Show();
         }
 
-        private void LoadReports(String token)
+        private void LoadReports(GlobalReportsModel reports, String token)
         {
             string html = "<html> Reports\n" +
                 "\n\n<script type=\"text/javascript\"> " +
-                "var ReportUrl1 = \"" + Constants.URL_GLOBAL_REPORT_1 + "\"; " +
-                "var ReportUrl2 = \"" + Constants.URL_GLOBAL_REPORT_1 + "\"; " +
-                
+                "var ReportUrl1 = \"" + reports.MonthlyConsumptionKWh + "\"; " +
+                "var ReportUrl2 = \"" + reports.MonthlyConsumptionCost + "\"; " +
+
                 "\n\nvar iframe; " +
                 "\n\nvar accessToken = " + "\'" + token + "\'" + " ; " +
                 "\n\nvar height=200;" +
@@ -145,7 +206,7 @@ namespace CSU_PORTABLE.Droid.UI
                     "var w = width; " +
                     "var m = { action: \"loadTile\", accessToken: accessToken, height: h, width: w }; " +
                     "var message = JSON.stringify(m); " +
-                    "iframe = document.getElementById('IFrameq'); " +
+                    "iframe = document.getElementById('IFrame1'); " +
                     "iframe.contentWindow.postMessage(message, \"*\");; " +
                 "} " +
 
@@ -177,7 +238,7 @@ namespace CSU_PORTABLE.Droid.UI
                 "} " +
 
                 //----------------------------------------
-                
+
                 "</script> " +
 
                 "<body " + "onload=\"loadEmbededTiles()\">" +
