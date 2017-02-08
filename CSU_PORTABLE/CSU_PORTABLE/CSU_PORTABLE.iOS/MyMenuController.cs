@@ -35,8 +35,8 @@ namespace CSU_PORTABLE.iOS
 
         private void AlertsButton_TouchUpInside(object sender, EventArgs e)
         {
-            var AlertsController = (AlertsController)Storyboard.InstantiateViewController("AlertsController");
-            NavController.PushViewController(AlertsController, false);
+            var AlertsViewController = (AlertsViewController)Storyboard.InstantiateViewController("AlertsViewController");
+            NavController.PushViewController(AlertsViewController, false);
             SidebarController.CloseMenu();
         }
 

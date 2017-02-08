@@ -5,6 +5,7 @@ using CoreFoundation;
 using UIKit;
 using Foundation;
 using CSU_PORTABLE.iOS.Utils;
+using CSU_PORTABLE.Models;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -49,20 +50,28 @@ namespace CSU_PORTABLE.iOS
             base.ViewDidLoad();
 
             PreferenceHandler preferenceHandler = new PreferenceHandler();
-
-            var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
-            var MapViewController = (MapViewController)Storyboard.InstantiateViewController("MapViewController");
             var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
 
             // create a slideout navigation controller with the top navigation controller and the menu view controller
             NavController = new NavController();
             Boolean IsLogged = preferenceHandler.IsLoggedIn();
+            UserDetails userDetail = preferenceHandler.GetUserDetails();
             if (IsLogged)
             {
-                NavController.PushViewController(MapViewController, false);
+                if (userDetail.Role_Id == 2)
+                {
+                    var ClassRoomController = (ClassRoomController)Storyboard.InstantiateViewController("ClassRoomController");
+                    NavController.PushViewController(ClassRoomController, false);
+                }
+                else
+                {
+                    var MapViewController = (MapViewController)Storyboard.InstantiateViewController("MapViewController");
+                    NavController.PushViewController(MapViewController, false);
+                }
             }
             else
             {
+                var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
                 NavController.PushViewController(ViewController, false);
             }
 

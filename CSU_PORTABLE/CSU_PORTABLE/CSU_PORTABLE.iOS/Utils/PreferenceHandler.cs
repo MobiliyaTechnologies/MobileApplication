@@ -16,6 +16,7 @@ namespace CSU_PORTABLE.iOS.Utils
         string preferenceFirstName = "CSUPREF_first_name";
         string preferenceLastName = "CSUPREF_last_name";
         string preferenceUserId = "CSUPREF_user_id";
+        string preferenceRoleId = "CSUPREF_role_id";
 
         public bool IsLoggedIn()
         {
@@ -37,6 +38,7 @@ namespace CSU_PORTABLE.iOS.Utils
             plist.SetString(loginResponse.First_Name, preferenceFirstName);
             plist.SetString(loginResponse.Last_Name, preferenceLastName);
             plist.SetInt(loginResponse.User_Id, preferenceUserId);
+            plist.SetInt(loginResponse.Role_Id, preferenceRoleId);
             plist.SetBool(true, preferenceIsLoggedIn);
             return plist.Synchronize();
         }
@@ -50,7 +52,7 @@ namespace CSU_PORTABLE.iOS.Utils
             userDetails.First_Name = plist.StringForKey(preferenceFirstName);
             userDetails.Last_Name = plist.StringForKey(preferenceLastName);
             userDetails.User_Id = (int)plist.IntForKey(preferenceUserId);
-
+            userDetails.Role_Id = (int)plist.IntForKey(preferenceRoleId);
             return userDetails;
         }
     }

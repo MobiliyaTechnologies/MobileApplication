@@ -158,9 +158,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlertsController.cs" />
-    <Compile Include="AlertsController.designer.cs">
-      <DependentUpon>AlertsController.cs</DependentUpon>
+    <Compile Include="AlertsCell.cs" />
+    <Compile Include="AlertsSource.cs" />
+    <Compile Include="AlertsViewController.cs" />
+    <Compile Include="AlertsViewController.designer.cs">
+      <DependentUpon>AlertsViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="BaseController.cs" />
     <Compile Include="Call.cs" />
@@ -171,6 +173,12 @@
     <Compile Include="ChangePasswordController.designer.cs">
       <DependentUpon>ChangePasswordController.cs</DependentUpon>
     </Compile>
+    <Compile Include="ClassRoomCell.cs" />
+    <Compile Include="ClassRoomController.cs" />
+    <Compile Include="ClassRoomController.designer.cs">
+      <DependentUpon>ClassRoomController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ClassRoomSource.cs" />
     <Compile Include="ContentController.cs" />
     <Compile Include="ContentController.designer.cs">
       <DependentUpon>ContentController.cs</DependentUpon>

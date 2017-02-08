@@ -14,5 +14,6 @@ namespace CSU_PORTABLE.Models
         public string Last_Name;
         public string Email;
         public int User_Id;
+        public int Role_Id;
     }
 }
