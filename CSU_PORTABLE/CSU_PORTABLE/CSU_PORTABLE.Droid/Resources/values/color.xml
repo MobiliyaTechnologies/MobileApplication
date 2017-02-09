@@ -15,6 +15,10 @@
   <color name="text_gray_dark">#4f4f4f</color>
   <color name="black_trans">#44000000</color>
   <color name="black_trans_dark">#88000000</color>
+  <color name="transparent">#00000000</color>
+  <color name="card_bg_white">#ffffff</color>
+  <color name="list_bg_gray">#dfdfdf</color>
+  <color name="divider">#5e6264</color>
     
 
 </resources>
