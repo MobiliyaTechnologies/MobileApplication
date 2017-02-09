@@ -12,6 +12,8 @@ using Android.Widget;
 using Android.Util;
 using System.Threading.Tasks;
 using CSU_PORTABLE.Droid.Utils;
+using CSU_PORTABLE.Models;
+using CSU_PORTABLE.Utils;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -43,10 +45,25 @@ namespace CSU_PORTABLE.Droid.UI
                 PreferenceHandler prefHandler = new PreferenceHandler();
                 if (prefHandler.IsLoggedIn())
                 {
-                    StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                    UserDetails userDetails = prefHandler.GetUserDetails();
+                    if (userDetails.Role_Id == (int)Constants.USER_ROLE.ADMIN)
+                    {
+                        Intent intent = new Intent(Application.Context, typeof(MainActivity));
+                        intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
+                        StartActivity(intent);
+                        Finish();
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(Application.Context, typeof(MainActivity));
+                        intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
+                        StartActivity(intent);
+                        Finish();
+                    }
                 } else
                 {
                     StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+                    Finish();
                 }
 
             }, TaskScheduler.FromCurrentSynchronizationContext());

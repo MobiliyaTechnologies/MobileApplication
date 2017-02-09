@@ -144,6 +144,7 @@
     <Compile Include="UI\MainActivity.cs" />
     <Compile Include="UI\MeterReportActivity.cs" />
     <Compile Include="UI\SplashActivity.cs" />
+    <Compile Include="UI\StudentFragment.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,9 @@
     <AndroidResource Include="Resources\layout\Forgot_password_view.axml" />
     <AndroidResource Include="Resources\layout\Login_view.axml" />
     <AndroidResource Include="Resources\layout\MeterReportView.axml" />
+    <AndroidResource Include="Resources\layout\student_dashboard.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />

@@ -9,14 +9,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <FrameLayout
-            android:id="@+id/fragment_container"
+            android:id="@+id/student_dashboard_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Comming Soon"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:textStyle="italic"
+                android:textColor="@color/text_blue_light" />
+        </FrameLayout>
         <LinearLayout
             android:id="@+id/layout_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/black_trans_dark"
+            android:visibility="gone"
             android:gravity="center">
             <ProgressBar
                 android:layout_width="wrap_content"
