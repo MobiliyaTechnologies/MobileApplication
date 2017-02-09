@@ -32,6 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Models\AccessTokenResponse.cs" />
+    <Compile Include="Models\AlertAcknowledgementResponseModel.cs" />
+    <Compile Include="Models\AlertAcknowledgeModel.cs" />
+    <Compile Include="Models\AlertModel.cs" />
     <Compile Include="Models\ChangePasswordModel.cs" />
     <Compile Include="Models\ChangePasswordResponseModel.cs" />
     <Compile Include="Models\ClassRoomModel.cs" />

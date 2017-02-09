@@ -172,7 +172,6 @@ namespace CSU_PORTABLE.Droid.UI
                 "\n\n<script type=\"text/javascript\"> " +
                 "var ReportUrl1 = \"" + reports.MonthlyConsumptionKWh + "\"; " +
                 "var ReportUrl2 = \"" + reports.MonthlyConsumptionCost + "\"; " +
-
                 "\n\nvar iframe; " +
                 "\n\nvar accessToken = " + "\'" + token + "\'" + " ; " +
                 "\n\nvar height=200;" +
