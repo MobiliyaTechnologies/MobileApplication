@@ -11,8 +11,8 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    [Register ("AlertsController")]
-    partial class AlertsController
+    [Register ("AlertsViewController")]
+    partial class AlertsViewController
     {
         void ReleaseDesignerOutlets ()
         {

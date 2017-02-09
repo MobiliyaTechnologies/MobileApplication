@@ -499,12 +499,45 @@
             </objects>
             <point key="canvasLocation" x="2183" y="693"/>
         </scene>
+        <scene sceneID="1212">
+            <objects>
+                <viewController id="1213" sceneMemberID="viewController" customClass="ClassRoomController" storyboardIdentifier="ClassRoomController" title="Class Rooms">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1210"/>
+                        <viewControllerLayoutGuide type="bottom" id="1211"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1214">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1215" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-91" y="1510"/>
+        </scene>
+        <scene sceneID="1231">
+            <objects>
+                <viewController id="1232" sceneMemberID="viewController" customClass="AlertsViewController" storyboardIdentifier="AlertsViewController" title="Alerts">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1229"/>
+                        <viewControllerLayoutGuide type="bottom" id="1230"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1233">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1234" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="448" y="1514"/>
+        </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedScreenMetrics key="destination" type="retina47"/>
     </simulatedMetricsContainer>
     <resources>
-        <image name="threelines.png" width="30" height="30"/>
         <image name="splash.png" width="300" height="100"/>
     </resources>
 </document>
