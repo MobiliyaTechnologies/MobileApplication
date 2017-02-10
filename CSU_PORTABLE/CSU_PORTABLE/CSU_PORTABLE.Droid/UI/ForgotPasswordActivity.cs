@@ -48,7 +48,15 @@ namespace CSU_PORTABLE.Droid.UI
 
                 if (username != null && username.Length > 1)
                 {
-                    SubmitEmail(new ForgotPasswordModel(username));
+                    bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+                    if (isNetworkEnabled)
+                    {
+                        SubmitEmail(new ForgotPasswordModel(username));
+                    }
+                    else
+                    {
+                        ShowToast("Please enable your internet connection !");
+                    }
                 }
                 else
                 {
