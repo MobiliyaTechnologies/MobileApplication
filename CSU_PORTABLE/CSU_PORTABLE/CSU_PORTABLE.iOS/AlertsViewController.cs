@@ -25,19 +25,17 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-           
+            var bounds = UIScreen.MainScreen.Bounds;
+            // show the loading overlay on the UI thread using the correct orientation sizing
+            loadingOverlay = new LoadingOverlay(bounds);
+            View.Add(loadingOverlay);
         }
 
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
-            var bounds = UIScreen.MainScreen.Bounds;
-            // show the loading overlay on the UI thread using the correct orientation sizing
-            loadingOverlay = new LoadingOverlay(bounds);
-            View.Add(loadingOverlay);
-
             GetAlerts();
-            loadingOverlay.Hide();
+           
         }
 
         public void GetAlerts()
@@ -53,6 +51,7 @@ namespace CSU_PORTABLE.iOS
                     InvokeOnMainThread(() =>
                     {
                         CheckAlertsResponse(response);
+                        loadingOverlay.Hide();
                     });
                 }
             });
