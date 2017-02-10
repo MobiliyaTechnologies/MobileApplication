@@ -23,7 +23,6 @@ namespace CSU_PORTABLE.Utils
         public static string API_GET_CLASS_ROOMS = "getclassrooms";
         public static string API_GET_ALL_ALERTS = "getallalerts";
         public static string API_ACKNOWLWDGE_ALERTS = "acknowledgealert";
-
         public static string SERVER_BASE_URL_FOR_TOKEN = "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/";
         public static string API_GET_TOKEN = "GetAccessToken";
 

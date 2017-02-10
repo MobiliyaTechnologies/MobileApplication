@@ -14,24 +14,24 @@ namespace CSU_PORTABLE.iOS
         public ClassRoomCell(NSString cellId) : base(UITableViewCellStyle.Default, cellId)
         {
             SelectionStyle = UITableViewCellSelectionStyle.Gray;
-            ContentView.BackgroundColor = UIColor.LightGray;
+            ContentView.BackgroundColor = UIColor.FromRGB(245, 245, 245);
 
             lblClassRoomDesc = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 18f),
-                TextColor = UIColor.Black,
+                Font = UIFont.FromName("AmericanTypewriter", 15f),
+                TextColor = UIColor.FromRGB(0, 120, 255),
                 BackgroundColor = UIColor.Clear
             };
             lblClassRoomId = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 15f),
+                Font = UIFont.FromName("AmericanTypewriter", 12f),
                 TextColor = UIColor.Black,
                 TextAlignment = UITextAlignment.Center,
                 BackgroundColor = UIColor.Clear
             };
             lblSensorId = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 15f),
+                Font = UIFont.FromName("AmericanTypewriter", 12f),
                 TextColor = UIColor.Black,
                 TextAlignment = UITextAlignment.Center,
                 BackgroundColor = UIColor.Clear
@@ -50,12 +50,12 @@ namespace CSU_PORTABLE.iOS
         public override void LayoutSubviews()
         {
             base.LayoutSubviews();
-            lblClassRoomDesc.Frame = new CGRect(10, 2, ContentView.Bounds.Width - 150, 40);
-            lblClassRoomId.Frame = new CGRect(ContentView.Bounds.Width - 150, 4, 150, 15);
-            lblSensorId.Frame = new CGRect(ContentView.Bounds.Width - 150, 20, 150, 15);
+            lblClassRoomDesc.Frame = new CGRect(10, 5, ContentView.Bounds.Width, 30);
+            //lblClassRoomId.Frame = new CGRect(10, 35, 150, 15);
+            //lblSensorId.Frame = new CGRect(ContentView.Bounds.Width - 100, 35, 90, 15);
             lblClassRoomDesc.TextAlignment = UITextAlignment.Left;
-            lblSensorId.TextAlignment = UITextAlignment.Left;
-            lblClassRoomId.TextAlignment = UITextAlignment.Left;
+            //lblSensorId.TextAlignment = UITextAlignment.Left;
+            //lblClassRoomId.TextAlignment = UITextAlignment.Left;
         }
     }
 }

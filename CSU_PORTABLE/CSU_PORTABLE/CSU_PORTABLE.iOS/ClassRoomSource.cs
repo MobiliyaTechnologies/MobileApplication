@@ -33,14 +33,5 @@ namespace CSU_PORTABLE.iOS
             return classRoomsList.Count;
         }
 
-        //public override string TitleForFooter(UITableView tableView, nint section)
-        //{
-        //    return base.TitleForFooter(tableView, section);
-        //}
-
-        //public override string TitleForHeader(UITableView tableView, nint section)
-        //{
-        //    return base.TitleForHeader(tableView, section);
-        //}
     }
 }
