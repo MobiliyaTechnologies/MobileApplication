@@ -59,7 +59,14 @@ namespace CSU_PORTABLE.Droid.UI
                     buttonLogin.Visibility = ViewStates.Gone;
                     progressBar.Visibility = ViewStates.Visible;
 
-                    Login(new LoginModel(username, password));
+                    bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+                    if (isNetworkEnabled)
+                    {
+                        Login(new LoginModel(username, password));
+                    } else
+                    {
+                        ShowToast("Please enable your internet connection !");
+                    }
                 }
                 else
                 {

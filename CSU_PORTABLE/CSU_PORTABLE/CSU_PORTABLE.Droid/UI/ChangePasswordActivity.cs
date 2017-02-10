@@ -72,7 +72,16 @@ namespace CSU_PORTABLE.Droid.UI
                             model.Email = userDetails.Email;
                             model.Password = etPassword.Text.ToString();
                             model.New_Password = etConfirmPassword.Text.ToString();
-                            ChangePassword(model);
+
+                            bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+                            if (isNetworkEnabled)
+                            {
+                                ChangePassword(model);
+                            }
+                            else
+                            {
+                                ShowToast("Please enable your internet connection !");
+                            }
                         }
                         else
                         {
@@ -136,7 +145,7 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
                     Log.Debug(TAG, "Password Changed Successfully.");
-                    tvMessage.Text = "Password Changed Successfully. Please check your Email.";
+                    tvMessage.Text = "Password Changed Successfully.";
                     tvMessage.Visibility = ViewStates.Visible;
                     progressBar.Visibility = ViewStates.Gone;
                     EnableButton(buttonSubmit);

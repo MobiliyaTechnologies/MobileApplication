@@ -145,8 +145,10 @@
     <Compile Include="UI\MainActivity.cs" />
     <Compile Include="UI\MeterReportActivity.cs" />
     <Compile Include="UI\SplashActivity.cs" />
+    <Compile Include="UI\StudentDashboardAdapter.cs" />
     <Compile Include="UI\StudentFragment.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />
+    <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <GoogleServicesJson Include="google-services.json" />
@@ -166,6 +168,9 @@
     <AndroidResource Include="Resources\layout\MeterReportView.axml" />
     <AndroidResource Include="Resources\layout\student_dashboard.axml" />
     <AndroidResource Include="Resources\layout\alert_item.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\student_dashboard_item.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

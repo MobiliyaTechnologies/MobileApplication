@@ -15,6 +15,8 @@ namespace CSU_PORTABLE.Models
         public string ClassId { get; set; }
         public string ClassDescription { get; set; }
         public string SensorId { get; set; }
+        public string Building { get; set; }
+        public string Breaker_details { get; set; }
 
     }
 }

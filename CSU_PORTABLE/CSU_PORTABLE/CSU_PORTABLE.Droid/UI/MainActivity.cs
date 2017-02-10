@@ -70,8 +70,12 @@ namespace CSU_PORTABLE.Droid.UI
             
             if (userRole == (int)Constants.USER_ROLE.ADMIN)
             {
+                bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+                if (!isNetworkEnabled)
+                {
+                    ShowToast("Please enable your internet connection !");
+                }
                 //Show Map Fragment
-
                 GoogleMapOptions mapOptions = new GoogleMapOptions()
                 .InvokeMapType(GoogleMap.MapTypeSatellite)
                 .InvokeZoomControlsEnabled(false)
@@ -88,9 +92,12 @@ namespace CSU_PORTABLE.Droid.UI
                 int userId = preferenceHandler.GetUserDetails().User_Id;
                 if (userId != -1)
                 {
-                    GetMeterDetails(userId);
-                    GetMonthlyConsumptionDetails(userId);
-                }
+                   if (isNetworkEnabled)
+                    {
+                        GetMeterDetails(userId);
+                        GetMonthlyConsumptionDetails(userId);
+                    }
+                 }
                 else
                 {
                     ShowToast("Invalid User Id. Please Login Again !");
@@ -399,7 +406,7 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 string message = "Google Play Services is available.";
-                ShowToast(message);
+                //ShowToast(message);
                 return true;
             }
         }

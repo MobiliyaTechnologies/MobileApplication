@@ -58,7 +58,15 @@ namespace CSU_PORTABLE.Droid.UI
                 int userId = preferenceHandler.GetUserDetails().User_Id;
                 if (userId != -1)
                 {
-                    getMeterReports(userId, meterSerialNumber);
+                    bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+                    if (isNetworkEnabled)
+                    {
+                        getMeterReports(userId, meterSerialNumber);
+                    }
+                    else
+                    {
+                        ShowToast("Please enable your internet connection !");
+                    }
                 }
                 else
                 {

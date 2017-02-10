@@ -44,7 +44,17 @@ namespace CSU_PORTABLE.Droid.UI
             int userId = preferenceHandler.GetUserDetails().User_Id;
             if (userId != -1)
             {
-                getAlertList(userId);
+                bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+                if (isNetworkEnabled)
+                {
+                    getAlertList(userId);
+                }
+                else
+                {
+                    ShowToast("Please enable your internet connection !");
+                    layoutProgress.Visibility = ViewStates.Gone;
+                    textViewLoading.Visibility = ViewStates.Visible;
+                }
             }
             else
             {
@@ -105,7 +115,7 @@ namespace CSU_PORTABLE.Droid.UI
                 mRecyclerView.SetLayoutManager(mLayoutManager);
 
                 // Plug in my adapter:
-                AlertListAdapter mAdapter = new AlertListAdapter(alertList);
+                AlertListAdapter mAdapter = new AlertListAdapter(this, alertList);
                 mRecyclerView.SetAdapter(mAdapter);
 
                 layoutProgress.Visibility = ViewStates.Gone;

@@ -19,6 +19,7 @@ using CSU_PORTABLE.Droid.Utils;
 using Newtonsoft.Json;
 using Android.Content.Res;
 using Android.Graphics;
+using Java.Text;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -26,9 +27,12 @@ namespace CSU_PORTABLE.Droid.UI
     {
         const string TAG = "AlertListAdapter";
         public List<AlertModel> mAlertModels;
+        Context mContext;
+        Toast toast;
 
-        public AlertListAdapter(List<AlertModel> alertModels)
+        public AlertListAdapter(Context context, List<AlertModel> alertModels)
         {
+            mContext = context;
             mAlertModels = alertModels;
         }
 
@@ -45,7 +49,12 @@ namespace CSU_PORTABLE.Droid.UI
             AlertViewHolder vh = holder as AlertViewHolder;
             vh.textViewAlert.Text = mAlertModels[position].Alert_Desc;
             vh.textViewClass.Text = mAlertModels[position].Class_Desc;
-            vh.textViewTime.Text = mAlertModels[position].Timestamp;
+            string dt = getFormatedDate(mAlertModels[position].Timestamp);
+            if (dt == null)
+            {
+                dt = mAlertModels[position].Timestamp;
+            }
+            vh.textViewTime.Text = dt;
             vh.alertId = mAlertModels[position].Alert_Id;
             if(mAlertModels[position].Is_Acknowledged)
             {
@@ -68,7 +77,15 @@ namespace CSU_PORTABLE.Droid.UI
                     vh.textViewAck.SetTextColor(Color.LightGray);
                     mAlertModels[position].Is_Acknowledged = true;
 
-                    acknowledgeAlert(ackModel, userId);
+                    bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(mContext);
+                    if (isNetworkEnabled)
+                    {
+                        acknowledgeAlert(ackModel, userId);
+                    }
+                    else
+                    {
+                        ShowToast("Please enable your internet connection !");
+                    }
                 };
             }
         }
@@ -98,6 +115,15 @@ namespace CSU_PORTABLE.Droid.UI
                 divider = itemView.FindViewById(Resource.Id.divider);
             }
         }
+        
+        private string getFormatedDate(string date)
+        {
+            //string format = "MM/dd/yyyy HH:mm:ss";
+            string format = "dd MMM hh:mm a";
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            string dt = sdf.Format(new Java.Util.Date(date));
+            return dt;
+        }
 
         private void acknowledgeAlert(AlertAcknowledgeModel acknowledgeModel, int userId)
         {
@@ -125,6 +151,7 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "Invalid User Id. Please Login Again !");
+                ShowToast("Invalid User Id. Please Login Again !");
             }
         }
 
@@ -139,18 +166,31 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
                     Log.Debug(TAG, "acknowledgement Successful");
+                    ShowToast("Acknowlwdged successfully.");
                     //update list
 
                 }
                 else
                 {
                     Log.Debug(TAG, "Acknowledgement Failed");
+                    ShowToast("Failed to acknowlwdge. Please try later !");
                 }
             }
             else
             {
                 Log.Debug(TAG, "acknowledgeAlertResponse() Failed");
+                ShowToast("Failed to acknowlwdge. Please try later !");
             }
+        }
+
+        private void ShowToast(string message)
+        {
+            if (toast != null)
+            {
+                toast.Cancel();
+            }
+            toast = Toast.MakeText(mContext, message, ToastLength.Short);
+            toast.Show();
         }
     }
 }
