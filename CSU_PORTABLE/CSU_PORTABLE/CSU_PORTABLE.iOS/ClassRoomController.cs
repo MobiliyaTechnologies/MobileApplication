@@ -22,6 +22,16 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+            var bounds = UIScreen.MainScreen.Bounds;
+            // show the loading overlay on the UI thread using the correct orientation sizing
+            loadingOverlay = new LoadingOverlay(bounds);
+            View.Add(loadingOverlay);
+        }
+
+        public override void ViewDidAppear(bool animated)
+        {
+            base.ViewDidAppear(animated);
+          
             GetClassRooms();
         }
 
@@ -41,6 +51,7 @@ namespace CSU_PORTABLE.iOS
                     InvokeOnMainThread(() =>
                     {
                         CheckClassRoomsResponse(response);
+                        loadingOverlay.Hide();
                     });
                 }
             });
@@ -74,16 +85,15 @@ namespace CSU_PORTABLE.iOS
             _table = new UITableView
             {
                 Frame = new CoreGraphics.CGRect(0, 65, View.Bounds.Width, View.Bounds.Height - 65),
-                Source = new ClassRoomSource(classRoomsList)
+                Source = new ClassRoomSource(classRoomsList),
+                RowHeight = 60
             };
             View.AddSubview(_table);
         }
 
         private void ShowMessage(string v)
         {
-            //BTProgressHUD.ShowToast("Hello from Toast");
             loadingOverlay.Hide();
-            //MessageLabel.Text = " " + v;
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
             alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
             PresentViewController(alertController, true, null);

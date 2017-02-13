@@ -469,36 +469,6 @@
             </objects>
             <point key="canvasLocation" x="-735" y="730"/>
         </scene>
-        <scene sceneID="920">
-            <objects>
-                <viewController id="921" sceneMemberID="viewController" customClass="AlertsController" storyboardIdentifier="AlertsController" title="Alerts">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="918"/>
-                        <viewControllerLayoutGuide type="bottom" id="919"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="922">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Coming Soon !!!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="925" translatesAutoresizingMaskIntoConstraints="NO">
-                                <rect key="frame" x="38" y="167" width="300" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <constraints>
-                            <constraint id="929" firstItem="925" firstAttribute="top" secondItem="918" secondAttribute="bottom" constant="147"/>
-                            <constraint id="930" firstItem="925" firstAttribute="leading" secondItem="922" secondAttribute="leading" constant="38"/>
-                            <constraint id="931" firstItem="922" firstAttribute="trailing" secondItem="925" secondAttribute="trailing" constant="37"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="923" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2183" y="693"/>
-        </scene>
         <scene sceneID="1212">
             <objects>
                 <viewController id="1213" sceneMemberID="viewController" customClass="ClassRoomController" storyboardIdentifier="ClassRoomController" title="Class Rooms">
@@ -527,6 +497,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1234" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -537,7 +508,4 @@
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedScreenMetrics key="destination" type="retina47"/>
     </simulatedMetricsContainer>
-    <resources>
-        <image name="splash.png" width="300" height="100"/>
-    </resources>
 </document>
