@@ -35,9 +35,11 @@
     <Compile Include="Models\AlertAcknowledgementResponseModel.cs" />
     <Compile Include="Models\AlertAcknowledgeModel.cs" />
     <Compile Include="Models\AlertModel.cs" />
+    <Compile Include="Models\AnswerModel.cs" />
     <Compile Include="Models\ChangePasswordModel.cs" />
     <Compile Include="Models\ChangePasswordResponseModel.cs" />
     <Compile Include="Models\ClassRoomModel.cs" />
+    <Compile Include="Models\FeedbackModel.cs" />
     <Compile Include="Models\ForgotPasswordModel.cs" />
     <Compile Include="Models\ForgotPasswordResponseModel.cs" />
     <Compile Include="Models\GeneralResponseModel.cs" />
@@ -47,6 +49,7 @@
     <Compile Include="Models\MeterDetails.cs" />
     <Compile Include="Models\MeterReports.cs" />
     <Compile Include="Models\MonthlyConsumptionDetails.cs" />
+    <Compile Include="Models\QuestionModel.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\UserDetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

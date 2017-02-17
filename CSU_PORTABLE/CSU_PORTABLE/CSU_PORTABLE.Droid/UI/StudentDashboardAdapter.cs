@@ -13,6 +13,7 @@ namespace CSU_PORTABLE.Droid.UI
     {
         const string TAG = "StudentDashboardAdapter";
         public List<ClassRoomModel> mClassModels;
+        public event EventHandler<int> ItemClick;
 
         public StudentDashboardAdapter(List<ClassRoomModel> classModels)
         {
@@ -22,8 +23,8 @@ namespace CSU_PORTABLE.Droid.UI
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
             View itemView = LayoutInflater.From(parent.Context).
-                        Inflate(Resource.Layout.student_dashboard_item, parent, false);
-            ClassViewHolder vh = new ClassViewHolder(itemView);
+                        Inflate(Resource.Layout.class_item, parent, false);
+            ClassViewHolder vh = new ClassViewHolder(itemView, OnClick);
             return vh;
         }
 
@@ -31,8 +32,8 @@ namespace CSU_PORTABLE.Droid.UI
         {
             ClassViewHolder vh = holder as ClassViewHolder;
             vh.textViewClass.Text = mClassModels[position].ClassDescription;
-            vh.textViewBuilding.Text = mClassModels[position].Building;
-            vh.textViewBrackerDetail.Text = mClassModels[position].Breaker_details;
+            //vh.textViewBuilding.Text = mClassModels[position].Building;
+            //vh.textViewBrackerDetail.Text = mClassModels[position].Breaker_details;
         }
 
         public override int ItemCount
@@ -40,18 +41,26 @@ namespace CSU_PORTABLE.Droid.UI
             get { return mClassModels.Count(); }
         }
 
+        void OnClick(int position)
+        {
+            if (ItemClick != null)
+
+                ItemClick(this, position);
+        }
+
         //view holder class
         public class ClassViewHolder : RecyclerView.ViewHolder
         {
             public TextView textViewClass { get; set; }
-            public TextView textViewBuilding { get; set; }
-            public TextView textViewBrackerDetail { get; set; }
+            //public TextView textViewBuilding { get; set; }
+            //public TextView textViewBrackerDetail { get; set; }
 
-            public ClassViewHolder(View itemView) : base(itemView)
+            public ClassViewHolder(View itemView, Action<int> listener) : base(itemView)
             {
                 textViewClass = itemView.FindViewById<TextView>(Resource.Id.textViewClass);
-                textViewBuilding = itemView.FindViewById<TextView>(Resource.Id.textViewBuilding);
-                textViewBrackerDetail = itemView.FindViewById<TextView>(Resource.Id.textViewBrackerDetail);
+                //textViewBuilding = itemView.FindViewById<TextView>(Resource.Id.textViewBuilding);
+                //textViewBrackerDetail = itemView.FindViewById<TextView>(Resource.Id.textViewBrackerDetail);
+                itemView.Click += (sender, e) => listener(base.Position);
             }
         }
     }
