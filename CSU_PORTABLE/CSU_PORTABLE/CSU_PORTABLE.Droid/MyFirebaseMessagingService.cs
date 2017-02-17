@@ -5,6 +5,8 @@ using Android.Media;
 using Android.Util;
 using Firebase.Messaging;
 using CSU_PORTABLE.Droid.UI;
+using CSU_PORTABLE.Droid.Utils;
+using CSU_PORTABLE.Models;
 
 namespace CSU_PORTABLE.Droid
 {
@@ -15,10 +17,25 @@ namespace CSU_PORTABLE.Droid
         const string TAG = "MyFirebaseMsgService";
         public override void OnMessageReceived(RemoteMessage message)
         {
-            Log.Debug(TAG, "From: " + message.From);
-            Log.Debug(TAG, "Notification Message Body: " + message.GetNotification().Body);
+            try
+            {
+                Log.Debug(TAG, "From: " + message.From);
+                Log.Debug(TAG, "Notification Message Body: " + message.GetNotification().Body);
 
-            SendNotification(message.GetNotification().Body);
+                var preferenceHandler = new PreferenceHandler();
+                bool isLoggedIn = preferenceHandler.IsLoggedIn();
+                if(isLoggedIn)
+                {
+                    int roleId = preferenceHandler.GetUserDetails().Role_Id;
+                    if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
+                    {
+                        SendNotification(message.GetNotification().Body);
+                    }
+                }
+            } catch (Exception e) 
+            {
+                Log.Debug(TAG, e.Message);
+            }
         }
 
         void SendNotification(string messageBody)
@@ -32,6 +49,7 @@ namespace CSU_PORTABLE.Droid
                 .SetContentTitle("FCM Message")
                 .SetContentText(messageBody)
                 .SetAutoCancel(true)
+                .SetPriority((int)NotificationPriority.Max)
                 .SetContentIntent(pendingIntent);
 
             var notificationManager = NotificationManager.FromContext(this);

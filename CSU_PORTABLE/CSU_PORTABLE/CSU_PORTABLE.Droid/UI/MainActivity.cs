@@ -126,6 +126,18 @@ namespace CSU_PORTABLE.Droid.UI
             drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
 
+            var preferenceHandler = new PreferenceHandler();
+            bool isLoggedIn = preferenceHandler.IsLoggedIn();
+            if (isLoggedIn)
+            {
+                int roleId = preferenceHandler.GetUserDetails().Role_Id;
+                if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.STUDENT)
+                {
+                    IMenu nav_Menu = navigationView.Menu;
+                    nav_Menu.FindItem(Resource.Id.nav_alerts).SetVisible(false);
+                }
+            }
+
             TextView textViewUserName = 
                 navigationView.GetHeaderView(0).FindViewById<TextView>(
                     Resource.Id.textViewUserName);

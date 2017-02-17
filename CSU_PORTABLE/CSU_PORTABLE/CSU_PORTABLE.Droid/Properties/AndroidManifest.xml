@@ -11,6 +11,7 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="com.mobiliya.csu.permission.MAPS_RECEIVE" />
 	<application android:label="CSU">
+    <!-- Firebase receiver -->
 		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
 		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
 			<intent-filter>
@@ -19,7 +20,7 @@
 				<category android:name="${applicationId}" />
 			</intent-filter>
 		</receiver>
-		<!-- Put your Google Maps V2 API Key here. -->
+		<!-- Google Maps V2 API Key. -->
 		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyBHH4sk34C2-yB-3LofGbeh6O7XwVZ0SwE" />
 		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 	</application>
