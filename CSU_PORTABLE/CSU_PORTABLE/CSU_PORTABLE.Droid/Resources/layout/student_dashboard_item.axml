@@ -37,14 +37,14 @@
                 android:text="Class Name"
                 android:textSize="15sp"
                 android:gravity="left" />
-          <TextView
-              android:id="@+id/textViewBrackerDetail"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="Class Name"
-              android:layout_marginTop="5dp"
-              android:textSize="15sp"
-              android:gravity="left" />
+            <TextView
+                android:id="@+id/textViewBrackerDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Class Name"
+                android:layout_marginTop="5dp"
+                android:textSize="15sp"
+                android:gravity="left" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

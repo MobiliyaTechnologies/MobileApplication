@@ -13,7 +13,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidApplication>True</AndroidApplication>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
     <AssemblyName>CSU_PORTABLE.Droid</AssemblyName>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <NuGetPackageImportStamp>
@@ -166,11 +166,16 @@
     <AndroidResource Include="Resources\layout\Forgot_password_view.axml" />
     <AndroidResource Include="Resources\layout\Login_view.axml" />
     <AndroidResource Include="Resources\layout\MeterReportView.axml" />
-    <AndroidResource Include="Resources\layout\student_dashboard.axml" />
+    <AndroidResource Include="Resources\layout\student_dashboard.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
     <AndroidResource Include="Resources\layout\alert_item.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\student_dashboard_item.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\class_item.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
