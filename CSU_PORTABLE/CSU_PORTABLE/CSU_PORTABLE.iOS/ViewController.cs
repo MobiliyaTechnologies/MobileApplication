@@ -1,4 +1,5 @@
-﻿using CSU_PORTABLE.iOS.Utils;
+﻿using CoreGraphics;
+using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Newtonsoft.Json;
@@ -12,6 +13,8 @@ namespace CSU_PORTABLE.iOS
     public partial class ViewController : BaseController
     {
         LoadingOverlay loadingOverlay;
+        UITextField TextFieldUsername, TextFieldPassword;
+        UIButton ButtonLogin;
 
         // the sidebar controller for the app
         //public SidebarNavigation.SidebarController SidebarController { get; private set; }
@@ -24,6 +27,8 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+            this.View.BackgroundColor = UIColor.FromRGB(30, 77, 43);
+
 
             NavigationItem.SetRightBarButtonItem(
                  new UIBarButtonItem(UIImage.FromBundle("a")
@@ -33,9 +38,51 @@ namespace CSU_PORTABLE.iOS
                          SidebarController.ToggleMenu();
                      }), true);
 
+            UIImageView imgLogo = new UIImageView()
+            {
+                Frame = new CGRect((View.Bounds.Width / 2) - 50, 150, 100, 100),
+                Image = UIImage.FromBundle("CSU_logo.png")
+            };
+
+
             //TextFieldUsername.Text = "aaa@111.com";
             //TextFieldPassword.Text = "111";
-            //MessageLabel.Text = " ";
+            UIView paddingView = new UIView(new CGRect(5, 5, 5, 20));
+            TextFieldUsername = new UITextField()
+            {
+                Font = UIFont.FromName("Helvetica-Bold", 15f),
+                TextColor = UIColor.DarkTextColor,
+                BackgroundColor = UIColor.LightTextColor,
+                Frame = new CGRect((View.Bounds.Width / 2) - 100, 300, 200, 30),
+                Placeholder = "Email",
+                TextAlignment = UITextAlignment.Left,
+                AutocorrectionType = UITextAutocorrectionType.No,
+                LeftView = paddingView,
+                LeftViewMode = UITextFieldViewMode.Always
+            };
+
+            UIView paddingViewPassword = new UIView(new CGRect(5, 5, 5, 20));
+            UIView bottomLinePwd = new UIView(new CGRect((View.Bounds.Width / 2) - 100, 375, 200, 1));
+            bottomLinePwd.BackgroundColor = UIColor.White;
+
+            UIView bottomLineEmail = new UIView(new CGRect((View.Bounds.Width / 2) - 100, 335, 200, 1));
+            bottomLineEmail.BackgroundColor = UIColor.White;
+            TextFieldPassword = new UITextField()
+            {
+                Font = UIFont.FromName("Helvetica-Bold", 15f),
+                TextColor = UIColor.DarkTextColor,
+                BackgroundColor = UIColor.LightTextColor,
+                Frame = new CGRect((View.Bounds.Width / 2) - 100, 340, 200, 30),
+                Placeholder = "Password",
+                TextAlignment = UITextAlignment.Left,
+                SecureTextEntry = true,
+                AutocorrectionType = UITextAutocorrectionType.No,
+                LeftView = paddingViewPassword,
+                LeftViewMode = UITextFieldViewMode.Always
+            };
+
+
+
             TextFieldUsername.ShouldReturn = delegate
             {
                 // Changed this slightly to move the text entry to the next field.
@@ -48,11 +95,14 @@ namespace CSU_PORTABLE.iOS
                 TextFieldPassword.ResignFirstResponder();
                 return true;
             };
-            TextFieldUsername.AutocorrectionType = UITextAutocorrectionType.No;
-            TextFieldPassword.AutocorrectionType = UITextAutocorrectionType.No;
-            TextFieldPassword.SecureTextEntry = true;
 
-
+            ButtonLogin = new UIButton(UIButtonType.Custom);
+            ButtonLogin.SetTitle("Log In", UIControlState.Normal);
+            ButtonLogin.Font = UIFont.FromName("Futura-Medium", 15f);
+            ButtonLogin.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
+            ButtonLogin.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            ButtonLogin.Frame = new CGRect((View.Bounds.Width / 2) - 100, 400, 200, 30);
+            ButtonLogin.BackgroundColor = UIColor.White;
             ButtonLogin.TouchUpInside += delegate
             {
                 // Added for showing loading screen
@@ -77,6 +127,22 @@ namespace CSU_PORTABLE.iOS
 
 				//ButtonForgotPassword.SetTitle("ABC",UIControlState.Normal);
             };
+
+            UIButton btnForgotPassword = new UIButton(UIButtonType.Custom);
+            btnForgotPassword.SetTitle("Forgot your password?", UIControlState.Normal);
+            btnForgotPassword.Font = UIFont.FromName("Futura-Medium", 13f);
+            btnForgotPassword.SetTitleColor(UIColor.LightTextColor, UIControlState.Normal);
+            btnForgotPassword.SetTitleColor(UIColor.White, UIControlState.Selected);
+            btnForgotPassword.Frame = new CGRect((View.Bounds.Width / 2) - 100, 440, 200, 20);
+            btnForgotPassword.BackgroundColor = UIColor.Clear;
+            btnForgotPassword.TouchUpInside += BtnForgotPassword_TouchUpInside;
+            View.AddSubviews(imgLogo, TextFieldUsername, TextFieldPassword, bottomLinePwd, bottomLineEmail, ButtonLogin, btnForgotPassword);
+        }
+
+        private void BtnForgotPassword_TouchUpInside(object sender, EventArgs e)
+        {
+            var ForgotPasswordController = (ForgotPasswordController)Storyboard.InstantiateViewController("ForgotPasswordController");
+            NavController.PushViewController(ForgotPasswordController, true);
         }
 
         public override void DidReceiveMemoryWarning()
@@ -85,6 +151,8 @@ namespace CSU_PORTABLE.iOS
             // Release any cached data, images, etc that aren't in use.
         }
 
+
+        #region " Custom Functions" 
         public void Login(LoginModel loginModel)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
@@ -145,9 +213,10 @@ namespace CSU_PORTABLE.iOS
 
         private void ShowClassRooms()
         {
-            ClassRoomController classRooomView = this.Storyboard.InstantiateViewController("ClassRoomController") as ClassRoomController;
-            classRooomView.NavigationItem.SetHidesBackButton(true, false);
-            this.NavController.PushViewController(classRooomView, false);
+            FeedbackViewController FeedbackView = this.Storyboard.InstantiateViewController("FeedbackViewController") as FeedbackViewController;
+            FeedbackView.NavigationItem.SetHidesBackButton(true, false);
+
+            this.NavController.PushViewController(FeedbackView, false);
             var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
             SidebarController.ChangeMenuView(menuController);
             SidebarController.MenuWidth = 250;
@@ -181,6 +250,8 @@ namespace CSU_PORTABLE.iOS
             PresentViewController(alertController, true, null);
 
         }
+
+        #endregion
     }
 }
 

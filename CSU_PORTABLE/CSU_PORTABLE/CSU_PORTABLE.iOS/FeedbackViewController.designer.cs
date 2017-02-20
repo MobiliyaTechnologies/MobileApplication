@@ -11,8 +11,8 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    [Register ("ViewController")]
-    partial class ViewController
+    [Register ("FeedbackViewController")]
+    partial class FeedbackViewController
     {
         void ReleaseDesignerOutlets ()
         {

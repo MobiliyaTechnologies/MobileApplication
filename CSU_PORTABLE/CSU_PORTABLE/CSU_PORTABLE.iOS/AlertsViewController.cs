@@ -15,6 +15,7 @@ namespace CSU_PORTABLE.iOS
         PreferenceHandler prefHandler = null;
         UserDetails User = null;
         LoadingOverlay loadingOverlay;
+        private AlertsSource alertsSource;
 
         public AlertsViewController(IntPtr handle) : base(handle)
         {
@@ -35,7 +36,7 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidAppear(animated);
             GetAlerts();
-           
+
         }
 
         public void GetAlerts()
@@ -55,6 +56,11 @@ namespace CSU_PORTABLE.iOS
                     });
                 }
             });
+        }
+
+        public void AcknowledgeAlert(string Alert_Id)
+        {
+            //ShowMessage(alertId.Text);
         }
 
 
@@ -79,7 +85,7 @@ namespace CSU_PORTABLE.iOS
             _table = new UITableView
             {
                 Frame = new CoreGraphics.CGRect(0, 65, View.Bounds.Width, View.Bounds.Height - 65),
-                RowHeight = 75,
+                RowHeight = 100,
                 Source = new AlertsSource(alertsList)
             };
             View.AddSubview(_table);

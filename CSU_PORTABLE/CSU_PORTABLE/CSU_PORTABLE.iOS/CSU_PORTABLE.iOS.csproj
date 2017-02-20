@@ -26,7 +26,8 @@
     <MtouchProfiling>true</MtouchProfiling>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
-    <DebugType></DebugType>
+    <DebugType>
+    </DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -63,6 +64,9 @@
     <MtouchDebug>true</MtouchDebug>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BTProgressHUD">
+      <HintPath>..\..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.13.8.999, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.8\lib\Xamarin.iOS10\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
       <Private>True</Private>
@@ -98,9 +102,6 @@
     </Reference>
     <Reference Include="Firebase.CloudMessaging">
       <HintPath>..\..\packages\Xamarin.Firebase.iOS.CloudMessaging.1.2.1.1\lib\Xamarin.iOS10\Firebase.CloudMessaging.dll</HintPath>
-    </Reference>
-    <Reference Include="BTProgressHUD">
-      <HintPath>..\..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +202,10 @@
     <Compile Include="ContentController.designer.cs">
       <DependentUpon>ContentController.cs</DependentUpon>
     </Compile>
+    <Compile Include="FeedbackViewController.cs" />
+    <Compile Include="FeedbackViewController.designer.cs">
+      <DependentUpon>FeedbackViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="ForgotPasswordController.cs" />
     <Compile Include="ForgotPasswordController.designer.cs">
       <DependentUpon>ForgotPasswordController.cs</DependentUpon>
@@ -216,6 +221,10 @@
       <DependentUpon>MyMenuController.cs</DependentUpon>
     </Compile>
     <Compile Include="NavController.cs" />
+    <Compile Include="QuestionsViewController.cs" />
+    <Compile Include="QuestionsViewController.designer.cs">
+      <DependentUpon>QuestionsViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="RootViewController.cs" />
     <Compile Include="MeterReportController.cs" />
     <Compile Include="MeterReportController.designer.cs">
@@ -225,6 +234,10 @@
     <Compile Include="ReportController.designer.cs">
       <DependentUpon>ReportController.cs</DependentUpon>
     </Compile>
+    <Compile Include="ThankYouViewController.cs" />
+    <Compile Include="ThankYouViewController.designer.cs">
+      <DependentUpon>ThankYouViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\LoadingOverlay.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />
     <Compile Include="ViewController.cs" />
@@ -233,6 +246,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <XamarinComponentReference Include="btprogresshud">
+      <Visible>False</Visible>
+      <Version>1.20</Version>
+    </XamarinComponentReference>
     <XamarinComponentReference Include="restsharp">
       <Visible>False</Visible>
       <Version>105.2.3</Version>
@@ -252,6 +269,9 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\splash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\CSU_logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />

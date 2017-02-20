@@ -56,13 +56,6 @@ namespace CSU_PORTABLE.iOS
 
         private void LogOutButton_TouchUpInside(object sender, EventArgs e)
         {
-            /*PreferenceHandler preferenceHandler = new PreferenceHandler();
-            preferenceHandler.setLoggedIn(false);
-            var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
-            ViewController.NavigationItem.SetHidesBackButton(true, false);
-            NavController.PushViewController(ViewController, false);
-            SidebarController.MenuWidth = 0;
-            SidebarController.CloseMenu();*/
             // Added for showing loading screen
             var bounds = UIScreen.MainScreen.Bounds;
             // show the loading overlay on the UI thread using the correct orientation sizing
