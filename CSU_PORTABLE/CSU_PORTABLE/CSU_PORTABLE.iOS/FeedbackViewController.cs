@@ -44,7 +44,7 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            classRoomId = -1;
+            classRoomId = 0;
             // Added for showing loading screen
             var bounds = UIScreen.MainScreen.Bounds;
             // show the loading overlay on the UI thread using the correct orientation sizing
@@ -52,7 +52,6 @@ namespace CSU_PORTABLE.iOS
             View.Add(loadingOverlay);
             GetClassRooms();
             CreateFeedbackDashboard();
-
         }
 
         #region " Events "
@@ -163,10 +162,11 @@ namespace CSU_PORTABLE.iOS
             var subViewBottom = new UIView(new CGRect(classRoomPicker.Bounds.X - 20, classRoomPicker.Bounds.Y + 115, classRoomPicker.Bounds.Width, 1));
             subViewTop.BackgroundColor = UIColor.White;
             subViewBottom.BackgroundColor = UIColor.White;
+
             classRoomPicker.AddSubview(subViewTop);
             classRoomPicker.AddSubview(subViewBottom);
-            classRoomPicker.SelectedRowInComponent(0);
             View.AddSubviews(classRoomPicker);
+            classRoomPicker.Select(0, 0, true);
             loadingOverlay.Hide();
         }
 
@@ -201,11 +201,13 @@ namespace CSU_PORTABLE.iOS
 
             public ClassRoomPickerViewModel(List<ClassRoomModel> component)
             {
+
                 this.classRoooms = component;
             }
 
             public override nint GetRowsInComponent(UIPickerView pickerView, nint component)
             {
+
                 return classRoooms.Count;
             }
 
@@ -222,6 +224,7 @@ namespace CSU_PORTABLE.iOS
 
             public override UIView GetView(UIPickerView pickerView, nint row, nint component, UIView view)
             {
+
                 view = (UIView)new UILabel()
                 {
                     Font = UIFont.FromName("Futura-CondensedMedium", 25f),

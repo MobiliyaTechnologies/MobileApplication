@@ -48,9 +48,10 @@ namespace CSU_PORTABLE.iOS
             base.ViewDidLoad();
 
             NavigationItem.SetRightBarButtonItem(
-                new UIBarButtonItem(UIImage.FromBundle("threelines")
+                new UIBarButtonItem(UIImage.FromBundle("threelines.png")
                     , UIBarButtonItemStyle.Plain
-                    , (sender, args) => {
+                    , (sender, args) =>
+                    {
                         SidebarController.ToggleMenu();
                     }), true);
         }

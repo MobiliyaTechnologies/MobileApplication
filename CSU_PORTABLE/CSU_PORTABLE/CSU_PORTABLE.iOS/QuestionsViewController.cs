@@ -73,7 +73,7 @@ namespace CSU_PORTABLE.iOS
             // show the loading overlay on the UI thread using the correct orientation sizing
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
-            if (SelectedAnswer != 0)
+            if (SelectedAnswer >= 0)
             {
 
                 submitFeedback(userdetail.User_Id);
