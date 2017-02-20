@@ -74,6 +74,8 @@ namespace CSU_PORTABLE.iOS
                 {
                     ShowMessage("Enter valid email and password");
                 }
+
+				//ButtonForgotPassword.SetTitle("ABC",UIControlState.Normal);
             };
         }
 

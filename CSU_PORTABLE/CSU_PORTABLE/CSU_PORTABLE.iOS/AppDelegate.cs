@@ -6,6 +6,7 @@ using UserNotifications;
 using System;
 using Firebase.CloudMessaging;
 using Firebase.InstanceID;
+using BigTed;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -171,6 +172,17 @@ namespace CSU_PORTABLE.iOS
 		{
 			// Do your magic to handle the notification data
 			Console.WriteLine("WillPresentNotification gaurav 1 val");
+
+			PreferenceHandler prefsHandler = new PreferenceHandler();
+			if (prefsHandler.IsLoggedIn())
+			{
+				int roleId = prefsHandler.GetUserDetails().Role_Id;
+				if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
+				{
+					BTProgressHUD.ForceiOS6LookAndFeel = true;
+					BTProgressHUD.ShowToast("New Alert Received !", true, 2000.0);
+				}
+			}
 		}
 
 		// Receive data message on iOS 10 devices.
@@ -188,11 +200,6 @@ namespace CSU_PORTABLE.iOS
 			Console.WriteLine("DidReceiveNotificationResponse gaurav 1 val");
 		}
 		//FCM End
-
-
-
-
-			
 	}
 }
 
