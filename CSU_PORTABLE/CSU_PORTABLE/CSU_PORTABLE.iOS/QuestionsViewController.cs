@@ -188,8 +188,8 @@ namespace CSU_PORTABLE.iOS
         {
             FeedbackModel feedbackModel = new FeedbackModel();
             feedbackModel.QuestionId = 1;
-            feedbackModel.ClassId = selectedClassRoom;
-            feedbackModel.AnswerId = SelectedAnswer;
+            feedbackModel.ClassId = selectedClassRoom + 1;
+            feedbackModel.AnswerId = SelectedAnswer + 1;
             feedbackModel.FeedbackDesc = "";
 
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
