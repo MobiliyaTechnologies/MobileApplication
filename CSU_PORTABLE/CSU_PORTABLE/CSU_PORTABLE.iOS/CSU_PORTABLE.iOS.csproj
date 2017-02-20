@@ -36,7 +36,7 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Distribution: Agreeya Mobility Inc</CodesignKey>
-    <CodesignProvision>2d1e700c-0bdc-40d5-a5bc-01e531b7aca0</CodesignProvision>
+    <CodesignProvision>38f1920d-cd64-460a-ac94-270bdf5d3477</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -102,6 +102,9 @@
     </Reference>
     <Reference Include="Firebase.CloudMessaging">
       <HintPath>..\..\packages\Xamarin.Firebase.iOS.CloudMessaging.1.2.1.1\lib\Xamarin.iOS10\Firebase.CloudMessaging.dll</HintPath>
+    </Reference>
+    <Reference Include="BTProgressHUD">
+      <HintPath>..\..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
