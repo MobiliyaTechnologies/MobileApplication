@@ -24,7 +24,7 @@ namespace CSU_PORTABLE.iOS
             var cell = tableView.DequeueReusableCell(cellIdentifier) as AlertsCell;
             if (cell == null)
                 cell = new AlertsCell(cellIdentifier);
-            cell.UpdateCell("Sensor: "+ AlertsList[indexPath.Row].Sensor_Id
+            cell.UpdateCell("Sensor: " + AlertsList[indexPath.Row].Sensor_Id
                 , AlertsList[indexPath.Row].Sensor_Log_Id
                 , AlertsList[indexPath.Row].Class_Id
                 , AlertsList[indexPath.Row].Class_Desc
@@ -32,11 +32,20 @@ namespace CSU_PORTABLE.iOS
                 , AlertsList[indexPath.Row].Alert_Desc
                 , AlertsList[indexPath.Row].Timestamp
                 , AlertsList[indexPath.Row].Is_Acknowledged
+                , AlertsList[indexPath.Row].Alert_Id
                 );
 
             return cell;
 
         }
+
+        //public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        //{
+        //    // base.RowSelected(tableView, indexPath);
+        //    var AlertsViewController = new AlertsViewController(this);
+        //    AlertsViewController.AcknowledgeAlert(tableView, indexPath);
+
+        //}
 
         public override nint RowsInSection(UITableView tableview, nint section)
         {

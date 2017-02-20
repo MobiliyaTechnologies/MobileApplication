@@ -15,7 +15,6 @@ namespace CSU_PORTABLE.iOS
         {
             SelectionStyle = UITableViewCellSelectionStyle.Gray;
             ContentView.BackgroundColor = UIColor.FromRGB(245, 245, 245);
-
             lblClassRoomDesc = new UILabel()
             {
                 Font = UIFont.FromName("AmericanTypewriter", 15f),

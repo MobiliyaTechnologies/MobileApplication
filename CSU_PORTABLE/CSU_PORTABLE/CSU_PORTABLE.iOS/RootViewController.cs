@@ -60,8 +60,11 @@ namespace CSU_PORTABLE.iOS
             {
                 if (userDetail.Role_Id == 2)
                 {
-                    var ClassRoomController = (ClassRoomController)Storyboard.InstantiateViewController("ClassRoomController");
-                    NavController.PushViewController(ClassRoomController, false);
+                    //var ClassRoomController = (ClassRoomController)Storyboard.InstantiateViewController("ClassRoomController");
+                    //NavController.PushViewController(ClassRoomController, false);
+
+                    var FeedbackViewController = Storyboard.InstantiateViewController("FeedbackViewController") as FeedbackViewController;
+                    NavController.PushViewController(FeedbackViewController, false);
                 }
                 else
                 {
@@ -73,6 +76,7 @@ namespace CSU_PORTABLE.iOS
             {
                 var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
                 NavController.PushViewController(ViewController, false);
+
             }
 
             SidebarController = new SidebarNavigation.SidebarController(this, NavController, menuController);
