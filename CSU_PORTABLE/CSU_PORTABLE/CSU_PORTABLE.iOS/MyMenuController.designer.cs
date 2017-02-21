@@ -14,56 +14,8 @@ namespace CSU_PORTABLE.iOS
     [Register ("MyMenuController")]
     partial class MyMenuController
     {
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton AlertsButton { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton ChangePasswordButton { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton LogOutButton { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton ProfileName { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton ReportsButton { get; set; }
-
-        [Action ("ProfileName_TouchUpInside:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void ProfileName_TouchUpInside (UIKit.UIButton sender);
-
         void ReleaseDesignerOutlets ()
         {
-            if (AlertsButton != null) {
-                AlertsButton.Dispose ();
-                AlertsButton = null;
-            }
-
-            if (ChangePasswordButton != null) {
-                ChangePasswordButton.Dispose ();
-                ChangePasswordButton = null;
-            }
-
-            if (LogOutButton != null) {
-                LogOutButton.Dispose ();
-                LogOutButton = null;
-            }
-
-            if (ProfileName != null) {
-                ProfileName.Dispose ();
-                ProfileName = null;
-            }
-
-            if (ReportsButton != null) {
-                ReportsButton.Dispose ();
-                ReportsButton = null;
-            }
         }
     }
 }

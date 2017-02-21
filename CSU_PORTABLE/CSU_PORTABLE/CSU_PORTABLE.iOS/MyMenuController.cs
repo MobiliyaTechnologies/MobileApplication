@@ -1,4 +1,5 @@
-﻿using CSU_PORTABLE.iOS.Utils;
+﻿using CoreGraphics;
+using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
@@ -11,27 +12,30 @@ namespace CSU_PORTABLE.iOS
 {
     public partial class MyMenuController : BaseController
     {
+        #region " Variables "
+
         LoadingOverlay loadingOverlay;
+        PreferenceHandler prefHandler;
+        UserDetails userdetail;
+
+        #endregion
+
 
         public MyMenuController(IntPtr handle) : base(handle)
         {
         }
 
+
+
+
+
+        #region " Events "
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
-            UserDetails User = preferenceHandler.GetUserDetails();
-            ProfileName.SetTitle(User.First_Name + " " + User.Last_Name, UIControlState.Normal);
-            ProfileName.Enabled = false;
-
-            ChangePasswordButton.TouchUpInside += ChangePasswordButton_TouchUpInside;
-            LogOutButton.TouchUpInside += LogOutButton_TouchUpInside;
-            ReportsButton.TouchUpInside += ReportsButton_TouchUpInside;
-            AlertsButton.TouchUpInside += AlertsButton_TouchUpInside;
+            GenerateMenu();
         }
-
-
 
         private void AlertsButton_TouchUpInside(object sender, EventArgs e)
         {
@@ -63,7 +67,98 @@ namespace CSU_PORTABLE.iOS
             View.Add(loadingOverlay);
             PreferenceHandler prefs = new PreferenceHandler();
             Logout(new LogoutModel(prefs.GetUserDetails().Email));
-            
+
+        }
+
+        #endregion
+
+        #region " Functions "
+
+
+        public void GenerateMenu()
+        {
+
+            prefHandler = new PreferenceHandler();
+            userdetail = prefHandler.GetUserDetails();
+            //ProfileName.SetTitle(userdetail.First_Name + " " + userdetail.Last_Name, UIControlState.Normal);
+            //ProfileName.Enabled = false;
+
+            UIView viewProfile = new UIView(new CGRect(0, 20, View.Bounds.Width, 180));
+            viewProfile.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+
+            UILabel lblProfileName = new UILabel()
+            {
+                Frame = new CGRect(0, 40, 260, 100),
+                Font = UIFont.FromName("Futura-Medium", 20f),
+                BackgroundColor = UIColor.Clear,
+                TextAlignment = UITextAlignment.Center,
+                Text = userdetail.First_Name + " " + userdetail.Last_Name,
+                TextColor = UIColor.White,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 3
+
+            };
+            viewProfile.AddSubview(lblProfileName);
+
+            UIButton ReportsButton = new UIButton()
+            {
+                Frame = new CGRect(50, 210, 150, 40),
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                BackgroundColor = UIColor.Clear
+            };
+            ReportsButton.SetTitle("Reports", UIControlState.Normal);
+            ReportsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
+            ReportsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+
+            UIButton AlertsButton = new UIButton()
+            {
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                BackgroundColor = UIColor.Clear
+            };
+            AlertsButton.SetTitle("Alerts", UIControlState.Normal);
+            AlertsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
+            AlertsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+
+            UIButton ChangePasswordButton = new UIButton()
+            {
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                BackgroundColor = UIColor.Clear
+            };
+            ChangePasswordButton.SetTitle("Change Password", UIControlState.Normal);
+            ChangePasswordButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
+            ChangePasswordButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+
+
+            UIButton LogOutButton = new UIButton()
+            {
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                BackgroundColor = UIColor.Clear,
+            };
+            LogOutButton.SetTitle("Log Out", UIControlState.Normal);
+            LogOutButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
+            LogOutButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+
+            ChangePasswordButton.TouchUpInside += ChangePasswordButton_TouchUpInside;
+            LogOutButton.TouchUpInside += LogOutButton_TouchUpInside;
+            ReportsButton.TouchUpInside += ReportsButton_TouchUpInside;
+            AlertsButton.TouchUpInside += AlertsButton_TouchUpInside;
+
+            if (userdetail.Role_Id == 2)
+            {
+                ChangePasswordButton.Frame = new CGRect(50, 260, 150, 40);
+                LogOutButton.Frame = new CGRect(50, 310, 150, 40);
+                View.AddSubviews(viewProfile, ChangePasswordButton, ReportsButton, LogOutButton);
+            }
+            else
+            {
+                AlertsButton.Frame = new CGRect(50, 260, 150, 40);
+                ChangePasswordButton.Frame = new CGRect(50, 310, 150, 40);
+                LogOutButton.Frame = new CGRect(50, 360, 150, 40);
+                View.AddSubviews(viewProfile, ChangePasswordButton, ReportsButton, AlertsButton, LogOutButton);
+            }
+
+
+
         }
 
         private void Logout(LogoutModel logoutModel)
@@ -128,5 +223,7 @@ namespace CSU_PORTABLE.iOS
             alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
             PresentViewController(alertController, true, null);
         }
+
+        #endregion
     }
 }
