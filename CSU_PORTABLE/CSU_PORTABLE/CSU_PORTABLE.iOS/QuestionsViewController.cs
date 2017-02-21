@@ -49,7 +49,7 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidLoad();
 
-            SelectedAnswer = 0;
+            SelectedAnswer = -1;
             prefHandler = new Utils.PreferenceHandler();
             userdetail = prefHandler.GetUserDetails();
             GetQuestionView();
@@ -77,9 +77,9 @@ namespace CSU_PORTABLE.iOS
             {
 
                 submitFeedback(userdetail.User_Id);
-                var ThankYouViewController = Storyboard.InstantiateViewController("ThankYouViewController") as ThankYouViewController;
-                ThankYouViewController.NavigationItem.SetHidesBackButton(true, false);
-                NavigationController.PushViewController(ThankYouViewController, true);
+                //var ThankYouViewController = Storyboard.InstantiateViewController("ThankYouViewController") as ThankYouViewController;
+                //ThankYouViewController.NavigationItem.SetHidesBackButton(true, false);
+                //NavigationController.PushViewController(ThankYouViewController, true);
             }
             else
             {
@@ -129,28 +129,31 @@ namespace CSU_PORTABLE.iOS
 
 
             UIButton btnBack = new UIButton(UIButtonType.Custom);
-            btnBack.SetTitle("Back", UIControlState.Normal);
-            btnBack.Font = UIFont.FromName("Futura-Medium", 15f);
-            btnBack.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
-            btnBack.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            //btnBack.SetTitle("Back", UIControlState.Normal);
+            //btnBack.Font = UIFont.FromName("Futura-Medium", 15f);
+            //btnBack.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
+            //btnBack.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            btnBack.SetImage(UIImage.FromBundle("Back_BTN_White.png"), UIControlState.Normal);
+            btnBack.Layer.CornerRadius = 20;
             btnBack.TouchUpInside += BtnBack_TouchUpInside;
-            btnBack.Frame = new CGRect((View.Bounds.Width / 2) - 80, 450, 80, 40);
-            btnBack.BackgroundColor = UIColor.White;
+            btnBack.Frame = new CGRect((View.Bounds.Width / 2) - 60, 480, 40, 40);
+            btnBack.BackgroundColor = UIColor.FromRGB(33, 77, 43);
 
             UIButton btnSubmit = new UIButton(UIButtonType.Custom);
-            btnSubmit.SetTitle("Submit", UIControlState.Normal);
-            btnSubmit.Font = UIFont.FromName("Futura-Medium", 15f);
-            btnSubmit.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
-            btnSubmit.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            //btnSubmit.SetTitle("Submit", UIControlState.Normal);
+            //btnSubmit.Font = UIFont.FromName("Futura-Medium", 15f);
+            //btnSubmit.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
+            //btnSubmit.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            btnSubmit.SetImage(UIImage.FromBundle("Tick_BTN_White.png"), UIControlState.Normal);
+            btnSubmit.Layer.CornerRadius = 20;
             btnSubmit.TouchUpInside += BtnSubmit_TouchUpInside;
-            btnSubmit.Frame = new CGRect((View.Bounds.Width / 2) + 20, 450, 80, 40);
+            btnSubmit.Frame = new CGRect((View.Bounds.Width / 2) + 20, 480, 40, 40);
             btnSubmit.BackgroundColor = UIColor.White;
 
 
             List<string> answers = new List<string>() { "very cold", "cold", "normal", "hot", "very hot" };
-            UISegmentedControl segAnswers = new UISegmentedControl(new CGRect(10, 250, View.Bounds.Width - 20, 50));
-            segAnswers.ControlStyle = UISegmentedControlStyle.Plain;
-
+            UISegmentedControl segAnswers = new UISegmentedControl(new CGRect(10, 250, View.Bounds.Width - 20, 70));
+            segAnswers.ControlStyle = UISegmentedControlStyle.Bar;
             UITextAttributes attAnswersdefault = new UITextAttributes()
             {
                 Font = UIFont.FromName("Futura-Medium", 12f),
@@ -163,38 +166,91 @@ namespace CSU_PORTABLE.iOS
                 TextColor = UIColor.FromRGB(30, 77, 43),
                 TextShadowColor = UIColor.LightTextColor
             };
-            segAnswers.TintColor = UIColor.FromWhiteAlpha(1f, 0.7f);
+            segAnswers.TintColor = UIColor.White;
             //UIOffset offAnswers = new UIOffset(5, 5);
             segAnswers.SetTitleTextAttributes(attAnswersdefault, UIControlState.Normal);
             segAnswers.SetTitleTextAttributes(attAnswersSelected, UIControlState.Selected);
             //segAnswers.SetContentPositionAdjustment(offAnswers, UISegmentedControlSegment.Center, UIBarMetrics.Default);
             segAnswers.Layer.BorderColor = UIColor.Clear.CGColor;
-            segAnswers.AutosizesSubviews = true;
-            segAnswers.InsertSegment(answers[0], 1, false);
-            segAnswers.InsertSegment(answers[1], 2, false);
-            segAnswers.InsertSegment(answers[2], 3, false);
-            segAnswers.InsertSegment(answers[3], 4, false);
-            segAnswers.InsertSegment(answers[4], 5, false);
+            segAnswers.AutosizesSubviews = false;
+            segAnswers.InsertSegment(answers[0], 0, false);
+            segAnswers.InsertSegment(answers[1], 1, false);
+            segAnswers.InsertSegment(answers[2], 2, false);
+            segAnswers.InsertSegment(answers[3], 3, false);
+            segAnswers.InsertSegment(answers[4], 4, false);
+            segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon_Opacity.png"), 0);
+            segAnswers.SetImage(UIImage.FromBundle("Cold_Icon_Opacity.png"), 1);
+            segAnswers.SetImage(UIImage.FromBundle("Normal_Icon_Opacity.png"), 2);
+            segAnswers.SetImage(UIImage.FromBundle("Hot_Icon_Opacity.png"), 3);
+            segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon_Opacity.png"), 4);
+
+            UILabel lblSelectedAnswer = new UILabel()
+            {
+                Frame = new CGRect(10, 330, View.Bounds.Width - 20, 30),
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                TextColor = UIColor.White,
+                TextAlignment = UITextAlignment.Center
+            };
+
             segAnswers.ValueChanged += (sender, e) =>
             {
                 SelectedAnswer = (int)(sender as UISegmentedControl).SelectedSegment;
+                segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon_Opacity.png"), 0);
+                segAnswers.SetImage(UIImage.FromBundle("Cold_Icon_Opacity.png"), 1);
+                segAnswers.SetImage(UIImage.FromBundle("Normal_Icon_Opacity.png"), 2);
+                segAnswers.SetImage(UIImage.FromBundle("Hot_Icon_Opacity.png"), 3);
+                segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon_Opacity.png"), 4);
+                lblSelectedAnswer.Text = answers[SelectedAnswer];
+                switch (SelectedAnswer)
+                {
+                    case 0:
+                        segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon.png"), SelectedAnswer);
+                        View.BackgroundColor = UIColor.FromRGB(36, 116, 169);
+                        btnBack.BackgroundColor = UIColor.FromRGB(36, 116, 169);
+                        break;
+                    case 1:
+                        segAnswers.SetImage(UIImage.FromBundle("Cold_Icon.png"), SelectedAnswer);
+                        btnBack.BackgroundColor = UIColor.FromRGB(16, 84, 86);
+                        View.BackgroundColor = UIColor.FromRGB(16, 84, 86);
+
+                        break;
+                    case 2:
+                        segAnswers.SetImage(UIImage.FromBundle("Normal_Icon.png"), SelectedAnswer);
+                        View.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+                        btnBack.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+                        break;
+                    case 3:
+                        segAnswers.SetImage(UIImage.FromBundle("Hot_Icon.png"), SelectedAnswer);
+
+                        View.BackgroundColor = UIColor.FromRGB(204, 84, 48);
+                        btnBack.BackgroundColor = UIColor.FromRGB(204, 84, 48);
+                        break;
+                    case 4:
+                        segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon.png"), SelectedAnswer);
+                        btnBack.BackgroundColor = UIColor.FromRGB(214, 69, 66);
+                        View.BackgroundColor = UIColor.FromRGB(214, 69, 66);
+                        break;
+                    default:
+                        break;
+                }
+
             };
 
 
-            View.AddSubviews(QuestionHeader, QuestionSubHeader, btnBack, btnSubmit, segAnswers);
+
+
+            View.AddSubviews(QuestionHeader, QuestionSubHeader, btnBack, btnSubmit, segAnswers, lblSelectedAnswer);
         }
 
         private void submitFeedback(int userId)
         {
             FeedbackModel feedbackModel = new FeedbackModel();
             feedbackModel.QuestionId = 1;
-            feedbackModel.ClassId = selectedClassRoom;
-            feedbackModel.AnswerId = SelectedAnswer;
+            feedbackModel.ClassId = selectedClassRoom + 1;
+            feedbackModel.AnswerId = SelectedAnswer + 1;
             feedbackModel.FeedbackDesc = "";
 
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-
-
             var request = new RestRequest(Constants.API_GIVE_FEEDBACK + "/" + userId, Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(feedbackModel);
@@ -204,7 +260,11 @@ namespace CSU_PORTABLE.iOS
                 Console.WriteLine(response);
                 if (response.StatusCode != 0)
                 {
-                    submitFeedbackResponse((RestResponse)response);
+                    InvokeOnMainThread(() =>
+                    {
+                        submitFeedbackResponse((RestResponse)response);
+                    });
+
                 }
             });
         }
@@ -217,6 +277,9 @@ namespace CSU_PORTABLE.iOS
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
+                    var ThankYouViewController = Storyboard.InstantiateViewController("ThankYouViewController") as ThankYouViewController;
+                    ThankYouViewController.NavigationItem.SetHidesBackButton(true, false);
+                    NavigationController.PushViewController(ThankYouViewController, true);
                     loadingOverlay.Hide();
                 }
                 else

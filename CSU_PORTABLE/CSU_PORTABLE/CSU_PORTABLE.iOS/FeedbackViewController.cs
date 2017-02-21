@@ -106,12 +106,14 @@ namespace CSU_PORTABLE.iOS
             };
 
             UIButton btnNext = new UIButton(UIButtonType.Custom);
-            btnNext.SetTitle("Next", UIControlState.Normal);
-            btnNext.Font = UIFont.FromName("Futura-Medium", 15f);
-            btnNext.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
-            btnNext.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            //btnNext.SetTitle("Next", UIControlState.Normal);
+            //btnNext.Font = UIFont.FromName("Futura-Medium", 15f);
+            //btnNext.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
+            //btnNext.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            btnNext.SetImage(UIImage.FromBundle("Next_BTN_White.png"), UIControlState.Normal);
+            btnNext.Layer.CornerRadius = 20;
             btnNext.TouchUpInside += BtnNext_TouchUpInside;
-            btnNext.Frame = new CGRect((View.Bounds.Width / 2) - 40, 450, 80, 40);
+            btnNext.Frame = new CGRect((View.Bounds.Width / 2) - 20, 480, 40, 40);
             btnNext.BackgroundColor = UIColor.White;
             View.AddSubviews(FeedbackHomeHeader, FeedbackHomeSubHeader, btnNext);
         }
@@ -186,6 +188,8 @@ namespace CSU_PORTABLE.iOS
 
         }
         #endregion
+
+
 
 
         #region " Picker "

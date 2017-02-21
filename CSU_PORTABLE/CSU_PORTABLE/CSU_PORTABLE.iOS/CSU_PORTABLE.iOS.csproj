@@ -276,6 +276,78 @@
   <ItemGroup>
     <BundleResource Include="Resources\CSU_logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Back_BTN_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Cold_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Cold_Icon_Opacity.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Down_Arrow_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Hot_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Hot_Icon_Opacity.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Lock_Icon_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Lock_Icon_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Logo_01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Logo_02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Logo_03.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Mail_Icon_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Mail_Icon_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Next_BTN_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Normal_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Normal_Icon_Opacity.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Retype_Icon_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Thank_You_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Tick_BTN_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Up_Arrow_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Very_Cold_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Very_Cold_Icon_Opacity.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Very_Hot_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Very_Hot_Icon_Opacity.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.InstanceID.1.0.8\build\Xamarin.Firebase.iOS.InstanceID.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.InstanceID.1.0.8\build\Xamarin.Firebase.iOS.InstanceID.targets')" />
