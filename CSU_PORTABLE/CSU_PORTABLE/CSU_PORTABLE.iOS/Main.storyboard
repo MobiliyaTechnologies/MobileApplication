@@ -297,7 +297,7 @@
         </scene>
         <scene sceneID="1267">
             <objects>
-                <viewController id="1268" sceneMemberID="viewController" customClass="FeedbackViewController" storyboardIdentifier="FeedbackViewController" title="CSU Feedback">
+                <viewController id="1268" sceneMemberID="viewController" customClass="FeedbackViewController" storyboardIdentifier="FeedbackViewController" title="Feedback">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1265"/>
                         <viewControllerLayoutGuide type="bottom" id="1266"/>
@@ -314,7 +314,7 @@
         </scene>
         <scene sceneID="1295">
             <objects>
-                <viewController id="1296" sceneMemberID="viewController" customClass="ThankYouViewController" storyboardIdentifier="ThankYouViewController" title="CSU Feedback">
+                <viewController id="1296" sceneMemberID="viewController" customClass="ThankYouViewController" storyboardIdentifier="ThankYouViewController" title="Feedback">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1293"/>
                         <viewControllerLayoutGuide type="bottom" id="1294"/>
@@ -331,7 +331,7 @@
         </scene>
         <scene sceneID="1317">
             <objects>
-                <viewController id="1318" sceneMemberID="viewController" customClass="QuestionsViewController" storyboardIdentifier="QuestionsViewController" title="CSU Feedback">
+                <viewController id="1318" sceneMemberID="viewController" customClass="QuestionsViewController" storyboardIdentifier="QuestionsViewController" title="Feedback">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1315"/>
                         <viewControllerLayoutGuide type="bottom" id="1316"/>

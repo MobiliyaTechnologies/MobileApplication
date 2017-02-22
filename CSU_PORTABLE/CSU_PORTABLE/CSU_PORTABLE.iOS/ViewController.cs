@@ -24,6 +24,7 @@ namespace CSU_PORTABLE.iOS
 
         }
 
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
@@ -47,13 +48,13 @@ namespace CSU_PORTABLE.iOS
 
             UIImageView imgEmail = new UIImageView()
             {
-                Frame = new CGRect((View.Bounds.Width / 2) - 120, 252, 25, 25),
+                Frame = new CGRect((View.Bounds.Width / 2) - 120, 255, 20, 20),
                 Image = UIImage.FromBundle("Mail_Icon_White.png")
             };
 
             UIImageView imgPassword = new UIImageView()
             {
-                Frame = new CGRect((View.Bounds.Width / 2) - 120, 302, 25, 25),
+                Frame = new CGRect((View.Bounds.Width / 2) - 120, 305, 20, 20),
                 Image = UIImage.FromBundle("Lock_Icon_White.png")
             };
 
@@ -65,7 +66,7 @@ namespace CSU_PORTABLE.iOS
             {
                 Font = UIFont.FromName("Helvetica", 15f),
                 TextColor = UIColor.White,
-                BackgroundColor = UIColor.FromWhiteAlpha(1f, 0.2f),
+                BackgroundColor = UIColor.Clear,
                 Frame = new CGRect((View.Bounds.Width / 2) - 80, 250, 200, 30),
                 //Placeholder = "Email",
                 TextAlignment = UITextAlignment.Left,
@@ -87,9 +88,9 @@ namespace CSU_PORTABLE.iOS
             {
                 Font = UIFont.FromName("Helvetica", 15f),
                 TextColor = UIColor.White,
-                BackgroundColor = UIColor.FromWhiteAlpha(1f, 0.2f),
+                BackgroundColor = UIColor.Clear,
                 Frame = new CGRect((View.Bounds.Width / 2) - 80, 300, 200, 30),
-                //Placeholder = "Password",
+                Placeholder = "Password",
                 TextAlignment = UITextAlignment.Left,
                 SecureTextEntry = true,
                 AutocorrectionType = UITextAutocorrectionType.No,
@@ -100,7 +101,7 @@ namespace CSU_PORTABLE.iOS
             };
 
 
-
+            TextFieldUsername.BecomeFirstResponder();
 
             TextFieldUsername.ShouldReturn = delegate
             {
@@ -119,9 +120,10 @@ namespace CSU_PORTABLE.iOS
             ButtonLogin.SetTitle("Log In", UIControlState.Normal);
             ButtonLogin.Font = UIFont.FromName("Futura-Medium", 15f);
             ButtonLogin.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
-            ButtonLogin.SetTitleColor(UIColor.Green, UIControlState.Focused);
+            ButtonLogin.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Focused);
             ButtonLogin.Frame = new CGRect((View.Bounds.Width / 2) - 120, 350, 240, 30);
-            ButtonLogin.BackgroundColor = UIColor.White; ButtonLogin.TouchUpInside += delegate
+            ButtonLogin.BackgroundColor = UIColor.FromRGB(200, 195, 114);
+            ButtonLogin.TouchUpInside += delegate
              {
                  // Added for showing loading screen
                  var bounds = UIScreen.MainScreen.Bounds;
@@ -152,6 +154,8 @@ namespace CSU_PORTABLE.iOS
             btnForgotPassword.BackgroundColor = UIColor.Clear;
             btnForgotPassword.TouchUpInside += BtnForgotPassword_TouchUpInside;
             View.AddSubviews(imgLogo, TextFieldUsername, TextFieldPassword, bottomLinePwd, bottomLineEmail, ButtonLogin, btnForgotPassword, imgEmail, imgPassword);
+
+
         }
 
         private void BtnForgotPassword_TouchUpInside(object sender, EventArgs e)
