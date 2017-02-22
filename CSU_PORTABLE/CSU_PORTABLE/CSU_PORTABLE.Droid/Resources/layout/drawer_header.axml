@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/header_background">
+    android:background="@color/green_theme">
     <TextView
         android:id="@+id/textViewUserName"
         android:layout_width="wrap_content"
@@ -14,6 +14,8 @@
         android:textSize="22sp"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="50dp"
-        android:textColor="@color/text_gray_dark"
+        android:textColor="@color/white"
         android:text="Name" />
+  
+  
 </LinearLayout>

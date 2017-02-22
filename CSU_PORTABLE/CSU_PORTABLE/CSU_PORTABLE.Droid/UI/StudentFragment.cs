@@ -28,9 +28,9 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutSelectClassroom;
         LinearLayout layoutSelectTemperature;
         LinearLayout layoutSubmit;
-        Button buttonNext;
-        Button buttonBack;
-        Button buttonSubmit;
+        ImageView buttonNext;
+        ImageView buttonBack;
+        ImageView buttonSubmit;
         Button buttonDone;
 
         TextView textViewQuestion;
@@ -76,21 +76,39 @@ namespace CSU_PORTABLE.Droid.UI
             textViewNormal = view.FindViewById<TextView>(Resource.Id.textView_feelingNormal);
             textViewCold = view.FindViewById<TextView>(Resource.Id.textView_cold);
             textViewTooCold = view.FindViewById<TextView>(Resource.Id.textView_tooCold);
-            buttonNext = view.FindViewById<Button>(Resource.Id.buttonNext);
-            buttonBack = view.FindViewById<Button>(Resource.Id.buttonBack);
-            buttonSubmit = view.FindViewById<Button>(Resource.Id.buttonSubmit);
+            buttonNext = view.FindViewById<ImageView>(Resource.Id.buttonNext);
+            buttonBack = view.FindViewById<ImageView>(Resource.Id.buttonBack);
+            buttonSubmit = view.FindViewById<ImageView>(Resource.Id.buttonSubmit);
             buttonDone = view.FindViewById<Button>(Resource.Id.buttonDone);
 
+            /*
             textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
             textViewCold.SetTextColor(Android.Graphics.Color.Gray);
             textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
             textViewHot.SetTextColor(Android.Graphics.Color.Gray);
             textViewTooCold.SetTextColor(Android.Graphics.Color.Gray);
+            */
+
+            textViewTooHot.Alpha = 0.5f;
+            textViewHot.Alpha = 0.5f;
+            textViewNormal.Alpha = 0.5f;
+            textViewCold.Alpha = 0.5f;
+            textViewTooCold.Alpha = 0.5f;
 
             textViewTooHot.Click += delegate
             {
                 selectedAnswer = "Too Hot";
                 selectedAnswerId = (int)textViewTooHot.Tag;
+
+                textViewTooHot.Alpha = 1f;
+                textViewHot.Alpha = 0.5f;
+                textViewNormal.Alpha = 0.5f;
+                textViewCold.Alpha = 0.5f;
+                textViewTooCold.Alpha = 0.5f;
+
+                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(214, 69, 66));
+
+                /*
                 textViewTooHot.SetTextColor(Android.Graphics.Color.White);
                 textViewHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
@@ -102,13 +120,23 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewTooCold.SetTypeface(textViewTooCold.Typeface, Android.Graphics.TypefaceStyle.Normal);
-
+                */
             };
 
             textViewHot.Click += delegate
             {
-                selectedAnswer = "Too Hot";
+                selectedAnswer = "Hot";
                 selectedAnswerId = (int)textViewHot.Tag;
+
+                textViewTooHot.Alpha = 0.5f;
+                textViewHot.Alpha = 1.0f;
+                textViewNormal.Alpha = 0.5f;
+                textViewCold.Alpha = 0.5f;
+                textViewTooCold.Alpha = 0.5f;
+
+                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(204, 84, 48));
+
+                /*
                 textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewHot.SetTextColor(Android.Graphics.Color.White);
                 textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
@@ -120,13 +148,23 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewTooCold.SetTypeface(textViewTooCold.Typeface, Android.Graphics.TypefaceStyle.Normal);
-
+                */
             };
 
             textViewNormal.Click += delegate
             {
                 selectedAnswer = "Feeling Normal";
                 selectedAnswerId = (int)textViewNormal.Tag;
+
+                textViewTooHot.Alpha = 0.5f;
+                textViewHot.Alpha = 0.5f;
+                textViewNormal.Alpha = 1f;
+                textViewCold.Alpha = 0.5f;
+                textViewTooCold.Alpha = 0.5f;
+
+                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(33, 77, 43));
+
+                /*
                 textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewNormal.SetTextColor(Android.Graphics.Color.White);
@@ -138,12 +176,21 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Bold);
                 textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewTooCold.SetTypeface(textViewTooCold.Typeface, Android.Graphics.TypefaceStyle.Normal);
-
+                */
             };
             textViewCold.Click += delegate
             {
-                selectedAnswer = "Too Cold";
+                selectedAnswer = "Cold";
                 selectedAnswerId = (int)textViewCold.Tag;
+
+                textViewTooHot.Alpha = 0.5f;
+                textViewHot.Alpha = 0.5f;
+                textViewNormal.Alpha = 0.5f;
+                textViewCold.Alpha = 1f;
+                textViewTooCold.Alpha = 0.5f;
+
+                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(16, 84, 86));
+                /*
                 textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
@@ -155,12 +202,22 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Bold);
                 textViewTooCold.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Normal);
-
+                */
             };
             textViewTooCold.Click += delegate
             {
                 selectedAnswer = "Too Cold";
                 selectedAnswerId = (int)textViewTooCold.Tag;
+
+                textViewTooHot.Alpha = 0.5f;
+                textViewHot.Alpha = 0.5f;
+                textViewNormal.Alpha = 0.5f;
+                textViewCold.Alpha = 0.5f;
+                textViewTooCold.Alpha = 1f;
+
+                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(36, 116, 169));
+
+                /*
                 textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewHot.SetTextColor(Android.Graphics.Color.Gray);
                 textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
@@ -172,7 +229,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
                 textViewTooCold.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Bold);
-
+                */
             };
 
             buttonNext.Click += delegate
