@@ -53,18 +53,8 @@ namespace CSU_PORTABLE.iOS
             prefHandler = new Utils.PreferenceHandler();
             userdetail = prefHandler.GetUserDetails();
             GetQuestionView();
-            //UITableView _table;
-
-            //_table = new UITableView
-            //{
-            //    Frame = new CoreGraphics.CGRect(10, 250, View.Bounds.Width - 20, 70),
-            //    RowHeight = 50,
-            //    Source = new AnswerSource(answers),
-            //};
-            //View.AddSubview(_table);
-            // GetAnswers(answers);
-
         }
+
 
         private void BtnSubmit_TouchUpInside(object sender, EventArgs e)
         {
@@ -89,7 +79,8 @@ namespace CSU_PORTABLE.iOS
 
         private void BtnBack_TouchUpInside(object sender, EventArgs e)
         {
-            NavigationController.PopToRootViewController(true);
+            //NavigationController.PopToRootViewController(true);
+            NavigationController.PopViewController(true);
         }
 
 
@@ -151,8 +142,8 @@ namespace CSU_PORTABLE.iOS
             btnSubmit.BackgroundColor = UIColor.White;
 
 
-            List<string> answers = new List<string>() { "very cold", "cold", "normal", "hot", "very hot" };
-            UISegmentedControl segAnswers = new UISegmentedControl(new CGRect(10, 250, View.Bounds.Width - 20, 70));
+            List<string> answers = new List<string>() { "Very Cold", "Cold", "Normal", "Hot", "Very Hot" };
+            UISegmentedControl segAnswers = new UISegmentedControl(new CGRect(10, 300, View.Bounds.Width - 20, 70));
             segAnswers.ControlStyle = UISegmentedControlStyle.Bar;
             UITextAttributes attAnswersdefault = new UITextAttributes()
             {
@@ -186,8 +177,8 @@ namespace CSU_PORTABLE.iOS
 
             UILabel lblSelectedAnswer = new UILabel()
             {
-                Frame = new CGRect(10, 330, View.Bounds.Width - 20, 30),
-                Font = UIFont.FromName("Futura-Medium", 15f),
+                Frame = new CGRect(10, 390, View.Bounds.Width - 20, 30),
+                Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.White,
                 TextAlignment = UITextAlignment.Center
             };
@@ -236,10 +227,35 @@ namespace CSU_PORTABLE.iOS
 
             };
 
-
+            segAnswers.SetBackgroundImage(imageWithColor(segAnswers.BackgroundColor), UIControlState.Normal, UIBarMetrics.Default);
+            segAnswers.SetBackgroundImage(imageWithColor(segAnswers.TintColor), UIControlState.Selected, UIBarMetrics.Default);
+            segAnswers.SetDividerImage(imageWithColor(UIColor.Clear), UIControlState.Normal, UIControlState.Normal, UIBarMetrics.Default);
 
 
             View.AddSubviews(QuestionHeader, QuestionSubHeader, btnBack, btnSubmit, segAnswers, lblSelectedAnswer);
+        }
+
+
+
+        private UIImage imageWithColor(UIColor imgColor)
+        {
+
+            var imgRenderer = new UIGraphicsImageRenderer(new CGSize(1, 1));
+            var img = imgRenderer.CreateImage((UIGraphicsImageRendererContext ctxt) =>
+            {
+                var superRed = UIColor.FromDisplayP3(1.358f, -0.074f, -0.012f, 1.0f);
+                superRed.SetFill();
+                UIColor.Black.SetStroke();
+                var path = new UIBezierPath();
+                path.MoveTo(new CGPoint(10, 10));
+                path.AddLineTo(new CGPoint(90, 10));
+                path.AddLineTo(new CGPoint(45, 90));
+                path.ClosePath();
+                path.Stroke();
+                path.Fill();
+            });
+
+            return img;
         }
 
         private void submitFeedback(int userId)
