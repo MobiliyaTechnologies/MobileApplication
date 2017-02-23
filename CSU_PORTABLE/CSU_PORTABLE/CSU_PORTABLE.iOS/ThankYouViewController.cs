@@ -61,7 +61,7 @@ namespace CSU_PORTABLE.iOS
 
             UIImageView imgThankYou = new UIImageView()
             {
-                Frame = new CGRect((View.Bounds.Width / 2) - 30, 180, 60, 60),
+                Frame = new CGRect((View.Bounds.Width / 2) - 60, 120, 120, 120),
                 Image = UIImage.FromBundle("Thank_You_Icon.png"),
                 BackgroundColor = UIColor.Clear
             };

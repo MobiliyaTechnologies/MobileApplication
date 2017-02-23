@@ -68,7 +68,7 @@ namespace CSU_PORTABLE.iOS
                 TextColor = UIColor.White,
                 BackgroundColor = UIColor.Clear,
                 Frame = new CGRect((View.Bounds.Width / 2) - 80, 250, 200, 30),
-                //Placeholder = "Email",
+                Placeholder = "Email",
                 TextAlignment = UITextAlignment.Left,
                 AutocorrectionType = UITextAutocorrectionType.No,
                 LeftView = paddingView,

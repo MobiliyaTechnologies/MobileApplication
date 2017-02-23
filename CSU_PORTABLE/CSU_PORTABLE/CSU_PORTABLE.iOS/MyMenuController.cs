@@ -83,7 +83,7 @@ namespace CSU_PORTABLE.iOS
             //ProfileName.SetTitle(userdetail.First_Name + " " + userdetail.Last_Name, UIControlState.Normal);
             //ProfileName.Enabled = false;
 
-            UIView viewProfile = new UIView(new CGRect(0, 20, View.Bounds.Width, 180));
+            UIView viewProfile = new UIView(new CGRect(0, 0, View.Bounds.Width, 180));
             viewProfile.BackgroundColor = UIColor.FromRGB(33, 77, 43);
 
             UILabel lblProfileName = new UILabel()

@@ -19,11 +19,17 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <MtouchProfiling>true</MtouchProfiling>
+    <Externalconsole>False</Externalconsole>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+<Variable name="Font" value="Font\Lato-Regular.tff" />
+</EnvironmentVariables>
+    </EnvironmentVariables>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>
@@ -178,6 +184,15 @@
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
+    <BundleResource Include="Fonts\Lato-Black_0.ttf" />
+    <BundleResource Include="Fonts\Lato-BlackItalic.ttf" />
+    <BundleResource Include="Fonts\Lato-Bold.ttf" />
+    <BundleResource Include="Fonts\Lato-BoldItalic.ttf" />
+    <BundleResource Include="Fonts\Lato-Italic.ttf" />
+    <BundleResource Include="Fonts\Lato-Light.ttf" />
+    <BundleResource Include="Fonts\Lato-LightItalic.ttf" />
+    <BundleResource Include="Fonts\Lato-Regular.ttf" />
+    <BundleResource Include="Fonts\lato-semibold.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlertsCell.cs" />
@@ -347,6 +362,174 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Very_Hot_Icon_Opacity.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Back_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Electricity_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Graph_Icon_Selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Graph_Icon_Selected-15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Lock_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Mail_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Map_Icon_Selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Map_Icon_Selected-14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Notification_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Angry_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Happy_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Sad_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Very_Happy_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\User_Icon_Selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\User_Icon_Selected-13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Blue%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Green%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Red%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Back_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\CSU_Logo%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Electricity_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Graph_Icon_Selected%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Graph_Icon_Selected-15%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Lock_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Mail_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Map_Icon_Selected%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Map_Icon_Selected-14%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Notification_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Angry_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Happy_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Sad_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Very_Happy_Icon%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\User_Icon_Selected%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\User_Icon_Selected-13%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Blue%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Green%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Arrow_Red%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Back_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\CSU_Logo%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Electricity_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Graph_Icon_Selected%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Graph_Icon_Selected-15%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Lock_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Mail_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Map_Icon_Selected%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Map_Icon_Selected-14%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Notification_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Angry_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Happy_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Sad_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Smiley_Very_Happy_Icon%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\User_Icon_Selected%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\User_Icon_Selected-13%403x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />

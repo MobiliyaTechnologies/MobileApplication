@@ -47,13 +47,23 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidLoad();
 
-            NavigationItem.SetRightBarButtonItem(
+
+
+            NavigationItem.SetLeftBarButtonItem(
                 new UIBarButtonItem(UIImage.FromBundle("threelines.png")
                     , UIBarButtonItemStyle.Plain
                     , (sender, args) =>
                     {
                         SidebarController.ToggleMenu();
                     }), true);
+            NavigationItem.SetRightBarButtonItem(
+                new UIBarButtonItem(UIImage.FromBundle("Notification_Icon.png")
+                    , UIBarButtonItemStyle.Plain
+                    , (sender, args) =>
+                    {
+
+                    }), true);
+
         }
     }
 }

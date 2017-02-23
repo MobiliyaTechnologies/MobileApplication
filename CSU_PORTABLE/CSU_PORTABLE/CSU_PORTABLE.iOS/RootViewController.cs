@@ -82,7 +82,7 @@ namespace CSU_PORTABLE.iOS
             SidebarController = new SidebarNavigation.SidebarController(this, NavController, menuController);
             SidebarController.MenuWidth = (IsLogged ? 250 : 0);
             SidebarController.ReopenOnRotate = false;
-
+            SidebarController.MenuLocation = SidebarNavigation.MenuLocations.Left;
         }
     }
 }

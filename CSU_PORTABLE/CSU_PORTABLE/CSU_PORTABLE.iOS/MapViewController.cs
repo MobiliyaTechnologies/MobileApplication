@@ -1,4 +1,5 @@
-﻿using CoreLocation;
+﻿using CoreGraphics;
+using CoreLocation;
 using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
@@ -18,7 +19,7 @@ namespace CSU_PORTABLE.iOS
         List<MeterDetails> meterList = null;
         List<MonthlyConsumptionDetails> monthlyConsumptionList = null;
 
-        public MapViewController (IntPtr handle) : base (handle)
+        public MapViewController(IntPtr handle) : base(handle)
         {
         }
 
@@ -32,12 +33,22 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidLoad();
             //this.SidebarController.MenuWidth = 250;
-            
-            map = new MKMapView(UIScreen.MainScreen.Bounds);
+
+            // GenerateInsightsHeader();
+
+            this.NavigationController.NavigationBar.TintColor = UIColor.White;
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+            this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+
+            GenerateInsightsHeader();
+
+            double mapHeight = NavigationController.NavigationBar.Bounds.Bottom + 70;
+            //map = new MKMapView(UIScreen.MainScreen.Bounds);
+            map = new MKMapView(new CGRect(0, mapHeight, View.Bounds.Width, View.Bounds.Height - mapHeight));
             map.MapType = MKMapType.Standard; //road map    
             map.ZoomEnabled = true;
             map.ScrollEnabled = true;
-           
+
 
             CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(40.571276, -105.085522);
 
@@ -47,8 +58,8 @@ namespace CSU_PORTABLE.iOS
             var mapViewDelegate = new MyMapDelegate();
             mapViewDelegate.AnnotationTapped += TheMapView_OnAnnotationTapped;
             map.Delegate = mapViewDelegate;
-            
-            View = map;
+
+            View.AddSubviews(map);
 
             var preferenceHandler = new PreferenceHandler();
             int userId = preferenceHandler.GetUserDetails().User_Id;
@@ -61,6 +72,119 @@ namespace CSU_PORTABLE.iOS
             {
                 ShowMessage("Invalid Email. Please Login Again !");
             }
+        }
+
+        private void GenerateInsightsHeader()
+        {
+            double insightsHeight = NavigationController.NavigationBar.Bounds.Bottom;
+
+            UIButton btnInsights = new UIButton()
+            {
+                Frame = new CGRect(0, insightsHeight, View.Bounds.Width, 70),
+                BackgroundColor = UIColor.FromRGB(228, 228, 228),
+                Font = UIFont.FromName("Futura-Medium", 12f),
+            };
+
+            UILabel.Appearance.Font = UIFont.FromName("Futura-Medium", 20f);
+
+            double lblWidth = (View.Bounds.Width / 3) - 10;
+
+            UIImageView imgConsumed = new UIImageView()
+            {
+                Frame = new CGRect(5, 5, 20, 20),
+                Image = UIImage.FromBundle("Arrow_Blue.png"),
+            };
+
+            UILabel lblConsumedCount = new UILabel()
+            {
+                Frame = new CGRect(30, 20, lblWidth, 30),
+                Text = "375 k",
+                Font = UIFont.PreferredTitle2,
+                TextColor = UIColor.DarkTextColor,
+                BackgroundColor = UIColor.Clear,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 3,
+                TextAlignment = UITextAlignment.Center
+
+            };
+
+            UIImageView imgExpected = new UIImageView()
+            {
+                Frame = new CGRect(5, 5, 20, 20),
+                Image = UIImage.FromBundle("Arrow_Green.png"),
+            };
+
+            UILabel lblExpectedCount = new UILabel()
+            {
+                Frame = new CGRect(lblWidth + 30, 20, lblWidth, 30),
+                Text = "200 k",
+                Font = UIFont.PreferredTitle2,
+                TextColor = UIColor.DarkTextColor,
+                BackgroundColor = UIColor.Clear,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 3,
+                TextAlignment = UITextAlignment.Center
+            };
+
+            UIImageView imgOverused = new UIImageView()
+            {
+                Frame = new CGRect(5, 5, 20, 20),
+                Image = UIImage.FromBundle("Arrow_Red.png"),
+            };
+
+            UILabel lblOverusedCount = new UILabel()
+            {
+                Frame = new CGRect((lblWidth * 2) + 20, 20, lblWidth, 30),
+                Text = "175 k",
+                Font = UIFont.PreferredTitle2,
+                TextColor = UIColor.DarkTextColor,
+                BackgroundColor = UIColor.Clear,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 3,
+                TextAlignment = UITextAlignment.Center
+            };
+
+            lblConsumedCount.AddSubview(imgConsumed);
+            lblExpectedCount.AddSubview(imgExpected);
+            lblOverusedCount.AddSubview(imgOverused);
+
+            UILabel lblConsumed = new UILabel()
+            {
+                Frame = new CGRect(10, 40, lblWidth + 20, 30),
+                Text = "CONSUMED IN LAST WEEK",
+                Font = UIFont.FromName("Futura-Medium", 10f),
+                TextColor = UIColor.Gray,
+                BackgroundColor = UIColor.Clear,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 3,
+                TextAlignment = UITextAlignment.Center
+            };
+
+            UILabel lblExpected = new UILabel()
+            {
+                Frame = new CGRect(new CGPoint(lblWidth + 20, 40), new CGSize(lblWidth, 30)),
+                Text = "EXPECTED",
+                Font = UIFont.FromName("Futura-Medium", 10f),
+                TextColor = UIColor.Gray,
+                BackgroundColor = UIColor.Clear,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 3,
+                TextAlignment = UITextAlignment.Center
+            };
+
+            UILabel lblOverused = new UILabel()
+            {
+                Frame = new CGRect(new CGPoint((lblWidth * 2) + 10, 40), new CGSize(lblWidth, 30)),
+                Text = "OVERUSED",
+                Font = UIFont.FromName("Futura-Medium", 10f),
+                TextColor = UIColor.Gray,
+                BackgroundColor = UIColor.Clear,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 3,
+                TextAlignment = UITextAlignment.Center
+            };
+            btnInsights.AddSubviews(lblConsumed, lblExpected, lblOverused, lblConsumedCount, lblExpectedCount, lblOverusedCount);
+            View.AddSubviews(btnInsights);
         }
 
         private void TheMapView_OnAnnotationTapped(object sender, EventArgs args)
@@ -78,7 +202,7 @@ namespace CSU_PORTABLE.iOS
                 }
             }
         }
-        
+
         private void ShowMessage(string v)
         {
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
@@ -89,11 +213,15 @@ namespace CSU_PORTABLE.iOS
 
         }
 
+
+
+
+        #region " Maps "
         //for api call
         private void GetMonthlyConsumptionDetails(int userId)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            
+
             var request = new RestRequest(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + userId, Method.GET);
 
             client.ExecuteAsync(request, response =>
@@ -101,7 +229,8 @@ namespace CSU_PORTABLE.iOS
                 Console.WriteLine(response);
                 if (response.StatusCode != 0)
                 {
-                    InvokeOnMainThread(() => {
+                    InvokeOnMainThread(() =>
+                    {
                         GetMonthlyConsumptionResponse((RestResponse)response);
                     });
                 }
@@ -111,7 +240,7 @@ namespace CSU_PORTABLE.iOS
         private void GetMeterDetails(int userId)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            
+
             var request = new RestRequest(Constants.API_GET_METER_LIST + "/" + userId, Method.GET);
 
             client.ExecuteAsync(request, response =>
@@ -119,7 +248,8 @@ namespace CSU_PORTABLE.iOS
                 Console.WriteLine(response);
                 if (response.StatusCode != 0)
                 {
-                    InvokeOnMainThread(() => {
+                    InvokeOnMainThread(() =>
+                    {
                         GetMeterDetailsResponse((RestResponse)response);
                     });
                 }
@@ -275,7 +405,7 @@ namespace CSU_PORTABLE.iOS
             }
             return radius;
         }
-        
+
         //for overlay
         public class SearchResultsUpdator : UISearchResultsUpdating
         {
@@ -315,7 +445,7 @@ namespace CSU_PORTABLE.iOS
                 if (AnnotationTapped != null)
                 {
                     AnnotationTapped(view, new EventArgs());
-                } 
+                }
             }
 
             public override MKOverlayView GetViewForOverlay(MKMapView mapView, IMKOverlay overlay)
@@ -358,6 +488,8 @@ namespace CSU_PORTABLE.iOS
                 return fillColor;
             }
         }
+
+        #endregion
 
     }
 }
