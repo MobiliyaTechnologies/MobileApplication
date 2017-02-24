@@ -41,6 +41,12 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutProgress;
         int userRole;
 
+        LinearLayout LayoutInsightData;
+        TextView textViewConsumed;
+        TextView textViewExpected;
+        TextView textViewOverused;
+        TextView textViewInsights;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -71,6 +77,20 @@ namespace CSU_PORTABLE.Droid.UI
             if (userRole == (int)Constants.USER_ROLE.ADMIN)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+
+                LayoutInsightData = FindViewById<LinearLayout>(Resource.Id.layout_insight_data);
+                textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
+                textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
+                textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
+                textViewInsights = FindViewById<TextView>(Resource.Id.tv_insights);
+
+                textViewInsights.Click += delegate
+                {
+                    // Show insights(Recommendations) Activity
+                    Intent intent = new Intent(Application.Context, typeof(InsightsActivity));
+                    StartActivity(intent);
+                };
+
                 if (!isNetworkEnabled)
                 {
                     ShowToast("Please enable your internet connection !");
@@ -96,6 +116,8 @@ namespace CSU_PORTABLE.Droid.UI
                     {
                         GetMeterDetails(userId);
                         GetMonthlyConsumptionDetails(userId);
+                        ShowInsights(null);
+                        GetInsights(userId);
                     }
                  }
                 else
@@ -144,22 +166,31 @@ namespace CSU_PORTABLE.Droid.UI
             PreferenceHandler pref = new PreferenceHandler();
             UserDetails user = pref.GetUserDetails();
             textViewUserName.Text = user.First_Name + " " + user.Last_Name;
-            
+
+            TextView textViewLogout =
+                 navigationView.GetHeaderView(0).FindViewById<TextView>(
+                Resource.Id.tv_logout);
+            textViewLogout.Click += delegate {
+                Logout(new LogoutModel(pref.GetUserDetails().Email));
+            };
+
             navigationView.NavigationItemSelected += (sender, e) => {
                 e.MenuItem.SetChecked(true);
                 
                 //react to click here and swap fragments or navigate
                 switch(e.MenuItem.ItemId)
                 {
+                    case Resource.Id.nav_dashboard:
+                        break;
                     case Resource.Id.nav_reports:
                         StartActivity(new Intent(Application.Context, typeof(GlobalReportsActivity)));
                         break;
                     case Resource.Id.nav_alerts:
                         StartActivity(new Intent(Application.Context, typeof(AlertsActivity)));
                         break;
-                    case Resource.Id.nav_logout:
-                        PreferenceHandler prefs = new PreferenceHandler();
-                        Logout(new LogoutModel(pref.GetUserDetails().Email));
+                    case Resource.Id.nav_insights:
+                        Intent intent = new Intent(Application.Context, typeof(InsightsActivity));
+                        StartActivity(intent);
                         break;
                     case Resource.Id.nav_change_password:
                         StartActivity(new Intent(Application.Context, typeof(ChangePasswordActivity)));
@@ -179,6 +210,60 @@ namespace CSU_PORTABLE.Droid.UI
                     return true;
             }
             return base.OnOptionsItemSelected(item);
+        }
+
+        private void GetInsights(int userId)
+        {
+            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+            Log.Debug(TAG, "GetInsights()");
+
+            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
+
+            client.ExecuteAsync(request, response =>
+            {
+                Console.WriteLine(response);
+                if (response.StatusCode != 0)
+                {
+                    Log.Debug(TAG, "async Response : " + response.ToString());
+                    RunOnUiThread(() => {
+                        GetInsightDataResponse((RestResponse)response);
+                    });
+                }
+            });
+        }
+
+        private void GetInsightDataResponse(RestResponse restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            {
+                Log.Debug(TAG, restResponse.Content.ToString());
+                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
+
+
+                ShowInsights(response);
+            }
+            else
+            {
+                Log.Debug(TAG, "Login Failed");
+                ShowInsights(null);
+            }
+        }
+
+        private void ShowInsights(InshghtDataModel response)
+        {
+            if (response == null)
+            {
+                LayoutInsightData.Visibility = ViewStates.Gone;
+            } else
+            {
+
+                LayoutInsightData.Visibility = ViewStates.Visible;
+
+                textViewConsumed.Text = "" + response.ConsumptionValue;
+                textViewExpected.Text = "" + response.PredictedValue;
+                float ovr = response.ConsumptionValue - response.PredictedValue;
+                textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
+            }
         }
 
         private void GetMonthlyConsumptionDetails(int userId)

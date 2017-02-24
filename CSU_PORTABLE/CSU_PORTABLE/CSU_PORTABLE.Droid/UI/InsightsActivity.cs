@@ -4,41 +4,54 @@ using System.Linq;
 using System.Text;
 
 using Android.App;
+using Android.Content;
 using Android.OS;
-using Android.Support.V7.App;
+using Android.Runtime;
+using Android.Views;
 using Android.Widget;
-using RestSharp;
-using Android.Util;
-using CSU_PORTABLE.Utils;
-using CSU_PORTABLE.Droid.Utils;
-using Newtonsoft.Json.Linq;
 using CSU_PORTABLE.Models;
 using Android.Support.V7.Widget;
-using Android.Views;
+using CSU_PORTABLE.Droid.Utils;
+using RestSharp;
+using CSU_PORTABLE.Utils;
+using Android.Util;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Android.Support.V7.App;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "Alerts", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
-    public class AlertsActivity : AppCompatActivity
+    [Activity(Label = "Insights", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    public class InsightsActivity : AppCompatActivity
     {
-
-        const string TAG = "AlertsActivity";
+        const string TAG = "InsightsActivity";
         private TextView textViewLoading;
         LinearLayout layoutProgress;
         Toast toast;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
 
+        LinearLayout LayoutInsightData;
+        TextView textViewConsumed;
+        TextView textViewExpected;
+        TextView textViewOverused;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-            SetContentView(Resource.Layout.AlertsView);
+            SetContentView(Resource.Layout.insights);
 
             textViewLoading = FindViewById<TextView>(Resource.Id.textViewLoading);
             textViewLoading.Visibility = ViewStates.Gone;
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Visible;
+
+            LayoutInsightData = FindViewById<LinearLayout>(Resource.Id.layout_insight_data);
+            textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
+            textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
+            textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
+
 
             var preferenceHandler = new PreferenceHandler();
             int userId = preferenceHandler.GetUserDetails().User_Id;
@@ -47,7 +60,9 @@ namespace CSU_PORTABLE.Droid.UI
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
                 if (isNetworkEnabled)
                 {
-                    getAlertList(userId);
+                    ShowInsights(null);
+                    GetInsights(userId);
+                    getRecommendationsList(userId);
                 }
                 else
                 {
@@ -64,12 +79,12 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void getAlertList(int userId)
+        private void getRecommendationsList(int userId)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getAlertList()");
 
-            var request = new RestRequest(Constants.API_GET_ALL_ALERTS + "/" + userId, Method.GET);
+            var request = new RestRequest(Constants.API_GET_RECOMMENDATIONS + "/" + userId, Method.GET);
 
             client.ExecuteAsync(request, response =>
             {
@@ -78,13 +93,13 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
                     RunOnUiThread(() => {
-                        getAlertListResponse((RestResponse)response);
+                        getRecommendationsListResponse((RestResponse)response);
                     });
                 }
             });
         }
 
-        private void getAlertListResponse(RestResponse restResponse)
+        private void getRecommendationsListResponse(RestResponse restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
@@ -115,15 +130,71 @@ namespace CSU_PORTABLE.Droid.UI
                 mRecyclerView.SetLayoutManager(mLayoutManager);
 
                 // Plug in my adapter:
-                AlertListAdapter mAdapter = new AlertListAdapter(this, alertList, true);
+                AlertListAdapter mAdapter = new AlertListAdapter(this, alertList, false);
                 mRecyclerView.SetAdapter(mAdapter);
 
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Gone;
-            } else
+            }
+            else
             {
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
+            }
+        }
+
+        private void GetInsights(int userId)
+        {
+            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+            Log.Debug(TAG, "GetInsights()");
+
+            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
+
+            client.ExecuteAsync(request, response =>
+            {
+                Console.WriteLine(response);
+                if (response.StatusCode != 0)
+                {
+                    Log.Debug(TAG, "async Response : " + response.ToString());
+                    RunOnUiThread(() => {
+                        GetInsightDataResponse((RestResponse)response);
+                    });
+                }
+            });
+        }
+
+        private void GetInsightDataResponse(RestResponse restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            {
+                Log.Debug(TAG, restResponse.Content.ToString());
+                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
+
+
+                ShowInsights(response);
+            }
+            else
+            {
+                Log.Debug(TAG, "Login Failed");
+                ShowInsights(null);
+            }
+        }
+
+        private void ShowInsights(InshghtDataModel response)
+        {
+            if (response == null)
+            {
+                LayoutInsightData.Visibility = ViewStates.Gone;
+            }
+            else
+            {
+
+                LayoutInsightData.Visibility = ViewStates.Visible;
+
+                textViewConsumed.Text = "" + response.ConsumptionValue;
+                textViewExpected.Text = "" + response.PredictedValue;
+                float ovr = response.ConsumptionValue - response.PredictedValue;
+                textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
             }
         }
 
