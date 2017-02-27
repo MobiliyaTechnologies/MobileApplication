@@ -13,6 +13,7 @@ namespace CSU_PORTABLE.Droid.Utils
         string preferenceLastName = "CSUPREF_last_name";
         string preferenceUserId = "CSUPREF_user_id";
         string preferenceRoleId = "CSUPREF_role_id";
+        string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
 
         public bool setLoggedIn(bool value)
         {
@@ -26,6 +27,20 @@ namespace CSU_PORTABLE.Droid.Utils
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetBoolean(preferenceIsLoggedIn, false);
+        }
+
+        public bool setUnreadNotificationCount(int value)
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            var contextEdit = contextPref.Edit();
+            contextEdit.PutInt(PreferenceUnreadNotificationCount, value);
+            return contextEdit.Commit();
+        }
+
+        public int getUnreadNotificationCount()
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            return contextPref.GetInt(PreferenceUnreadNotificationCount, 0);
         }
 
         public bool SaveUserDetails(UserDetails loginResponse)

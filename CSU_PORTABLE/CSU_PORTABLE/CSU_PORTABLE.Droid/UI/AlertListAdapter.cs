@@ -29,11 +29,13 @@ namespace CSU_PORTABLE.Droid.UI
         public List<AlertModel> mAlertModels;
         Context mContext;
         Toast toast;
+        bool isAcknowledgementEnabled = true;
 
-        public AlertListAdapter(Context context, List<AlertModel> alertModels)
+        public AlertListAdapter(Context context, List<AlertModel> alertModels, bool enableAcknowledgement)
         {
             mContext = context;
             mAlertModels = alertModels;
+            isAcknowledgementEnabled = enableAcknowledgement;
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -56,7 +58,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
             vh.textViewTime.Text = dt;
             vh.alertId = mAlertModels[position].Alert_Id;
-            if(mAlertModels[position].Is_Acknowledged)
+            if(!isAcknowledgementEnabled || mAlertModels[position].Is_Acknowledged)
             {
                 vh.textViewAck.Visibility = ViewStates.Gone;
                 vh.divider.Visibility = ViewStates.Gone;

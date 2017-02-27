@@ -21,7 +21,7 @@ using CSU_PORTABLE.Utils;
 namespace CSU_PORTABLE.Droid.UI
 {
     [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
-    class LoginActivity : AppCompatActivity
+    class LoginActivity : Activity
     {
         const string TAG = "MainActivity";
         private EditText etUsername;

@@ -30,6 +30,7 @@ namespace CSU_PORTABLE.Droid
                     if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
                     {
                         SendNotification(message.GetNotification().Body);
+                        IncrementNotificationCount();
                     }
                 }
             } catch (Exception e) 
@@ -54,6 +55,18 @@ namespace CSU_PORTABLE.Droid
 
             var notificationManager = NotificationManager.FromContext(this);
             notificationManager.Notify(0, notificationBuilder.Build());
+        }
+
+        private void IncrementNotificationCount()
+        {
+            PreferenceHandler prefs = new PreferenceHandler();
+            int count = prefs.getUnreadNotificationCount();
+            prefs.setUnreadNotificationCount(count + 1);
+
+            Intent message = new Intent(Utils.Utils.ALERT_BROADCAST);
+            //Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).SendBroadcast(message);
+            
+            SendBroadcast(message);
         }
     }
 }
