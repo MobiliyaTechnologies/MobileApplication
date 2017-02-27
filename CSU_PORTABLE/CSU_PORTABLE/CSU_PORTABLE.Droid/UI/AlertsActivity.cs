@@ -62,6 +62,14 @@ namespace CSU_PORTABLE.Droid.UI
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
+
+            ResetNotificationCount();
+        }
+
+        private void ResetNotificationCount()
+        {
+            PreferenceHandler prefs = new PreferenceHandler();
+            prefs.setUnreadNotificationCount(0);
         }
 
         private void getAlertList(int userId)

@@ -20,6 +20,7 @@ using Android.Support.Design.Widget;
 using Android.Views;
 using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
+using Android.Support.V4.View;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -47,12 +48,19 @@ namespace CSU_PORTABLE.Droid.UI
         TextView textViewOverused;
         TextView textViewInsights;
 
+        public static TextView notifCount;
+        MySampleBroadcastReceiver receiver;
+
+        Activity activityContext;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+            activityContext = this;
             Log.Debug(TAG, "google app id: " + Resource.String.google_app_id);
 
             SetContentView(Resource.Layout.Main);
+            receiver = new MySampleBroadcastReceiver(activityContext);
             //msgText = FindViewById<TextView>(Resource.Id.msgText);
             SetDrawer();
             if (Intent.Extras != null)
@@ -97,7 +105,7 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 //Show Map Fragment
                 GoogleMapOptions mapOptions = new GoogleMapOptions()
-                .InvokeMapType(GoogleMap.MapTypeSatellite)
+                .InvokeMapType(GoogleMap.MapTypeNormal)
                 .InvokeZoomControlsEnabled(false)
                 .InvokeCompassEnabled(true);
 
@@ -132,10 +140,88 @@ namespace CSU_PORTABLE.Droid.UI
                 var ft = FragmentManager.BeginTransaction();
                 ft.Add(Resource.Id.fragment_container, newFragment);
                 ft.Commit();
+                HideInsights();
             }
             
         }
 
+        protected override void OnResume()
+        {
+            base.OnResume();
+            RegisterReceiver(receiver, new IntentFilter(Utils.Utils.ALERT_BROADCAST));
+            if (userRole == (int)Constants.USER_ROLE.ADMIN)
+            {
+                setNotificationCount();
+            }
+        }
+
+        protected override void OnPause()
+        {
+            UnregisterReceiver(receiver);
+            // Code omitted for clarity
+            base.OnPause();
+        }
+
+        private void HideInsights()
+        {
+            LinearLayout layoutInshghts = FindViewById<LinearLayout>(Resource.Id.layout_insight);
+            layoutInshghts.Visibility = ViewStates.Gone;
+        }
+        
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.main_menu, menu);
+            if (userRole == (int)Constants.USER_ROLE.STUDENT)
+            {
+                menu.GetItem(0).SetVisible(false);
+            } else
+            {
+                
+                RelativeLayout alertItem = (RelativeLayout)(menu.FindItem(Resource.Id.alerts).ActionView);
+                alertItem.Click += delegate {
+                    showAlerts();
+                };
+                notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
+                setNotificationCount();
+                
+            }
+            return base.OnPrepareOptionsMenu(menu);
+        }
+
+        public void setNotificationCount()
+        {
+            if (notifCount == null)
+            {
+                return;
+            }
+            PreferenceHandler prefs = new PreferenceHandler();
+            int notificationCount = prefs.getUnreadNotificationCount();
+
+            if (notificationCount <= 0)
+            {
+                notifCount.Visibility = ViewStates.Gone;
+            } else
+            {
+                notifCount.Visibility = ViewStates.Visible;
+                notifCount.Text = notificationCount.ToString();
+            }
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.alerts:
+                    showAlerts();
+                    return true;
+
+                case Android.Resource.Id.Home:
+                    drawerLayout.OpenDrawer(GravityCompat.Start);// OPEN DRAWER
+                    return true;
+            }
+            return base.OnOptionsItemSelected(item);
+        }
+        
         private void SetDrawer()
         {
             //var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
@@ -186,7 +272,7 @@ namespace CSU_PORTABLE.Droid.UI
                         StartActivity(new Intent(Application.Context, typeof(GlobalReportsActivity)));
                         break;
                     case Resource.Id.nav_alerts:
-                        StartActivity(new Intent(Application.Context, typeof(AlertsActivity)));
+                        showAlerts();
                         break;
                     case Resource.Id.nav_insights:
                         Intent intent = new Intent(Application.Context, typeof(InsightsActivity));
@@ -201,15 +287,9 @@ namespace CSU_PORTABLE.Droid.UI
             };
         }
 
-        public override bool OnOptionsItemSelected(IMenuItem item)
+        private void showAlerts()
         {
-            switch (item.ItemId)
-            {
-                case Android.Resource.Id.Home:
-                    drawerLayout.OpenDrawer(Android.Support.V4.View.GravityCompat.Start);
-                    return true;
-            }
-            return base.OnOptionsItemSelected(item);
+            StartActivity(new Intent(Application.Context, typeof(AlertsActivity)));
         }
 
         private void GetInsights(int userId)
@@ -511,12 +591,12 @@ namespace CSU_PORTABLE.Droid.UI
         public void OnMapReady(GoogleMap map)
         {
             this.map = map;
-            map.MapType = GoogleMap.MapTypeSatellite;
+            map.MapType = GoogleMap.MapTypeNormal;
 
             LatLng location = new LatLng(40.571276, -105.085522);
             CameraPosition.Builder builder = CameraPosition.InvokeBuilder();
             builder.Target(location);
-            builder.Zoom(18);
+            builder.Zoom(17);
             builder.Bearing(0);
             builder.Tilt(50);
             CameraPosition cameraPosition = builder.Build();
@@ -612,6 +692,31 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Logout Failed");
                 layoutProgress.Visibility = ViewStates.Gone;
                 ShowToast("Failed to logout, Please try later.");
+            }
+        }
+
+        [BroadcastReceiver(Enabled = true, Exported = false)]
+        [IntentFilter(new[] { Utils.Utils.ALERT_BROADCAST})]
+        class MySampleBroadcastReceiver : BroadcastReceiver
+        {
+            private Activity activityContext;
+
+            public MySampleBroadcastReceiver() { }
+
+            public MySampleBroadcastReceiver(Activity activityContext)
+            {
+                this.activityContext = activityContext;
+            }
+
+            public override void OnReceive(Context context, Intent intent)
+            {
+                try
+                {
+                    ((MainActivity)activityContext).setNotificationCount();
+                } catch (Exception e)
+                {
+
+                }                
             }
         }
     }
