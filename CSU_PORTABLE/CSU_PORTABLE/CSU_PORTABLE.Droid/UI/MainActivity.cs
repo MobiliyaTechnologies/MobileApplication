@@ -20,6 +20,7 @@ using Android.Support.Design.Widget;
 using Android.Views;
 using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
+using Android.Support.V4.View;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -41,12 +42,25 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutProgress;
         int userRole;
 
+        LinearLayout LayoutInsightData;
+        TextView textViewConsumed;
+        TextView textViewExpected;
+        TextView textViewOverused;
+        TextView textViewInsights;
+
+        public static TextView notifCount;
+        MySampleBroadcastReceiver receiver;
+
+        Activity activityContext;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+            activityContext = this;
             Log.Debug(TAG, "google app id: " + Resource.String.google_app_id);
 
             SetContentView(Resource.Layout.Main);
+            receiver = new MySampleBroadcastReceiver(activityContext);
             //msgText = FindViewById<TextView>(Resource.Id.msgText);
             SetDrawer();
             if (Intent.Extras != null)
@@ -71,13 +85,27 @@ namespace CSU_PORTABLE.Droid.UI
             if (userRole == (int)Constants.USER_ROLE.ADMIN)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+
+                LayoutInsightData = FindViewById<LinearLayout>(Resource.Id.layout_insight_data);
+                textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
+                textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
+                textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
+                textViewInsights = FindViewById<TextView>(Resource.Id.tv_insights);
+
+                textViewInsights.Click += delegate
+                {
+                    // Show insights(Recommendations) Activity
+                    Intent intent = new Intent(Application.Context, typeof(InsightsActivity));
+                    StartActivity(intent);
+                };
+
                 if (!isNetworkEnabled)
                 {
                     ShowToast("Please enable your internet connection !");
                 }
                 //Show Map Fragment
                 GoogleMapOptions mapOptions = new GoogleMapOptions()
-                .InvokeMapType(GoogleMap.MapTypeSatellite)
+                .InvokeMapType(GoogleMap.MapTypeNormal)
                 .InvokeZoomControlsEnabled(false)
                 .InvokeCompassEnabled(true);
 
@@ -96,6 +124,8 @@ namespace CSU_PORTABLE.Droid.UI
                     {
                         GetMeterDetails(userId);
                         GetMonthlyConsumptionDetails(userId);
+                        ShowInsights(null);
+                        GetInsights(userId);
                     }
                  }
                 else
@@ -110,10 +140,88 @@ namespace CSU_PORTABLE.Droid.UI
                 var ft = FragmentManager.BeginTransaction();
                 ft.Add(Resource.Id.fragment_container, newFragment);
                 ft.Commit();
+                HideInsights();
             }
             
         }
 
+        protected override void OnResume()
+        {
+            base.OnResume();
+            RegisterReceiver(receiver, new IntentFilter(Utils.Utils.ALERT_BROADCAST));
+            if (userRole == (int)Constants.USER_ROLE.ADMIN)
+            {
+                setNotificationCount();
+            }
+        }
+
+        protected override void OnPause()
+        {
+            UnregisterReceiver(receiver);
+            // Code omitted for clarity
+            base.OnPause();
+        }
+
+        private void HideInsights()
+        {
+            LinearLayout layoutInshghts = FindViewById<LinearLayout>(Resource.Id.layout_insight);
+            layoutInshghts.Visibility = ViewStates.Gone;
+        }
+        
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.main_menu, menu);
+            if (userRole == (int)Constants.USER_ROLE.STUDENT)
+            {
+                menu.GetItem(0).SetVisible(false);
+            } else
+            {
+                
+                RelativeLayout alertItem = (RelativeLayout)(menu.FindItem(Resource.Id.alerts).ActionView);
+                alertItem.Click += delegate {
+                    showAlerts();
+                };
+                notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
+                setNotificationCount();
+                
+            }
+            return base.OnPrepareOptionsMenu(menu);
+        }
+
+        public void setNotificationCount()
+        {
+            if (notifCount == null)
+            {
+                return;
+            }
+            PreferenceHandler prefs = new PreferenceHandler();
+            int notificationCount = prefs.getUnreadNotificationCount();
+
+            if (notificationCount <= 0)
+            {
+                notifCount.Visibility = ViewStates.Gone;
+            } else
+            {
+                notifCount.Visibility = ViewStates.Visible;
+                notifCount.Text = notificationCount.ToString();
+            }
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.alerts:
+                    showAlerts();
+                    return true;
+
+                case Android.Resource.Id.Home:
+                    drawerLayout.OpenDrawer(GravityCompat.Start);// OPEN DRAWER
+                    return true;
+            }
+            return base.OnOptionsItemSelected(item);
+        }
+        
         private void SetDrawer()
         {
             //var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
@@ -144,22 +252,31 @@ namespace CSU_PORTABLE.Droid.UI
             PreferenceHandler pref = new PreferenceHandler();
             UserDetails user = pref.GetUserDetails();
             textViewUserName.Text = user.First_Name + " " + user.Last_Name;
-            
+
+            TextView textViewLogout =
+                 navigationView.GetHeaderView(0).FindViewById<TextView>(
+                Resource.Id.tv_logout);
+            textViewLogout.Click += delegate {
+                Logout(new LogoutModel(pref.GetUserDetails().Email));
+            };
+
             navigationView.NavigationItemSelected += (sender, e) => {
                 e.MenuItem.SetChecked(true);
                 
                 //react to click here and swap fragments or navigate
                 switch(e.MenuItem.ItemId)
                 {
+                    case Resource.Id.nav_dashboard:
+                        break;
                     case Resource.Id.nav_reports:
                         StartActivity(new Intent(Application.Context, typeof(GlobalReportsActivity)));
                         break;
                     case Resource.Id.nav_alerts:
-                        StartActivity(new Intent(Application.Context, typeof(AlertsActivity)));
+                        showAlerts();
                         break;
-                    case Resource.Id.nav_logout:
-                        PreferenceHandler prefs = new PreferenceHandler();
-                        Logout(new LogoutModel(pref.GetUserDetails().Email));
+                    case Resource.Id.nav_insights:
+                        Intent intent = new Intent(Application.Context, typeof(InsightsActivity));
+                        StartActivity(intent);
                         break;
                     case Resource.Id.nav_change_password:
                         StartActivity(new Intent(Application.Context, typeof(ChangePasswordActivity)));
@@ -170,15 +287,63 @@ namespace CSU_PORTABLE.Droid.UI
             };
         }
 
-        public override bool OnOptionsItemSelected(IMenuItem item)
+        private void showAlerts()
         {
-            switch (item.ItemId)
+            StartActivity(new Intent(Application.Context, typeof(AlertsActivity)));
+        }
+
+        private void GetInsights(int userId)
+        {
+            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+            Log.Debug(TAG, "GetInsights()");
+
+            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
+
+            client.ExecuteAsync(request, response =>
             {
-                case Android.Resource.Id.Home:
-                    drawerLayout.OpenDrawer(Android.Support.V4.View.GravityCompat.Start);
-                    return true;
+                Console.WriteLine(response);
+                if (response.StatusCode != 0)
+                {
+                    Log.Debug(TAG, "async Response : " + response.ToString());
+                    RunOnUiThread(() => {
+                        GetInsightDataResponse((RestResponse)response);
+                    });
+                }
+            });
+        }
+
+        private void GetInsightDataResponse(RestResponse restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            {
+                Log.Debug(TAG, restResponse.Content.ToString());
+                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
+
+
+                ShowInsights(response);
             }
-            return base.OnOptionsItemSelected(item);
+            else
+            {
+                Log.Debug(TAG, "Login Failed");
+                ShowInsights(null);
+            }
+        }
+
+        private void ShowInsights(InshghtDataModel response)
+        {
+            if (response == null)
+            {
+                LayoutInsightData.Visibility = ViewStates.Gone;
+            } else
+            {
+
+                LayoutInsightData.Visibility = ViewStates.Visible;
+
+                textViewConsumed.Text = "" + response.ConsumptionValue;
+                textViewExpected.Text = "" + response.PredictedValue;
+                float ovr = response.ConsumptionValue - response.PredictedValue;
+                textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
+            }
         }
 
         private void GetMonthlyConsumptionDetails(int userId)
@@ -426,12 +591,12 @@ namespace CSU_PORTABLE.Droid.UI
         public void OnMapReady(GoogleMap map)
         {
             this.map = map;
-            map.MapType = GoogleMap.MapTypeSatellite;
+            map.MapType = GoogleMap.MapTypeNormal;
 
             LatLng location = new LatLng(40.571276, -105.085522);
             CameraPosition.Builder builder = CameraPosition.InvokeBuilder();
             builder.Target(location);
-            builder.Zoom(18);
+            builder.Zoom(17);
             builder.Bearing(0);
             builder.Tilt(50);
             CameraPosition cameraPosition = builder.Build();
@@ -527,6 +692,31 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Logout Failed");
                 layoutProgress.Visibility = ViewStates.Gone;
                 ShowToast("Failed to logout, Please try later.");
+            }
+        }
+
+        [BroadcastReceiver(Enabled = true, Exported = false)]
+        [IntentFilter(new[] { Utils.Utils.ALERT_BROADCAST})]
+        class MySampleBroadcastReceiver : BroadcastReceiver
+        {
+            private Activity activityContext;
+
+            public MySampleBroadcastReceiver() { }
+
+            public MySampleBroadcastReceiver(Activity activityContext)
+            {
+                this.activityContext = activityContext;
+            }
+
+            public override void OnReceive(Context context, Intent intent)
+            {
+                try
+                {
+                    ((MainActivity)activityContext).setNotificationCount();
+                } catch (Exception e)
+                {
+
+                }                
             }
         }
     }

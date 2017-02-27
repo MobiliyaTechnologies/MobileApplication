@@ -13,8 +13,9 @@ using Android.Net;
 
 namespace CSU_PORTABLE.Droid.Utils
 {
-    class Utils
+    public class Utils
     {
+        public const string ALERT_BROADCAST = "com.mobiliya.csu.Alerts";
 
         public static bool IsNetworkEnabled(Context context)
         {

@@ -25,6 +25,8 @@ namespace CSU_PORTABLE.Utils
         public static string API_ACKNOWLWDGE_ALERTS = "acknowledgealert";
         public static string API_GET_QUESTION_ANSWERS = "getquestionanswers";
         public static string API_GIVE_FEEDBACK = "storefeedback";
+        public static string API_GET_INSIGHT_DATA = "getinsightdata";
+        public static string API_GET_RECOMMENDATIONS = "getrecommendations";
 
         //public static string SERVER_BASE_URL_FOR_TOKEN = "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/";
         public static string SERVER_BASE_URL_FOR_TOKEN = "http://13.72.102.73/CSU/Powerbiservice.asmx";
