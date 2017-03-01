@@ -134,8 +134,8 @@ namespace CSU_PORTABLE.iOS
             };
 
 
-            TextFieldUsername.Text = "sss@123.com";
-            TextFieldPassword.Text = "sss@123";
+            //TextFieldUsername.Text = "sss@123.com";
+            //TextFieldPassword.Text = "sss@123";
 
             TextFieldUsername.BecomeFirstResponder();
 
