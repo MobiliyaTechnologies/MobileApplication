@@ -27,6 +27,18 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+            this.NavigationController.NavigationBar.TintColor = UIColor.White;
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+            this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+
+            NavigationItem.SetRightBarButtonItem(
+                new UIBarButtonItem(UIImage.FromBundle("a")
+                    , UIBarButtonItemStyle.Plain
+                    , (sender, args) =>
+                    {
+                        SidebarController.ToggleMenu();
+                    }), true);
+
             GetThankYouView();
 
         }
@@ -61,7 +73,7 @@ namespace CSU_PORTABLE.iOS
 
             UIImageView imgThankYou = new UIImageView()
             {
-                Frame = new CGRect((View.Bounds.Width / 2) - 30, 180, 60, 60),
+                Frame = new CGRect((View.Bounds.Width / 2) - 75, 120, 150, 150),
                 Image = UIImage.FromBundle("Thank_You_Icon.png"),
                 BackgroundColor = UIColor.Clear
             };

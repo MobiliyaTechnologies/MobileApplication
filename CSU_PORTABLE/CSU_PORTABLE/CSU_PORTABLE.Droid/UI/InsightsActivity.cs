@@ -92,7 +92,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
+                    RunOnUiThread(() =>
+                    {
                         getRecommendationsListResponse((RestResponse)response);
                     });
                 }
@@ -156,7 +157,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
+                    RunOnUiThread(() =>
+                    {
                         GetInsightDataResponse((RestResponse)response);
                     });
                 }
@@ -194,7 +196,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewConsumed.Text = "" + response.ConsumptionValue;
                 textViewExpected.Text = "" + response.PredictedValue;
                 float ovr = response.ConsumptionValue - response.PredictedValue;
-                textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
+                //textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
+                textViewOverused.Text = ovr + "";
             }
         }
 

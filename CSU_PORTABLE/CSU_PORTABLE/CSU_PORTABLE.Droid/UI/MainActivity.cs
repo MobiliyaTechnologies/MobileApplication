@@ -70,7 +70,7 @@ namespace CSU_PORTABLE.Droid.UI
                     //int value = Intent.Extras.GetInt(key);
                     //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
 
-                    if(key.Equals(KEY_USER_ROLE))
+                    if (key.Equals(KEY_USER_ROLE))
                     {
                         userRole = Intent.Extras.GetInt(key);
                     }
@@ -81,7 +81,7 @@ namespace CSU_PORTABLE.Droid.UI
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Gone;
             IsPlayServicesAvailable();
-            
+
             if (userRole == (int)Constants.USER_ROLE.ADMIN)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
@@ -120,19 +120,20 @@ namespace CSU_PORTABLE.Droid.UI
                 int userId = preferenceHandler.GetUserDetails().User_Id;
                 if (userId != -1)
                 {
-                   if (isNetworkEnabled)
+                    if (isNetworkEnabled)
                     {
                         GetMeterDetails(userId);
                         GetMonthlyConsumptionDetails(userId);
                         ShowInsights(null);
                         GetInsights(userId);
                     }
-                 }
+                }
                 else
                 {
                     ShowToast("Invalid User Id. Please Login Again !");
                 }
-            } else
+            }
+            else
             {
                 //Show Student Fragment
 
@@ -142,7 +143,7 @@ namespace CSU_PORTABLE.Droid.UI
                 ft.Commit();
                 HideInsights();
             }
-            
+
         }
 
         protected override void OnResume()
@@ -167,23 +168,25 @@ namespace CSU_PORTABLE.Droid.UI
             LinearLayout layoutInshghts = FindViewById<LinearLayout>(Resource.Id.layout_insight);
             layoutInshghts.Visibility = ViewStates.Gone;
         }
-        
+
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.main_menu, menu);
             if (userRole == (int)Constants.USER_ROLE.STUDENT)
             {
                 menu.GetItem(0).SetVisible(false);
-            } else
+            }
+            else
             {
-                
+
                 RelativeLayout alertItem = (RelativeLayout)(menu.FindItem(Resource.Id.alerts).ActionView);
-                alertItem.Click += delegate {
+                alertItem.Click += delegate
+                {
                     showAlerts();
                 };
                 notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
                 setNotificationCount();
-                
+
             }
             return base.OnPrepareOptionsMenu(menu);
         }
@@ -200,7 +203,8 @@ namespace CSU_PORTABLE.Droid.UI
             if (notificationCount <= 0)
             {
                 notifCount.Visibility = ViewStates.Gone;
-            } else
+            }
+            else
             {
                 notifCount.Visibility = ViewStates.Visible;
                 notifCount.Text = notificationCount.ToString();
@@ -221,7 +225,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
             return base.OnOptionsItemSelected(item);
         }
-        
+
         private void SetDrawer()
         {
             //var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
@@ -246,7 +250,7 @@ namespace CSU_PORTABLE.Droid.UI
                 }
             }
 
-            TextView textViewUserName = 
+            TextView textViewUserName =
                 navigationView.GetHeaderView(0).FindViewById<TextView>(
                     Resource.Id.textViewUserName);
             PreferenceHandler pref = new PreferenceHandler();
@@ -256,15 +260,17 @@ namespace CSU_PORTABLE.Droid.UI
             TextView textViewLogout =
                  navigationView.GetHeaderView(0).FindViewById<TextView>(
                 Resource.Id.tv_logout);
-            textViewLogout.Click += delegate {
+            textViewLogout.Click += delegate
+            {
                 Logout(new LogoutModel(pref.GetUserDetails().Email));
             };
 
-            navigationView.NavigationItemSelected += (sender, e) => {
+            navigationView.NavigationItemSelected += (sender, e) =>
+            {
                 e.MenuItem.SetChecked(true);
-                
+
                 //react to click here and swap fragments or navigate
-                switch(e.MenuItem.ItemId)
+                switch (e.MenuItem.ItemId)
                 {
                     case Resource.Id.nav_dashboard:
                         break;
@@ -282,7 +288,7 @@ namespace CSU_PORTABLE.Droid.UI
                         StartActivity(new Intent(Application.Context, typeof(ChangePasswordActivity)));
                         break;
                 }
-                
+
                 drawerLayout.CloseDrawers();
             };
         }
@@ -305,7 +311,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
+                    RunOnUiThread(() =>
+                    {
                         GetInsightDataResponse((RestResponse)response);
                     });
                 }
@@ -334,7 +341,8 @@ namespace CSU_PORTABLE.Droid.UI
             if (response == null)
             {
                 LayoutInsightData.Visibility = ViewStates.Gone;
-            } else
+            }
+            else
             {
 
                 LayoutInsightData.Visibility = ViewStates.Visible;
@@ -342,7 +350,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewConsumed.Text = "" + response.ConsumptionValue;
                 textViewExpected.Text = "" + response.PredictedValue;
                 float ovr = response.ConsumptionValue - response.PredictedValue;
-                textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
+                //textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
+                textViewOverused.Text = ovr + "";
             }
         }
 
@@ -359,7 +368,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
+                    RunOnUiThread(() =>
+                    {
                         GetMonthlyConsumptionResponse((RestResponse)response);
                     });
                 }
@@ -372,14 +382,15 @@ namespace CSU_PORTABLE.Droid.UI
             Log.Debug(TAG, "getMeterDetails()");
 
             var request = new RestRequest(Constants.API_GET_METER_LIST + "/" + userId, Method.GET);
-            
+
             client.ExecuteAsync(request, response =>
             {
                 Console.WriteLine(response);
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
+                    RunOnUiThread(() =>
+                    {
                         GetMeterDetailsResponse((RestResponse)response);
                     });
                 }
@@ -647,7 +658,7 @@ namespace CSU_PORTABLE.Droid.UI
             var request = new RestRequest(Constants.API_SIGN_OUT, Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(logoutModel);
-            
+
             layoutProgress.Visibility = ViewStates.Visible;
             //RestResponse restResponse = (RestResponse)client.Execute(request);
             //LoginResponse(restResponse);
@@ -657,7 +668,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
+                    RunOnUiThread(() =>
+                    {
                         LogoutResponse((RestResponse)response);
                     });
                 }
@@ -696,7 +708,7 @@ namespace CSU_PORTABLE.Droid.UI
         }
 
         [BroadcastReceiver(Enabled = true, Exported = false)]
-        [IntentFilter(new[] { Utils.Utils.ALERT_BROADCAST})]
+        [IntentFilter(new[] { Utils.Utils.ALERT_BROADCAST })]
         class MySampleBroadcastReceiver : BroadcastReceiver
         {
             private Activity activityContext;
@@ -713,10 +725,11 @@ namespace CSU_PORTABLE.Droid.UI
                 try
                 {
                     ((MainActivity)activityContext).setNotificationCount();
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
 
-                }                
+                }
             }
         }
     }

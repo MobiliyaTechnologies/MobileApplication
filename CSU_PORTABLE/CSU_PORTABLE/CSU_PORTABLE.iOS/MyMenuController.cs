@@ -70,6 +70,13 @@ namespace CSU_PORTABLE.iOS
 
         }
 
+        private void InsightsButton_TouchUpInside(object sender, EventArgs e)
+        {
+            var InsightsViewController = (InsightsViewController)Storyboard.InstantiateViewController("InsightsViewController");
+            NavController.PushViewController(InsightsViewController, false);
+            SidebarController.CloseMenu();
+        }
+
         #endregion
 
         #region " Functions "
@@ -80,86 +87,158 @@ namespace CSU_PORTABLE.iOS
 
             prefHandler = new PreferenceHandler();
             userdetail = prefHandler.GetUserDetails();
-            //ProfileName.SetTitle(userdetail.First_Name + " " + userdetail.Last_Name, UIControlState.Normal);
-            //ProfileName.Enabled = false;
 
-            UIView viewProfile = new UIView(new CGRect(0, 20, View.Bounds.Width, 180));
+            double profileRadius = 100;
+            double profileViewHeight = 230;
+
+            UIView viewProfile = new UIView(new CGRect(0, 0, View.Bounds.Width, profileViewHeight));
             viewProfile.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+
+            UIImageView imgProfile = new UIImageView()
+            {
+                Frame = new CGRect(125 - (profileRadius / 2), 40, profileRadius, profileRadius),
+                Image = UIImage.FromBundle("Logo_01.png"),
+
+            };
+            imgProfile.ClipsToBounds = true;
+            imgProfile.Layer.CornerRadius = (float)profileRadius / 2;
+            imgProfile.Layer.BorderColor = UIColor.White.CGColor;
+            imgProfile.Layer.BorderWidth = 2;
+
+
 
             UILabel lblProfileName = new UILabel()
             {
-                Frame = new CGRect(0, 40, 260, 100),
+                Frame = new CGRect(0, 140, 260, 50),
                 Font = UIFont.FromName("Futura-Medium", 20f),
                 BackgroundColor = UIColor.Clear,
                 TextAlignment = UITextAlignment.Center,
                 Text = userdetail.First_Name + " " + userdetail.Last_Name,
                 TextColor = UIColor.White,
                 LineBreakMode = UILineBreakMode.WordWrap,
-                Lines = 3
-
+                Lines = 3,
+                
             };
-            viewProfile.AddSubview(lblProfileName);
+
+            UIButton LogOutButton = new UIButton()
+            {
+                Font = UIFont.FromName("Futura-Medium", 14f),
+                BackgroundColor = UIColor.Clear,
+                Frame = new CGRect(60, 190, 130, 25)
+            };
+            LogOutButton.SetTitle("Logout", UIControlState.Normal);
+            LogOutButton.SetTitleColor(UIColor.White, UIControlState.Normal);
+            LogOutButton.SetTitleColor(UIColor.White, UIControlState.Selected);
+            LogOutButton.Layer.BorderColor = UIColor.White.CGColor;
+            LogOutButton.Layer.BorderWidth = 1f;
+            LogOutButton.Layer.CornerRadius = 13;
+            viewProfile.AddSubviews(lblProfileName, imgProfile, LogOutButton);
+
+
+            //UIView seperator = new UIView()
+            //{
+            //    Frame = new CGRect(0, 41, viewProfile.Bounds.Width, 1),
+            //    BackgroundColor = UIColor.DarkTextColor
+            //};
 
             UIButton ReportsButton = new UIButton()
             {
-                Frame = new CGRect(50, 210, 150, 40),
-                Font = UIFont.FromName("Futura-Medium", 15f),
-                BackgroundColor = UIColor.Clear
+                Frame = new CGRect(0, profileViewHeight, 250, 40),
+                Font = UIFont.FromName("Futura-Medium", 14f),
+                BackgroundColor = UIColor.Clear,
+                //HorizontalAlignment = UIControlContentHorizontalAlignment.Left
             };
-            ReportsButton.SetTitle("Reports", UIControlState.Normal);
+            ReportsButton.SetTitle("REPORTS", UIControlState.Normal);
             ReportsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
             ReportsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+            ReportsButton.BackgroundColor = UIColor.LightTextColor;
+            ReportsButton.VerticalAlignment = UIControlContentVerticalAlignment.Center;
+            //ReportsButton.Layer.BorderColor = UIColor.DarkGray.CGColor;
+            //ReportsButton.Layer.BorderWidth = 1f;
+
+            //View.InsertSubviewBelow(ReportsButton, seperator);
 
             UIButton AlertsButton = new UIButton()
             {
-                Font = UIFont.FromName("Futura-Medium", 15f),
+                Font = UIFont.FromName("Futura-Medium", 14f),
                 BackgroundColor = UIColor.Clear
             };
-            AlertsButton.SetTitle("Alerts", UIControlState.Normal);
+            AlertsButton.SetTitle("ALERTS", UIControlState.Normal);
             AlertsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
             AlertsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
 
-            UIButton ChangePasswordButton = new UIButton()
+            UIButton InsightsButton = new UIButton()
             {
-                Font = UIFont.FromName("Futura-Medium", 15f),
+                Font = UIFont.FromName("Futura-Medium", 14f),
                 BackgroundColor = UIColor.Clear
             };
-            ChangePasswordButton.SetTitle("Change Password", UIControlState.Normal);
+            InsightsButton.SetTitle("INSIGHTS", UIControlState.Normal);
+            InsightsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
+            InsightsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+
+
+            UIButton ChangePasswordButton = new UIButton()
+            {
+                Font = UIFont.FromName("Futura-Medium", 14f),
+                BackgroundColor = UIColor.Clear
+            };
+            ChangePasswordButton.SetTitle("CHANGE PASSWORD", UIControlState.Normal);
             ChangePasswordButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
             ChangePasswordButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
 
 
-            UIButton LogOutButton = new UIButton()
-            {
-                Font = UIFont.FromName("Futura-Medium", 15f),
-                BackgroundColor = UIColor.Clear,
-            };
-            LogOutButton.SetTitle("Log Out", UIControlState.Normal);
-            LogOutButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
-            LogOutButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
 
+            InsightsButton.TouchUpInside += InsightsButton_TouchUpInside;
             ChangePasswordButton.TouchUpInside += ChangePasswordButton_TouchUpInside;
             LogOutButton.TouchUpInside += LogOutButton_TouchUpInside;
             ReportsButton.TouchUpInside += ReportsButton_TouchUpInside;
             AlertsButton.TouchUpInside += AlertsButton_TouchUpInside;
 
+
+            UIView seperator = new UIView()
+            {
+                Frame = new CGRect(0, 41, viewProfile.Bounds.Width, 1),
+                BackgroundColor = UIColor.LightGray
+            };
+            UIView seperatorAlerts = new UIView()
+            {
+                Frame = new CGRect(0, 41, viewProfile.Bounds.Width, 1),
+                BackgroundColor = UIColor.LightGray
+            };
+            UIView seperatorPassword = new UIView()
+            {
+                Frame = new CGRect(0, 41, viewProfile.Bounds.Width, 1),
+                BackgroundColor = UIColor.LightGray
+            };
+            UIView seperatorInsights = new UIView()
+            {
+                Frame = new CGRect(0, 41, viewProfile.Bounds.Width, 1),
+                BackgroundColor = UIColor.LightGray
+            };
+
+            ReportsButton.InsertSubview(seperator, 1);
+            ChangePasswordButton.InsertSubview(seperatorPassword, 1);
+            AlertsButton.InsertSubview(seperatorAlerts, 1);
+            InsightsButton.InsertSubview(seperatorInsights, 1);
+
             if (userdetail.Role_Id == 2)
             {
-                ChangePasswordButton.Frame = new CGRect(50, 260, 150, 40);
-                LogOutButton.Frame = new CGRect(50, 310, 150, 40);
-                View.AddSubviews(viewProfile, ChangePasswordButton, ReportsButton, LogOutButton);
+                ChangePasswordButton.Frame = new CGRect(0, profileViewHeight + 40, 250, 40);
+                View.AddSubviews(viewProfile, ChangePasswordButton, LogOutButton);
             }
             else
             {
-                AlertsButton.Frame = new CGRect(50, 260, 150, 40);
-                ChangePasswordButton.Frame = new CGRect(50, 310, 150, 40);
-                LogOutButton.Frame = new CGRect(50, 360, 150, 40);
-                View.AddSubviews(viewProfile, ChangePasswordButton, ReportsButton, AlertsButton, LogOutButton);
+                AlertsButton.Frame = new CGRect(0, profileViewHeight + 40, 250, 40);
+                InsightsButton.Frame = new CGRect(0, profileViewHeight + 80, 250, 40);
+                ChangePasswordButton.Frame = new CGRect(0, profileViewHeight + 120, 250, 40);
+                View.AddSubviews(viewProfile, ChangePasswordButton, ReportsButton, AlertsButton, InsightsButton);
             }
 
 
 
         }
+
+       
 
         private void Logout(LogoutModel logoutModel)
         {

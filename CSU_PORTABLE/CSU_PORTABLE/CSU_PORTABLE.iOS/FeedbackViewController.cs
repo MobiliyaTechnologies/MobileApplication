@@ -44,7 +44,20 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+            this.NavigationController.NavigationBarHidden = false;
+            this.NavigationController.NavigationBar.TintColor = UIColor.White;
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+            this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
             classRoomId = 0;
+
+            NavigationItem.SetRightBarButtonItem(
+                new UIBarButtonItem(UIImage.FromBundle("a")
+                    , UIBarButtonItemStyle.Plain
+                    , (sender, args) =>
+                    {
+                        SidebarController.ToggleMenu();
+                    }), true);
+
             // Added for showing loading screen
             var bounds = UIScreen.MainScreen.Bounds;
             // show the loading overlay on the UI thread using the correct orientation sizing

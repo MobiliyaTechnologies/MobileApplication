@@ -49,6 +49,14 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidLoad();
 
+            NavigationItem.SetRightBarButtonItem(
+                new UIBarButtonItem(UIImage.FromBundle("a")
+                    , UIBarButtonItemStyle.Plain
+                    , (sender, args) =>
+                    {
+                        SidebarController.ToggleMenu();
+                    }), true);
+
             SelectedAnswer = -1;
             prefHandler = new Utils.PreferenceHandler();
             userdetail = prefHandler.GetUserDetails();
@@ -198,30 +206,35 @@ namespace CSU_PORTABLE.iOS
                         segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon.png"), SelectedAnswer);
                         View.BackgroundColor = UIColor.FromRGB(36, 116, 169);
                         btnBack.BackgroundColor = UIColor.FromRGB(36, 116, 169);
+                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(36, 116, 169);
                         break;
                     case 1:
                         segAnswers.SetImage(UIImage.FromBundle("Cold_Icon.png"), SelectedAnswer);
                         btnBack.BackgroundColor = UIColor.FromRGB(16, 84, 86);
                         View.BackgroundColor = UIColor.FromRGB(16, 84, 86);
-
+                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(16, 84, 86);
                         break;
                     case 2:
                         segAnswers.SetImage(UIImage.FromBundle("Normal_Icon.png"), SelectedAnswer);
                         View.BackgroundColor = UIColor.FromRGB(33, 77, 43);
                         btnBack.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
                         break;
                     case 3:
                         segAnswers.SetImage(UIImage.FromBundle("Hot_Icon.png"), SelectedAnswer);
 
                         View.BackgroundColor = UIColor.FromRGB(204, 84, 48);
                         btnBack.BackgroundColor = UIColor.FromRGB(204, 84, 48);
+                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(204, 84, 48);
                         break;
                     case 4:
                         segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon.png"), SelectedAnswer);
                         btnBack.BackgroundColor = UIColor.FromRGB(214, 69, 66);
                         View.BackgroundColor = UIColor.FromRGB(214, 69, 66);
+                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(214, 69, 66);
                         break;
                     default:
+                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(36, 116, 169);
                         break;
                 }
 
