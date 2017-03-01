@@ -166,7 +166,7 @@ namespace CSU_PORTABLE.iOS
             // this callback will not be fired 'till the user taps on the notification launching the application.
 
             // Do your magic to handle the notification data
-            //UIApplication.SharedApplication.ApplicationIconBadgeNumber++;
+            UIApplication.SharedApplication.ApplicationIconBadgeNumber++;
             System.Console.WriteLine(userInfo);
         }
 
