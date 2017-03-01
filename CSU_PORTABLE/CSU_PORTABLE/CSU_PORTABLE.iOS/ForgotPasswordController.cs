@@ -20,6 +20,10 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+            this.NavigationController.NavigationBarHidden = false;
+            this.NavigationController.NavigationBar.TintColor = UIColor.White;
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+            this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
             Email.AutocorrectionType = UITextAutocorrectionType.No;
             Email.ShouldReturn = delegate
             {

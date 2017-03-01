@@ -51,48 +51,58 @@ namespace CSU_PORTABLE.iOS
             };
             lblClassDesc = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 12f),
+                Font = UIFont.FromName("Futura-Medium", 12f),
                 TextColor = UIColor.Black,
                 BackgroundColor = UIColor.Clear
             };
             lblAlertType = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 12f),
+                Font = UIFont.FromName("Futura-Medium", 12f),
                 TextColor = UIColor.Black,
                 BackgroundColor = UIColor.Clear
             };
             LblDescription = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 15f),
-                TextColor = UIColor.FromRGB(0, 120, 255),
-                BackgroundColor = UIColor.Clear
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                TextColor = UIColor.DarkTextColor,
+                BackgroundColor = UIColor.Clear,
+                TextAlignment = UITextAlignment.Left,
+                Lines = 0,
+                LineBreakMode = UILineBreakMode.WordWrap,
             };
             lblTimeStamp = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 12f),
-                TextColor = UIColor.Black,
-                BackgroundColor = UIColor.Clear
+                Font = UIFont.FromName("Futura-Medium", 12f),
+                TextColor = UIColor.DarkTextColor,
+                BackgroundColor = UIColor.Clear,
+                TextAlignment = UITextAlignment.Right,
+                Lines = 0,
+                LineBreakMode = UILineBreakMode.WordWrap,
             };
             lblIsAcknowledged = new UILabel()
             {
-                Font = UIFont.FromName("AmericanTypewriter", 12f),
+                Font = UIFont.FromName("Futura-Medium", 12f),
                 TextColor = UIColor.Black,
                 BackgroundColor = UIColor.Clear
             };
 
             Acknowledge = new UIButton(UIButtonType.RoundedRect)
             {
-                Font = UIFont.FromName("AmericanTypewriter", 12f),
-                BackgroundColor = UIColor.LightGray
-
+                Font = UIFont.FromName("Futura-Medium", 12f),
+                BackgroundColor = UIColor.Clear,
             };
+            Acknowledge.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+            Acknowledge.SetTitleColor(UIColor.Blue, UIControlState.Selected);
             Acknowledge.TouchUpInside += Acknowledge_TouchUpInside;
 
             ContentView.AddSubviews(new UIView[] { lblAlert_Id, lblSensorId, lblSensorLogId, lblClassId, lblClassDesc, lblAlertType, LblDescription, lblTimeStamp, lblIsAcknowledged, Acknowledge });
-
+            //ContentView.AddSubviews(new UIView[] { lblAlert_Id, lblSensorId, lblSensorLogId, LblDescription, lblTimeStamp, Acknowledge });
         }
 
 
+
+
+        #region "Acknowledge Alert"
 
         private void Acknowledge_TouchUpInside(object sender, EventArgs e)
         {
@@ -121,11 +131,6 @@ namespace CSU_PORTABLE.iOS
             });
         }
 
-     
-
-        #region "Acknowledge Alert"
-
-
         #endregion
 
 
@@ -139,7 +144,8 @@ namespace CSU_PORTABLE.iOS
             lblClassDesc.Text = classDesc;
             lblAlertType.Text = alertType;
             LblDescription.Text = Description;
-            lblTimeStamp.Text = Convert.ToDateTime(AlertTimestamp).ToString("dd/MM/yyyy hh:mm tt");
+            //lblTimeStamp.Text = Convert.ToDateTime(AlertTimestamp).ToString("dd/MM/yyyy hh:mm tt");
+            lblTimeStamp.Text = AlertTimestamp;
             lblIsAcknowledged.Text = sensorId;
             Acknowledge.Hidden = isAcknowledged;
 
@@ -150,16 +156,10 @@ namespace CSU_PORTABLE.iOS
         public override void LayoutSubviews()
         {
             base.LayoutSubviews();
-            LblDescription.Frame = new CGRect(10, 5, ContentView.Bounds.Width, 30);
-            //lblSensorId.Frame = new CGRect(10, 35, 150, 10);
-            //lblSensorLogId.Frame = new CGRect(2, 2, 20, 10);
-            //lblSensorLogId.Enabled = false;
-            //lblAlertType.Frame = new CGRect(ContentView.Bounds.Width - 100, 35, 90, 10);
-            lblClassDesc.Frame = new CGRect(10, 50, ContentView.Bounds.Width - 150, 10);
-            lblTimeStamp.Frame = new CGRect(ContentView.Bounds.Width - 150, 50, 140, 10);
-            Acknowledge.Frame = new CGRect((ContentView.Bounds.Width / 2) - 70, 70, 140, 25);
-            //lblIsAcknowledged.Frame = new CGRect(ContentView.Bounds.Width / 2, 32, ContentView.Bounds.Width / 2, 10);
-            //this.AccessoryView = Acknowledge;
+            LblDescription.Frame = new CGRect(20, 5, ContentView.Bounds.Width - 40, ContentView.Bounds.Height - 40);
+            //lblClassDesc.Frame = new CGRect(10, 50, ContentView.Bounds.Width - 150, 10);
+            lblTimeStamp.Frame = new CGRect((ContentView.Bounds.Width / 2), ContentView.Bounds.Height - 30, (ContentView.Bounds.Width / 2) - 20, 25);
+            Acknowledge.Frame = new CGRect(20, ContentView.Bounds.Height - 30, (ContentView.Bounds.Width / 2) - 40, 25);
         }
     }
 }

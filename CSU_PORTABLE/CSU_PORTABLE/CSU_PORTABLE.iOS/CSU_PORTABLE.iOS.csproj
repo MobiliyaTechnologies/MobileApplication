@@ -27,8 +27,8 @@
     <Externalconsole>False</Externalconsole>
     <EnvironmentVariables>
       <EnvironmentVariables>
-<Variable name="Font" value="Font\Lato-Regular.tff" />
-</EnvironmentVariables>
+        <Variable name="Font" value="Font\Lato-Regular.tff" />
+      </EnvironmentVariables>
     </EnvironmentVariables>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
@@ -228,6 +228,12 @@
     <Compile Include="ForgotPasswordController.designer.cs">
       <DependentUpon>ForgotPasswordController.cs</DependentUpon>
     </Compile>
+    <Compile Include="InsightsCell.cs" />
+    <Compile Include="InsightsSource.cs" />
+    <Compile Include="InsightsViewController.cs" />
+    <Compile Include="InsightsViewController.designer.cs">
+      <DependentUpon>InsightsViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="MapViewController.cs" />
@@ -243,6 +249,10 @@
     <Compile Include="QuestionsViewController.designer.cs">
       <DependentUpon>QuestionsViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="RecomTableView.cs" />
+    <Compile Include="RecomTableView.designer.cs">
+      <DependentUpon>RecomTableView.cs</DependentUpon>
+    </Compile>
     <Compile Include="RootViewController.cs" />
     <Compile Include="MeterReportController.cs" />
     <Compile Include="MeterReportController.designer.cs">
@@ -256,6 +266,7 @@
     <Compile Include="ThankYouViewController.designer.cs">
       <DependentUpon>ThankYouViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\BadgeBarButtonItem.cs" />
     <Compile Include="Utils\LoadingOverlay.cs" />
     <Compile Include="Utils\PreferenceHandler.cs" />
     <Compile Include="ViewController.cs" />
@@ -530,6 +541,24 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\User_Icon_Selected-13%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Insights_BG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Insights_BG%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Insights_BG%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Login_BG.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Login_BG%402x.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Login_BG%403x.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />

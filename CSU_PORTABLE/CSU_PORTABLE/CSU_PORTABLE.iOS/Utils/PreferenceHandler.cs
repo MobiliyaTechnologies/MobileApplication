@@ -17,6 +17,7 @@ namespace CSU_PORTABLE.iOS.Utils
         string preferenceLastName = "CSUPREF_last_name";
         string preferenceUserId = "CSUPREF_user_id";
         string preferenceRoleId = "CSUPREF_role_id";
+        string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
 
         public bool IsLoggedIn()
         {

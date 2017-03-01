@@ -1,52 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Foundation;
-using UIKit;
+﻿using CoreGraphics;
 using CSU_PORTABLE.Models;
+using Foundation;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
+using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    public class AlertsSource : UITableViewSource
+    public class InsightsSource : UITableViewSource
     {
+        List<AlertModel> _insights;
+        NSString cellIdentifier = (NSString)"InsightsCell";
 
-        List<AlertModel> AlertsList = null;
-        NSString cellIdentifier = (NSString)"AlertCell";
-
-        public AlertsSource(List<AlertModel> alerts)
+        public InsightsSource(List<AlertModel> insights)
         {
-            AlertsList = alerts;
+            _insights = insights;
         }
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-
-            var cell = tableView.DequeueReusableCell(cellIdentifier) as AlertsCell;
+            var cell = tableView.DequeueReusableCell(cellIdentifier) as InsightsCell;
             if (cell == null)
-                cell = new AlertsCell(cellIdentifier);
-            cell.UpdateCell("Sensor: " + AlertsList[indexPath.Row].Sensor_Id
-                , AlertsList[indexPath.Row].Sensor_Log_Id
-                , AlertsList[indexPath.Row].Class_Id
-                , AlertsList[indexPath.Row].Class_Desc
-                , AlertsList[indexPath.Row].Alert_Type
-                , AlertsList[indexPath.Row].Alert_Desc
-                , AlertsList[indexPath.Row].Timestamp
-                , AlertsList[indexPath.Row].Is_Acknowledged
-                , AlertsList[indexPath.Row].Alert_Id
-                );
-
+                cell = new InsightsCell(cellIdentifier);
+            cell.UpdateCell(_insights[indexPath.Row]);
+            var a = cell.Bounds.Height;
             return cell;
-
         }
-
-        //public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
-        //{
-        //    // base.RowSelected(tableView, indexPath);
-        //    var AlertsViewController = new AlertsViewController(this);
-        //    AlertsViewController.AcknowledgeAlert(tableView, indexPath);
-
-        //}
 
         public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
         {
@@ -54,7 +35,7 @@ namespace CSU_PORTABLE.iOS
             //var text = _insights[indexPath.Row].Alert_Desc.StringSize(UIFont.FromName("Futura-Medium", 15f), new CGSize(tableView.Bounds.Width - 50, tableView.Bounds.Height - 20), UILineBreakMode.WordWrap);
 
             //return text.Height;
-            double siz = MeasureTextSize(AlertsList[indexPath.Row].Alert_Desc, tableView.Bounds.Width - 40, 14f, "Futura-Medium");
+            double siz = MeasureTextSize(_insights[indexPath.Row].Alert_Desc, tableView.Bounds.Width - 40, 14f, "Futura-Medium");
             //return 100f;
             return (nfloat)siz;
         }
@@ -76,16 +57,13 @@ namespace CSU_PORTABLE.iOS
             };
             var sizeF = nsText.GetBoundingRect(boundSize, options, attributes, null).Size;
             //return new Xamarin.Forms.Size((double)sizeF.Width, (double)sizeF.Height);
-            return (double)sizeF.Height + 50;
+            return (double)sizeF.Height + 45;
 
         }
 
-
-
-
         public override nint RowsInSection(UITableView tableview, nint section)
         {
-            return AlertsList.Count;
+            return _insights.Count;
         }
     }
 }

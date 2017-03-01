@@ -4,13 +4,17 @@ using System.Drawing;
 using CoreFoundation;
 using UIKit;
 using Foundation;
-
+using CSU_PORTABLE.iOS.Utils;
+using CoreGraphics;
+using CSU_PORTABLE.Models;
 
 namespace CSU_PORTABLE.iOS
 {
 
     public partial class BaseController : UIViewController
     {
+        BadgeBarButtonItem btnAlertsBadge;
+        UIButton btnBadge;
         // provide access to the sidebar controller to all inheriting controllers
         protected SidebarNavigation.SidebarController SidebarController
         {
@@ -47,8 +51,6 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidLoad();
 
-
-
             NavigationItem.SetLeftBarButtonItem(
                 new UIBarButtonItem(UIImage.FromBundle("threelines.png")
                     , UIBarButtonItemStyle.Plain
@@ -56,14 +58,37 @@ namespace CSU_PORTABLE.iOS
                     {
                         SidebarController.ToggleMenu();
                     }), true);
-            NavigationItem.SetRightBarButtonItem(
-                new UIBarButtonItem(UIImage.FromBundle("Notification_Icon.png")
-                    , UIBarButtonItemStyle.Plain
-                    , (sender, args) =>
-                    {
 
-                    }), true);
 
+            PreferenceHandler prefHandler = new PreferenceHandler();
+            UserDetails userDetail = prefHandler.GetUserDetails();
+
+            //if (userDetail.Role_Id == 2)
+            //{
+            btnBadge = new UIButton()
+            {
+                Frame = new CGRect(0, 0, 25, 25),
+            };
+            btnBadge.SetBackgroundImage(UIImage.FromBundle("Notification_Icon.png"), UIControlState.Normal);
+            btnBadge.SetTitleColor(UIColor.White, UIControlState.Normal);
+            btnBadge.TouchUpInside += BtnBadge_TouchUpInside;
+            btnAlertsBadge = new BadgeBarButtonItem(btnBadge);
+            btnAlertsBadge.BadgeValue = UIApplication.SharedApplication.ApplicationIconBadgeNumber.ToString();
+            btnAlertsBadge.Style = UIBarButtonItemStyle.Plain;
+            btnAlertsBadge.ShouldHideBadgeAtZero = true;
+            btnAlertsBadge.BadgeOriginX = 10;
+            NavigationItem.SetRightBarButtonItem(btnAlertsBadge, true);
+            //}
+        }
+
+
+        private void BtnBadge_TouchUpInside(object sender, EventArgs e)
+        {
+            var btnBadge = (UIButton)sender;
+            UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
+            btnAlertsBadge.BadgeValue = "0";
+            var InsightsViewController = (InsightsViewController)Storyboard.InstantiateViewController("InsightsViewController");
+            NavController.PushViewController(InsightsViewController, false);
         }
     }
 }
