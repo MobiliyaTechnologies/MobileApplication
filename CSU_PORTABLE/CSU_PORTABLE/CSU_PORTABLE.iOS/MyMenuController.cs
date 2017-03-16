@@ -65,8 +65,19 @@ namespace CSU_PORTABLE.iOS
             // show the loading overlay on the UI thread using the correct orientation sizing
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
-            PreferenceHandler prefs = new PreferenceHandler();
-            Logout(new LogoutModel(prefs.GetUserDetails().Email));
+            
+
+            PreferenceHandler preferenceHandler = new PreferenceHandler();
+            preferenceHandler.setLoggedIn(false);
+
+            var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
+            ViewController.NavigationItem.SetHidesBackButton(true, false);
+            NavController.PushViewController(ViewController, false);
+            SidebarController.MenuWidth = 0;
+            SidebarController.CloseMenu();
+            loadingOverlay.Hide();
+
+            Logout(new LogoutModel(preferenceHandler.GetUserDetails().Email));
 
         }
 
@@ -271,28 +282,28 @@ namespace CSU_PORTABLE.iOS
             {
                 GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(restResponse.Content);
 
-                if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
-                {
-                    PreferenceHandler preferenceHandler = new PreferenceHandler();
-                    preferenceHandler.setLoggedIn(false);
+                //if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
+                //{
+                //    PreferenceHandler preferenceHandler = new PreferenceHandler();
+                //    preferenceHandler.setLoggedIn(false);
 
-                    var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
-                    ViewController.NavigationItem.SetHidesBackButton(true, false);
-                    NavController.PushViewController(ViewController, false);
-                    SidebarController.MenuWidth = 0;
-                    SidebarController.CloseMenu();
-                    loadingOverlay.Hide();
+                //    var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
+                //    ViewController.NavigationItem.SetHidesBackButton(true, false);
+                //    NavController.PushViewController(ViewController, false);
+                //    SidebarController.MenuWidth = 0;
+                //    SidebarController.CloseMenu();
+                //    loadingOverlay.Hide();
 
-                }
-                else
-                {
-                    ShowMessage("Failed to logout, Please try later.");
-                }
+                //}
+                //else
+                //{
+                //    ShowMessage("Failed to logout, Please try later.");
+                //}
             }
-            else
-            {
-                ShowMessage("Failed to logout, Please try later.");
-            }
+            //else
+            //{
+            //    ShowMessage("Failed to logout, Please try later.");
+            //}
         }
 
         private void ShowMessage(string v)
