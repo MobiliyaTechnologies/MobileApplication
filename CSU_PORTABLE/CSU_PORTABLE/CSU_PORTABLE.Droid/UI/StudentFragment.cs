@@ -558,7 +558,7 @@ namespace CSU_PORTABLE.Droid.UI
             selectedClass = classList[position].ClassDescription;
             textViewSelectedClass.Text = selectedClass;
             selectedClassId = classList[position].ClassId;
-            ShowToast("You are in " + selectedClass);
+            //ShowToast("You are in " + selectedClass);
         }
 
         private void ShowToast(string message)

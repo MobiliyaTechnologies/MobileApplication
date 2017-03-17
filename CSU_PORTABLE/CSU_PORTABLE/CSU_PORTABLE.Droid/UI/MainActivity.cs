@@ -246,6 +246,9 @@ namespace CSU_PORTABLE.Droid.UI
                 if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.STUDENT)
                 {
                     IMenu nav_Menu = navigationView.Menu;
+                    nav_Menu.FindItem(Resource.Id.nav_dashboard).SetVisible(false);
+                    nav_Menu.FindItem(Resource.Id.nav_reports).SetVisible(false);
+                    nav_Menu.FindItem(Resource.Id.nav_insights).SetVisible(false);
                     nav_Menu.FindItem(Resource.Id.nav_alerts).SetVisible(false);
                 }
             }
@@ -678,7 +681,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         private void LogoutResponse(RestResponse restResponse)
         {
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            /*if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
                 GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(restResponse.Content);
@@ -704,7 +707,14 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Logout Failed");
                 layoutProgress.Visibility = ViewStates.Gone;
                 ShowToast("Failed to logout, Please try later.");
-            }
+            }*/
+
+            Log.Debug(TAG, "Local Logout Successful");
+            PreferenceHandler preferenceHandler = new PreferenceHandler();
+            preferenceHandler.setLoggedIn(false);
+            layoutProgress.Visibility = ViewStates.Gone;
+            Finish();
+            StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
         }
 
         [BroadcastReceiver(Enabled = true, Exported = false)]

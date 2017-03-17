@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:background="@color/black_trans_dark"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         android:gravity="center">
         <ProgressBar
             android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
             android:id="@+id/textViewSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Let us konw your exact location within the university campus to locate."
+            android:text="Let us know your exact location within the university campus to locate."
             android:textSize="18sp"
             android:textColor="#ffffff"
             android:textStyle="normal"
@@ -113,7 +113,7 @@
             android:id="@+id/textViewQuestionDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Let us konw how do you feel about the temperature where you are now."
+            android:text="Let us know how do you feel about the temperature where you are now."
             android:textSize="18sp"
             android:textColor="#ffffff"
             android:textStyle="normal"
