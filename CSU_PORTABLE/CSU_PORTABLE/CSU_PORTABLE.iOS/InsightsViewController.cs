@@ -160,6 +160,9 @@ namespace CSU_PORTABLE.iOS
                 Lines = 3,
                 TextAlignment = UITextAlignment.Center
             };
+
+            lblOverused.Text = ((Math.Round((insightDM.ConsumptionValue - insightDM.PredictedValue) / 1000, 2)) > 0 ? "OVERUSED" : "UNDERUSED");
+
             btnInsights.AddSubviews(lblConsumed, lblExpected, lblOverused, lblConsumedCount, lblExpectedCount, lblOverusedCount);
             View.AddSubviews(btnInsights);
         }
