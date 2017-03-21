@@ -22,6 +22,14 @@ using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
 using Android.Support.V4.View;
 
+
+using System;
+using Android.Content.PM;
+using System.Threading.Tasks;
+using Android;
+using Android.Support.V4.Content;
+using AlertDialog = Android.Support.V7.App.AlertDialog;
+
 namespace CSU_PORTABLE.Droid.UI
 {
     [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
@@ -31,6 +39,14 @@ namespace CSU_PORTABLE.Droid.UI
         //TextView msgText;
         const string TAG = "MainActivity";
         public static string KEY_USER_ROLE = "user_role";
+
+        readonly string[] PermissionsLocation =
+            {
+                Manifest.Permission.AccessCoarseLocation,
+                Manifest.Permission.AccessFineLocation
+            };
+        const int RequestLocationId = 0;
+
         Toast toast;
         GoogleMap map;
         MapFragment _myMapFragment;
@@ -46,12 +62,14 @@ namespace CSU_PORTABLE.Droid.UI
         TextView textViewConsumed;
         TextView textViewExpected;
         TextView textViewOverused;
+        TextView textViewOuerusedTitle;
         TextView textViewInsights;
 
         public static TextView notifCount;
         MySampleBroadcastReceiver receiver;
 
         Activity activityContext;
+        View layout;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -60,6 +78,8 @@ namespace CSU_PORTABLE.Droid.UI
             Log.Debug(TAG, "google app id: " + Resource.String.google_app_id);
 
             SetContentView(Resource.Layout.Main);
+            layout = FindViewById<RelativeLayout>(Resource.Id.main_layout);
+
             receiver = new MySampleBroadcastReceiver(activityContext);
             //msgText = FindViewById<TextView>(Resource.Id.msgText);
             SetDrawer();
@@ -90,6 +110,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
                 textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
                 textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
+                textViewOuerusedTitle = FindViewById<TextView>(Resource.Id.tv_bottom_overused);
                 textViewInsights = FindViewById<TextView>(Resource.Id.tv_insights);
 
                 textViewInsights.Click += delegate
@@ -103,34 +124,13 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     ShowToast("Please enable your internet connection !");
                 }
-                //Show Map Fragment
-                GoogleMapOptions mapOptions = new GoogleMapOptions()
-                .InvokeMapType(GoogleMap.MapTypeNormal)
-                .InvokeZoomControlsEnabled(false)
-                .InvokeCompassEnabled(true);
 
-                _myMapFragment = MapFragment.NewInstance(mapOptions);
-                FragmentTransaction tx = FragmentManager.BeginTransaction();
-                tx.Add(Resource.Id.fragment_container, _myMapFragment, "map");
-                tx.Commit();
-
-                _myMapFragment.GetMapAsync(this);
-
-                var preferenceHandler = new PreferenceHandler();
-                int userId = preferenceHandler.GetUserDetails().User_Id;
-                if (userId != -1)
+                if ((int)Build.VERSION.SdkInt < 23)
                 {
-                    if (isNetworkEnabled)
-                    {
-                        GetMeterDetails(userId);
-                        GetMonthlyConsumptionDetails(userId);
-                        ShowInsights(null);
-                        GetInsights(userId);
-                    }
-                }
-                else
+                    LoadContent();
+                } else
                 {
-                    ShowToast("Invalid User Id. Please Login Again !");
+                    CheckForPermissions();
                 }
             }
             else
@@ -144,6 +144,91 @@ namespace CSU_PORTABLE.Droid.UI
                 HideInsights();
             }
 
+        }
+
+        private void CheckForPermissions()
+        {
+            const string permission = Manifest.Permission.AccessFineLocation;
+            if (CheckSelfPermission(permission) == (int)Permission.Granted)
+            {
+                LoadContent();
+                return;
+            }
+
+            //need to request permission
+            if (ShouldShowRequestPermissionRationale(permission))
+            {
+                //Explain to the user why we need to read the contacts
+                Snackbar.Make(layout, "Location access is required to show consumption details.",
+                    Snackbar.LengthIndefinite)
+                    .SetAction("OK", v => RequestPermissions(PermissionsLocation, RequestLocationId))
+                    .Show();
+
+                return;
+            }
+
+            RequestPermissions(PermissionsLocation, RequestLocationId);
+        }
+
+        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
+        {
+            switch (requestCode)
+            {
+                case RequestLocationId:
+                    {
+                        if (grantResults[0] == (int)Permission.Granted)
+                        {
+                            //Permission granted
+                            var snack = Snackbar.Make(layout, "Location permission is available, getting consumption details.",
+                                            Snackbar.LengthShort);
+                            snack.Show();
+
+                            LoadContent();
+                        }
+                        else
+                        {
+                            //Permission Denied :(
+                            //Disabling location functionality
+                            var snack = Snackbar.Make(layout, "Location permission is denied.", Snackbar.LengthShort);
+                            snack.Show();
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void LoadContent()
+        {
+            //Show Map Fragment
+            GoogleMapOptions mapOptions = new GoogleMapOptions()
+            .InvokeMapType(GoogleMap.MapTypeNormal)
+            .InvokeZoomControlsEnabled(false)
+            .InvokeCompassEnabled(true);
+
+            _myMapFragment = MapFragment.NewInstance(mapOptions);
+            FragmentTransaction tx = FragmentManager.BeginTransaction();
+            tx.Add(Resource.Id.fragment_container, _myMapFragment, "map");
+            tx.Commit();
+
+            _myMapFragment.GetMapAsync(this);
+
+            var preferenceHandler = new PreferenceHandler();
+            int userId = preferenceHandler.GetUserDetails().User_Id;
+            if (userId != -1)
+            {
+                bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+                if (isNetworkEnabled)
+                {
+                    GetMeterDetails(userId);
+                    GetMonthlyConsumptionDetails(userId);
+                    ShowInsights(null);
+                    GetInsights(userId);
+                }
+            }
+            else
+            {
+                ShowToast("Invalid User Id. Please Login Again !");
+            }
         }
 
         protected override void OnResume()
@@ -350,11 +435,22 @@ namespace CSU_PORTABLE.Droid.UI
 
                 LayoutInsightData.Visibility = ViewStates.Visible;
 
-                textViewConsumed.Text = "" + response.ConsumptionValue;
-                textViewExpected.Text = "" + response.PredictedValue;
+                float consumed = response.ConsumptionValue / 1000;
+                float expected = response.PredictedValue / 1000;
                 float ovr = response.ConsumptionValue - response.PredictedValue;
-                //textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
-                textViewOverused.Text = ovr + "";
+                float overused = ovr / 1000;
+
+                textViewConsumed.Text = consumed.ToString("F1") + "k";
+                textViewExpected.Text = expected.ToString("F1") + "k";
+                textViewOverused.Text = overused.ToString("F1") + "k";
+
+                if (overused < 0)
+                {
+                    textViewOuerusedTitle.Text = "UNDERUSED";
+                } else
+                {
+                    textViewOuerusedTitle.Text = "OVERUSED";
+                }
             }
         }
 

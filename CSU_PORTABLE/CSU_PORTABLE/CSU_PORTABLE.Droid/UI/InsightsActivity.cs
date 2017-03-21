@@ -193,11 +193,14 @@ namespace CSU_PORTABLE.Droid.UI
 
                 LayoutInsightData.Visibility = ViewStates.Visible;
 
-                textViewConsumed.Text = "" + response.ConsumptionValue;
-                textViewExpected.Text = "" + response.PredictedValue;
+                float consumed = response.ConsumptionValue / 1000;
+                float expected = response.PredictedValue / 1000;
                 float ovr = response.ConsumptionValue - response.PredictedValue;
-                //textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
-                textViewOverused.Text = ovr + "";
+                float overused = ovr / 1000;
+
+                textViewConsumed.Text = consumed.ToString("F1") + "k";
+                textViewExpected.Text = expected.ToString("F1") + "k";
+                textViewOverused.Text = overused.ToString("F1") + "k";
             }
         }
 
