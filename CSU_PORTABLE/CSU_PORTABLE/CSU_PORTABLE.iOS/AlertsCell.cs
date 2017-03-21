@@ -144,8 +144,8 @@ namespace CSU_PORTABLE.iOS
             lblClassDesc.Text = classDesc;
             lblAlertType.Text = alertType;
             LblDescription.Text = Description;
-            //lblTimeStamp.Text = Convert.ToDateTime(AlertTimestamp).ToString("dd/MM/yyyy hh:mm tt");
-            lblTimeStamp.Text = AlertTimestamp;
+            lblTimeStamp.Text = Convert.ToDateTime(AlertTimestamp).ToString("MM/dd/yyyy hh:mm:ss");
+            //lblTimeStamp.Text = AlertTimestamp;
             lblIsAcknowledged.Text = sensorId;
             Acknowledge.Hidden = isAcknowledged;
 
