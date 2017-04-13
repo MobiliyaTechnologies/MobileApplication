@@ -43,7 +43,7 @@ namespace CSU_PORTABLE.Droid.UI
         TextView textViewNormal;
         TextView textViewCold;
         TextView textViewTooCold;
-        Toast toast;
+        //Toast toast;
         List<ClassRoomModel> classList = null;
         List<QuestionModel> questionList = null;
         RecyclerView mRecyclerView;
@@ -235,13 +235,15 @@ namespace CSU_PORTABLE.Droid.UI
             buttonNext.Click += delegate
             {
                 Log.Debug(TAG, "Next button click");
-                if(selectedClass != null)
+                if (selectedClass != null)
                 {
                     showLayoutSelectTemperature();
                     showTemperatureQuestion();
-                } else
+                }
+                else
                 {
-                    ShowToast("Please select a Classroom");
+                    Utils.Utils.ShowToast(this.Context, "Please select a Classroom");
+                    //ShowToast("Please select a Classroom");
                 }
             };
             buttonBack.Click += delegate
@@ -255,14 +257,15 @@ namespace CSU_PORTABLE.Droid.UI
             buttonSubmit.Click += delegate
             {
                 Log.Debug(TAG, "Submit button click");
-                if (selectedAnswer!= null)
+                if (selectedAnswer != null)
                 {
                     showLayoutSubmit();
                     submitFeedback(userId);
                 }
                 else
                 {
-                    ShowToast("Please select an option");
+                    Utils.Utils.ShowToast(this.Context, "Please select an option");
+                    //ShowToast("Please select an option");
                 }
             };
             buttonDone.Click += delegate
@@ -290,13 +293,15 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 else
                 {
-                    ShowToast("Please enable your internet connection !");
+                    Utils.Utils.ShowToast(this.Context, "Please enable your internet connection !");
+                    //ShowToast("Please enable your internet connection !");
                     showLayoutInfo();
                 }
             }
             else
             {
-                ShowToast("Invalid User Id. Please Login Again !");
+                Utils.Utils.ShowToast(this.Context, "Invalid User Id. Please Login Again !");
+                //ShowToast("Invalid User Id. Please Login Again !");
                 showLayoutInfo();
             }
 
@@ -317,7 +322,7 @@ namespace CSU_PORTABLE.Droid.UI
             var request = new RestRequest(Constants.API_GIVE_FEEDBACK + "/" + userId, Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddBody(feedbackModel);
-            
+
             showLayoutSubmittingFeedback("Submitting feedback...");
 
             client.ExecuteAsync(request, response =>
@@ -326,7 +331,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    this.Activity.RunOnUiThread(() => {
+                    this.Activity.RunOnUiThread(() =>
+                    {
                         submitFeedbackResponse((RestResponse)response);
                     });
                 }
@@ -349,30 +355,33 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     Log.Debug(TAG, "Feedback Failed");
                     showLayoutSelectTemperature();
-                    ShowToast("Failed to submit feedback, please try again!");
+                    Utils.Utils.ShowToast(this.Context, "Failed to submit feedback, please try again!");
+                    //ShowToast("Failed to submit feedback, please try again!");
                 }
             }
             else
             {
                 Log.Debug(TAG, "Feedback Failed");
                 showLayoutSelectTemperature();
-                ShowToast("Failed to submit feedback, please try again!");
+                Utils.Utils.ShowToast(this.Context, "Failed to submit feedback, please try again!");
+                //ShowToast("Failed to submit feedback, please try again!");
             }
         }
 
         private void showTemperatureQuestion()
         {
-            if(questionList != null && questionList.Count > 0) {
+            if (questionList != null && questionList.Count > 0)
+            {
                 QuestionModel queModel = questionList[0];
                 selectedQuestionId = queModel.QuestionId;
                 textViewQuestion.Text = queModel.QuestionDesc;
 
                 List<AnswerModel> ansList = queModel.Answers;
-                if(ansList != null && ansList.Count > 0)
+                if (ansList != null && ansList.Count > 0)
                 {
-                    for(int i=0; i<5; i++)
+                    for (int i = 0; i < 5; i++)
                     {
-                        switch(i+1)
+                        switch (i + 1)
                         {
                             case 1:
                                 textViewTooCold.Text = ansList[i].AnswerDesc;
@@ -466,7 +475,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    this.Activity.RunOnUiThread(() => {
+                    this.Activity.RunOnUiThread(() =>
+                    {
                         getClassListResponse((RestResponse)response);
                     });
                 }
@@ -487,7 +497,8 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
-                ShowToast("getAlertListResponse() Failed");
+                Utils.Utils.ShowToast(this.Context, "getAlertListResponse() Failed");
+                //ShowToast("getAlertListResponse() Failed");
                 showLayoutInfo();
             }
         }
@@ -505,7 +516,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    this.Activity.RunOnUiThread(() => {
+                    this.Activity.RunOnUiThread(() =>
+                    {
                         getQuestionListResponse((RestResponse)response);
                     });
                 }
@@ -526,7 +538,8 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
-                ShowToast("getAlertListResponse() Failed");
+                Utils.Utils.ShowToast(this.Context, "getAlertListResponse() Failed");
+                //ShowToast("getAlertListResponse() Failed");
                 showLayoutInfo();
             }
         }
@@ -561,14 +574,14 @@ namespace CSU_PORTABLE.Droid.UI
             //ShowToast("You are in " + selectedClass);
         }
 
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this.Activity, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this.Activity, message, ToastLength.Short);
+        //    toast.Show();
+        //}
     }
 }

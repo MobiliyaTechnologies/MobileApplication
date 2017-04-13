@@ -29,7 +29,6 @@ namespace CSU_PORTABLE.Droid.UI
         private EditText etConfirmPassword;
         private Button buttonSubmit;
         private ProgressBar progressBar;
-        private Toast toast;
         private TextView tvMessage;
         private UserDetails userDetails;
 
@@ -53,7 +52,8 @@ namespace CSU_PORTABLE.Droid.UI
             userDetails= prefs.GetUserDetails();
             if (userDetails.Email == null)
             {
-                ShowToast("Invalid Email Id !");
+                Utils.Utils.ShowToast(this, "Invalid Email Id !");
+                //ShowToast("Invalid Email Id !");
             } else
             {
                 tvUsername.Text = userDetails.Email;
@@ -80,17 +80,20 @@ namespace CSU_PORTABLE.Droid.UI
                             }
                             else
                             {
-                                ShowToast("Please enable your internet connection !");
+                                Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                                //ShowToast("Please enable your internet connection !");
                             }
                         }
                         else
                         {
-                            ShowToast("Enter valid new password");
+                            Utils.Utils.ShowToast(this, "Enter valid new password");
+                            //ShowToast("Enter valid new password");
                         }
                     }
                     else
                     {
-                        ShowToast("Enter valid password");
+                        Utils.Utils.ShowToast(this, "Enter valid password");
+                        //ShowToast("Enter valid password");
                     }
                 };
             }
@@ -157,7 +160,8 @@ namespace CSU_PORTABLE.Droid.UI
                     tvMessage.Visibility = ViewStates.Visible;
                     progressBar.Visibility = ViewStates.Gone;
                     EnableButton(buttonSubmit);
-                    ShowToast("Failed to change password, Plesase try again later.");
+                    Utils.Utils.ShowToast(this, "Failed to change password, Plesase try again later.");
+                    //ShowToast("Failed to change password, Plesase try again later.");
                 }
             }
             else
@@ -167,18 +171,19 @@ namespace CSU_PORTABLE.Droid.UI
                 EnableButton(buttonSubmit);
                 tvMessage.Text = "Error in changing password. Please try again.";
                 tvMessage.Visibility = ViewStates.Visible;
-                ShowToast("Error in changing password. Please try again.");
+                Utils.Utils.ShowToast(this, "Error in changing password. Please try again.");
+                //ShowToast("Error in changing password. Please try again.");
             }
         }
 
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this, message, ToastLength.Short);
+        //    toast.Show();
+        //}
     }
 }

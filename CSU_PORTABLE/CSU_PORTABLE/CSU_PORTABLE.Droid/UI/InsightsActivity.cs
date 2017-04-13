@@ -27,7 +27,7 @@ namespace CSU_PORTABLE.Droid.UI
         const string TAG = "InsightsActivity";
         private TextView textViewLoading;
         LinearLayout layoutProgress;
-        Toast toast;
+        //Toast toast;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
 
@@ -62,24 +62,26 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     ShowInsights(null);
                     GetInsights(userId);
-                    getRecommendationsList(userId);
+                    GetRecommendationsList(userId);
                 }
                 else
                 {
-                    ShowToast("Please enable your internet connection !");
+                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                    //ShowToast("Please enable your internet connection !");
                     layoutProgress.Visibility = ViewStates.Gone;
                     textViewLoading.Visibility = ViewStates.Visible;
                 }
             }
             else
             {
-                ShowToast("Invalid User Id. Please Login Again !");
+                Utils.Utils.ShowToast(this, "Invalid User Id. Please Login Again !");
+                //ShowToast("Invalid User Id. Please Login Again !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
 
-        private void getRecommendationsList(int userId)
+        private void GetRecommendationsList(int userId)
         {
             RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getAlertList()");
@@ -94,13 +96,13 @@ namespace CSU_PORTABLE.Droid.UI
                     Log.Debug(TAG, "async Response : " + response.ToString());
                     RunOnUiThread(() =>
                     {
-                        getRecommendationsListResponse((RestResponse)response);
+                        GetRecommendationsListResponse((RestResponse)response);
                     });
                 }
             });
         }
 
-        private void getRecommendationsListResponse(RestResponse restResponse)
+        private void GetRecommendationsListResponse(RestResponse restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
@@ -109,18 +111,19 @@ namespace CSU_PORTABLE.Droid.UI
                 JArray array = JArray.Parse(restResponse.Content);
                 alertList = array.ToObject<List<AlertModel>>();
 
-                showAlerts();
+                ShowAlerts();
             }
             else
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
-                ShowToast("Please try again later !");
+                Utils.Utils.ShowToast(this, "Please try again later !");
+                //ShowToast("Please try again later !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
 
-        private void showAlerts()
+        private void ShowAlerts()
         {
             if (alertList != null)
             {
@@ -201,15 +204,15 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this, message, ToastLength.Short);
+        //    toast.Show();
+        //}
 
     }
 }

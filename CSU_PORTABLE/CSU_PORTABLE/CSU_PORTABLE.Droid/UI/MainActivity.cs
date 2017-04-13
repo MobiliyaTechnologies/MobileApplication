@@ -101,7 +101,8 @@ namespace CSU_PORTABLE.Droid.UI
 
                 if (!isNetworkEnabled)
                 {
-                    ShowToast("Please enable your internet connection !");
+                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                    //ShowToast("Please enable your internet connection !");
                 }
                 //Show Map Fragment
                 GoogleMapOptions mapOptions = new GoogleMapOptions()
@@ -130,6 +131,7 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 else
                 {
+                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
                     ShowToast("Invalid User Id. Please Login Again !");
                 }
             }
@@ -414,7 +416,8 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "GetMeterDetailsResponse() Failed");
-                ShowToast("GetMeterDetailsResponse() Failed");
+                Utils.Utils.ShowToast(this, "GetMeterDetailsResponse() Failed");
+                //ShowToast("GetMeterDetailsResponse() Failed");
             }
         }
 
@@ -432,7 +435,8 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "GetMonthlyConsumptionResponse() Failed");
-                ShowToast("GetMonthlyConsumptionResponse() Failed");
+                Utils.Utils.ShowToast(this, "GetMonthlyConsumptionResponse() Failed");
+                //ShowToast("GetMonthlyConsumptionResponse() Failed");
             }
         }
 

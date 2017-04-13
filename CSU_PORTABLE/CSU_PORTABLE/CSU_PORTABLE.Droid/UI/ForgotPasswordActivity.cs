@@ -27,7 +27,7 @@ namespace CSU_PORTABLE.Droid.UI
         private EditText etUsername;
         private Button buttonSubmit;
         private ProgressBar progressBar;
-        private Toast toast;
+        //private Toast toast;
         private TextView tvResponse;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -55,12 +55,14 @@ namespace CSU_PORTABLE.Droid.UI
                     }
                     else
                     {
-                        ShowToast("Please enable your internet connection !");
+                        Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                        //ShowToast("Please enable your internet connection !");
                     }
                 }
                 else
                 {
-                    ShowToast("Enter valid Email Id");
+                    Utils.Utils.ShowToast(this, "Enter valid Email Id");
+                    //ShowToast("Enter valid Email Id");
                 }
             };
         }
@@ -124,18 +126,19 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Response Failed  !");
                 progressBar.Visibility = ViewStates.Gone;
                 buttonSubmit.Visibility = ViewStates.Visible;
-                ShowToast("Please try again.");
+                Utils.Utils.ShowToast(this, "Please try again.");
+                //ShowToast("Please try again.");
             }
         }
 
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this, message, ToastLength.Short);
+        //    toast.Show();
+        //}
     }
 }

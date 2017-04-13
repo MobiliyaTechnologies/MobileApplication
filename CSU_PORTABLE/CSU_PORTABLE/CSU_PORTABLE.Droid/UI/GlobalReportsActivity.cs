@@ -25,7 +25,6 @@ namespace CSU_PORTABLE.Droid.UI
     {
         const string TAG = "GlobalReportsActivity";
         private WebView localWebView;
-        private Toast toast;
         private GlobalReportsModel reports;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -52,12 +51,14 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 else
                 {
-                    ShowToast("Please enable your internet connection !");
+                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                    //ShowToast("Please enable your internet connection !");
                 }
             }
             else
             {
-                ShowToast("Invalid Email. Please Login Again !");
+                Utils.Utils.ShowToast(this, "Invalid Email. Please Login Again !");
+                //ShowToast("Invalid Email. Please Login Again !");
             }
        }
 
@@ -96,7 +97,8 @@ namespace CSU_PORTABLE.Droid.UI
                 else
                 {
                     Log.Debug(TAG, "GetReportsResponse() Failed");
-                    ShowToast("Reports are not available");
+                    Utils.Utils.ShowToast(this, "Reports are not available");
+                    //ShowToast("Reports are not available");
 
                     String body = "<html><body>Failed to load reports.</b></body></html>";
                     showContentOnWebView(body);
@@ -105,7 +107,8 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "GetReportsResponse() Failed");
-                ShowToast("Failed to load reports");
+                Utils.Utils.ShowToast(this, "Failed to load reports");
+                //ShowToast("Failed to load reports");
 
                 String body = "<html><body>Failed to load reports.</b></body></html>";
                 showContentOnWebView(body);
@@ -147,7 +150,8 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "GetAccessTokenResponse() Failed");
-                ShowToast("Authentication Token not available");
+                Utils.Utils.ShowToast(this, "Authentication Token not available");
+                //ShowToast("Authentication Token not available");
 
                 String body = "<html><body>Failed to load reports.</body></html>";
                 showContentOnWebView(body);
@@ -164,15 +168,15 @@ namespace CSU_PORTABLE.Droid.UI
             String body = "<html><body>Reports are not available.</body></html>";
             showContentOnWebView(body);
         }
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this, message, ToastLength.Short);
+        //    toast.Show();
+        //}
 
         private void LoadReports(GlobalReportsModel reports, String token)
         {

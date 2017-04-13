@@ -51,14 +51,16 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 else
                 {
-                    ShowToast("Please enable your internet connection !");
+                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                    //ShowToast("Please enable your internet connection !");
                     layoutProgress.Visibility = ViewStates.Gone;
                     textViewLoading.Visibility = ViewStates.Visible;
                 }
             }
             else
             {
-                ShowToast("Invalid User Id. Please Login Again !");
+                Utils.Utils.ShowToast(this, "Invalid User Id. Please Login Again !");
+                //ShowToast("Invalid User Id. Please Login Again !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
@@ -85,7 +87,8 @@ namespace CSU_PORTABLE.Droid.UI
                 if (response.StatusCode != 0)
                 {
                     Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
+                    RunOnUiThread(() =>
+                    {
                         getAlertListResponse((RestResponse)response);
                     });
                 }
@@ -106,7 +109,8 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
-                ShowToast("Please try again later !");
+                Utils.Utils.ShowToast(this, "Please try again later !");
+                //ShowToast("Please try again later !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
@@ -128,22 +132,23 @@ namespace CSU_PORTABLE.Droid.UI
 
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Gone;
-            } else
+            }
+            else
             {
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
 
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this, message, ToastLength.Short);
+        //    toast.Show();
+        //}
 
     }
 }

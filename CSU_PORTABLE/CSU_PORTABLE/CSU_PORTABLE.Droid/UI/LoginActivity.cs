@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -28,7 +29,6 @@ namespace CSU_PORTABLE.Droid.UI
         private EditText etPassword;
         private Button buttonLogin;
         private ProgressBar progressBar;
-        private Toast toast;
         private TextView tvForgotPassword;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -63,51 +63,69 @@ namespace CSU_PORTABLE.Droid.UI
                     if (isNetworkEnabled)
                     {
                         Login(new LoginModel(username, password));
-                    } else
+                    }
+                    else
                     {
-                        ShowToast("Please enable your internet connection !");
+                        Utils.Utils.ShowToast(this, "Please enable your internet connection!");
+                        //ShowToast("Please enable your internet connection !");
                     }
                 }
                 else
                 {
-                    ShowToast("Enter valid username and password");
+                    Utils.Utils.ShowToast(this, "Enter valid username and password");
+                    //ShowToast("Enter valid username and password");
                 }
             };
 
         }
 
-        public void Login(LoginModel loginModel)
+        public async void Login(LoginModel loginModel)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            Log.Debug(TAG, "Login() " + loginModel.ToString());
-
-            var request = new RestRequest(Constants.API_SIGN_IN, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(loginModel);
-
+            var response = await InvokeApi.Invoke(Constants.API_SIGN_IN, JsonConvert.SerializeObject(loginModel), HttpMethod.Post);
             progressBar.Visibility = ViewStates.Visible;
             buttonLogin.Visibility = ViewStates.Gone;
-            //RestResponse restResponse = (RestResponse)client.Execute(request);
-            //LoginResponse(restResponse);
-            client.ExecuteAsync(request, response =>
+            Console.WriteLine(response.ReasonPhrase);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
-                        LoginResponse((RestResponse)response);
-                    });
-                }
-            });
+                    LoginResponse(response);
+                });
+            }
+
+            //RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+            //Log.Debug(TAG, "Login() " + loginModel.ToString());
+
+            //var request = new RestRequest(Constants.API_SIGN_IN, Method.POST);
+            //request.RequestFormat = DataFormat.Json;
+            //request.AddBody(loginModel);
+
+            //progressBar.Visibility = ViewStates.Visible;
+            //buttonLogin.Visibility = ViewStates.Gone;
+            ////RestResponse restResponse = (RestResponse)client.Execute(request);
+            ////LoginResponse(restResponse);
+            //client.ExecuteAsync(request, response =>
+            //{
+            //    Console.WriteLine(response);
+            //    if (response.StatusCode != 0)
+            //    {
+            //        Log.Debug(TAG, "async Response : " + response.ToString());
+            //        RunOnUiThread(() =>
+            //        {
+            //            LoginResponse((RestResponse)response);
+            //        });
+            //    }
+            //});
         }
-        
-        private void LoginResponse(RestResponse restResponse)
+
+        private async void LoginResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                UserDetails response = JsonConvert.DeserializeObject<UserDetails>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                UserDetails response = JsonConvert.DeserializeObject<UserDetails>(strContent);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
@@ -120,7 +138,9 @@ namespace CSU_PORTABLE.Droid.UI
                     Log.Debug(TAG, "Login Failed");
                     progressBar.Visibility = ViewStates.Gone;
                     buttonLogin.Visibility = ViewStates.Visible;
-                    ShowToast("Either username or password is incorrect !");
+                    Utils.Utils.ShowToast(this, "Either username or password is incorrect !");
+                    //ShowToast("Either username or password is incorrect !");
+
                 }
             }
             else
@@ -128,7 +148,8 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Login Failed");
                 progressBar.Visibility = ViewStates.Gone;
                 buttonLogin.Visibility = ViewStates.Visible;
-                ShowToast("Error while login. Please try again.");
+                Utils.Utils.ShowToast(this, "Error while login. Please try again.");
+                //ShowToast("Error while login. Please try again.");
             }
         }
 
@@ -166,14 +187,14 @@ namespace CSU_PORTABLE.Droid.UI
             Finish();
         }
 
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this, message, ToastLength.Short);
+        //    toast.Show();
+        //}
     }
 }
