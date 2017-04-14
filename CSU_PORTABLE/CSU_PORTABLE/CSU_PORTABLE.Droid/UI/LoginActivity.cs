@@ -1,20 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Util;
 using CSU_PORTABLE.Droid.Utils;
-using Android.Support.V7.App;
-using RestSharp;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using System.Net.Http;
@@ -67,13 +59,11 @@ namespace CSU_PORTABLE.Droid.UI
                     else
                     {
                         Utils.Utils.ShowToast(this, "Please enable your internet connection!");
-                        //ShowToast("Please enable your internet connection !");
                     }
                 }
                 else
                 {
                     Utils.Utils.ShowToast(this, "Enter valid username and password");
-                    //ShowToast("Enter valid username and password");
                 }
             };
 
@@ -81,6 +71,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         public async void Login(LoginModel loginModel)
         {
+            Log.Debug(TAG, "Login() " + loginModel.ToString());
             var response = await InvokeApi.Invoke(Constants.API_SIGN_IN, JsonConvert.SerializeObject(loginModel), HttpMethod.Post);
             progressBar.Visibility = ViewStates.Visible;
             buttonLogin.Visibility = ViewStates.Gone;
@@ -93,30 +84,6 @@ namespace CSU_PORTABLE.Droid.UI
                     LoginResponse(response);
                 });
             }
-
-            //RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            //Log.Debug(TAG, "Login() " + loginModel.ToString());
-
-            //var request = new RestRequest(Constants.API_SIGN_IN, Method.POST);
-            //request.RequestFormat = DataFormat.Json;
-            //request.AddBody(loginModel);
-
-            //progressBar.Visibility = ViewStates.Visible;
-            //buttonLogin.Visibility = ViewStates.Gone;
-            ////RestResponse restResponse = (RestResponse)client.Execute(request);
-            ////LoginResponse(restResponse);
-            //client.ExecuteAsync(request, response =>
-            //{
-            //    Console.WriteLine(response);
-            //    if (response.StatusCode != 0)
-            //    {
-            //        Log.Debug(TAG, "async Response : " + response.ToString());
-            //        RunOnUiThread(() =>
-            //        {
-            //            LoginResponse((RestResponse)response);
-            //        });
-            //    }
-            //});
         }
 
         private async void LoginResponse(HttpResponseMessage restResponse)
@@ -139,7 +106,6 @@ namespace CSU_PORTABLE.Droid.UI
                     progressBar.Visibility = ViewStates.Gone;
                     buttonLogin.Visibility = ViewStates.Visible;
                     Utils.Utils.ShowToast(this, "Either username or password is incorrect !");
-                    //ShowToast("Either username or password is incorrect !");
 
                 }
             }
@@ -149,7 +115,6 @@ namespace CSU_PORTABLE.Droid.UI
                 progressBar.Visibility = ViewStates.Gone;
                 buttonLogin.Visibility = ViewStates.Visible;
                 Utils.Utils.ShowToast(this, "Error while login. Please try again.");
-                //ShowToast("Error while login. Please try again.");
             }
         }
 
@@ -186,15 +151,5 @@ namespace CSU_PORTABLE.Droid.UI
             StartActivity(intent);
             Finish();
         }
-
-        //private void ShowToast(string message)
-        //{
-        //    if (toast != null)
-        //    {
-        //        toast.Cancel();
-        //    }
-        //    toast = Toast.MakeText(this, message, ToastLength.Short);
-        //    toast.Show();
-        //}
     }
 }

@@ -10,7 +10,6 @@ using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
 using CSU_PORTABLE.Droid.Utils;
 using CSU_PORTABLE.Models;
-using RestSharp;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using Android.Content;
@@ -21,6 +20,7 @@ using Android.Views;
 using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
 using Android.Support.V4.View;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -303,35 +303,27 @@ namespace CSU_PORTABLE.Droid.UI
             StartActivity(new Intent(Application.Context, typeof(AlertsActivity)));
         }
 
-        private void GetInsights(int userId)
+        private async void GetInsights(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "GetInsights()");
-
-            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetInsightDataResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetInsightDataResponse(response);
+                });
+            }
         }
 
-        private void GetInsightDataResponse(RestResponse restResponse)
+        private async void GetInsightDataResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
-
-
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                InsightDataModel response = JsonConvert.DeserializeObject<InsightDataModel>(strContent);
                 ShowInsights(response);
             }
             else
@@ -341,7 +333,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void ShowInsights(InshghtDataModel response)
+        private void ShowInsights(InsightDataModel response)
         {
             if (response == null)
             {
@@ -360,87 +352,70 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void GetMonthlyConsumptionDetails(int userId)
+        private async void GetMonthlyConsumptionDetails(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getMeterDetails()");
-
-            var request = new RestRequest(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetMonthlyConsumptionResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMonthlyConsumptionResponse(response);
+                });
+            }
         }
 
-        private void GetMeterDetails(int userId)
+        private async void GetMeterDetails(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getMeterDetails()");
-
-            var request = new RestRequest(Constants.API_GET_METER_LIST + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_METER_LIST + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetMeterDetailsResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMeterDetailsResponse(response);
+                });
+            }
         }
 
-        private void GetMeterDetailsResponse(RestResponse restResponse)
+        private async void GetMeterDetailsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 meterList = array.ToObject<List<MeterDetails>>();
-
-                addPinAndCircle();
+                AddPinAndCircle();
             }
             else
             {
                 Log.Debug(TAG, "GetMeterDetailsResponse() Failed");
                 Utils.Utils.ShowToast(this, "GetMeterDetailsResponse() Failed");
-                //ShowToast("GetMeterDetailsResponse() Failed");
             }
         }
 
-        private void GetMonthlyConsumptionResponse(RestResponse restResponse)
+        private async void GetMonthlyConsumptionResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 monthlyConsumptionList = array.ToObject<List<MonthlyConsumptionDetails>>();
 
-                addPinAndCircle();
+                AddPinAndCircle();
             }
             else
             {
                 Log.Debug(TAG, "GetMonthlyConsumptionResponse() Failed");
                 Utils.Utils.ShowToast(this, "GetMonthlyConsumptionResponse() Failed");
-                //ShowToast("GetMonthlyConsumptionResponse() Failed");
             }
         }
 
-        private void addPinAndCircle()
+        private void AddPinAndCircle()
         {
             if (meterList != null && monthlyConsumptionList != null && IsMapReady)
             {
@@ -601,7 +576,6 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 string message = "Google Play Services is available.";
-                //ShowToast(message);
                 return true;
             }
         }
@@ -622,7 +596,7 @@ namespace CSU_PORTABLE.Droid.UI
 
             IsMapReady = true;
             map.MoveCamera(cameraUpdate);
-            addPinAndCircle();
+            AddPinAndCircle();
         }
 
         private bool SetupMapIfNeeded()
@@ -657,33 +631,21 @@ namespace CSU_PORTABLE.Droid.UI
             toast.Show();
         }
 
-        private void Logout(LogoutModel logoutModel)
+        private async void Logout(LogoutModel logoutModel)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "Logout() " + logoutModel.ToString());
-
-            var request = new RestRequest(Constants.API_SIGN_OUT, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(logoutModel);
-
-            layoutProgress.Visibility = ViewStates.Visible;
-            //RestResponse restResponse = (RestResponse)client.Execute(request);
-            //LoginResponse(restResponse);
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_SIGN_OUT, JsonConvert.SerializeObject(logoutModel), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        LogoutResponse((RestResponse)response);
-                    });
-                }
-            });
+                    LogoutResponse(response);
+                });
+            }
         }
 
-        private void LogoutResponse(RestResponse restResponse)
+        private void LogoutResponse(HttpResponseMessage restResponse)
         {
             /*if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {

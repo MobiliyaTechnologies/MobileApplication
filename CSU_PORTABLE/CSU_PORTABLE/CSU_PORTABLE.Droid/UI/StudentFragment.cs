@@ -12,11 +12,11 @@ using Android.Widget;
 using CSU_PORTABLE.Models;
 using Android.Support.V7.Widget;
 using CSU_PORTABLE.Droid.Utils;
-using RestSharp;
 using CSU_PORTABLE.Utils;
 using Android.Util;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -238,7 +238,7 @@ namespace CSU_PORTABLE.Droid.UI
                 if (selectedClass != null)
                 {
                     showLayoutSelectTemperature();
-                    showTemperatureQuestion();
+                    ShowTemperatureQuestion();
                 }
                 else
                 {
@@ -308,7 +308,7 @@ namespace CSU_PORTABLE.Droid.UI
             return view;
         }
 
-        private void submitFeedback(int userId)
+        private async void submitFeedback(int userId)
         {
             FeedbackModel feedbackModel = new FeedbackModel();
             feedbackModel.QuestionId = selectedQuestionId;
@@ -316,36 +316,26 @@ namespace CSU_PORTABLE.Droid.UI
             feedbackModel.AnswerId = selectedAnswerId;
             feedbackModel.FeedbackDesc = selectedAnswer;
 
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "Login() " + feedbackModel.ToString());
-
-            var request = new RestRequest(Constants.API_GIVE_FEEDBACK + "/" + userId, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(feedbackModel);
-
             showLayoutSubmittingFeedback("Submitting feedback...");
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GIVE_FEEDBACK, JsonConvert.SerializeObject(feedbackModel), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                this.Activity.RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    this.Activity.RunOnUiThread(() =>
-                    {
-                        submitFeedbackResponse((RestResponse)response);
-                    });
-                }
-            });
+                    submitFeedbackResponse(response);
+                });
+            }
         }
 
-        private void submitFeedbackResponse(RestResponse restResponse)
+        private async void submitFeedbackResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(restResponse.Content);
-
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(strContent);
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
                     Log.Debug(TAG, "Feedback Successful");
@@ -356,7 +346,6 @@ namespace CSU_PORTABLE.Droid.UI
                     Log.Debug(TAG, "Feedback Failed");
                     showLayoutSelectTemperature();
                     Utils.Utils.ShowToast(this.Context, "Failed to submit feedback, please try again!");
-                    //ShowToast("Failed to submit feedback, please try again!");
                 }
             }
             else
@@ -364,11 +353,10 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Feedback Failed");
                 showLayoutSelectTemperature();
                 Utils.Utils.ShowToast(this.Context, "Failed to submit feedback, please try again!");
-                //ShowToast("Failed to submit feedback, please try again!");
             }
         }
 
-        private void showTemperatureQuestion()
+        private void ShowTemperatureQuestion()
         {
             if (questionList != null && questionList.Count > 0)
             {
@@ -462,34 +450,27 @@ namespace CSU_PORTABLE.Droid.UI
             layoutSubmit.Visibility = ViewStates.Gone;
         }
 
-        private void getClassList(int userId)
+        private async void getClassList(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getAlertList()");
-
-            var request = new RestRequest(Constants.API_GET_CLASS_ROOMS + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_CLASS_ROOMS + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                this.Activity.RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    this.Activity.RunOnUiThread(() =>
-                    {
-                        getClassListResponse((RestResponse)response);
-                    });
-                }
-            });
+                    getClassListResponse(response);
+                });
+            }
         }
 
-        private void getClassListResponse(RestResponse restResponse)
+        private async void getClassListResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 classList = array.ToObject<List<ClassRoomModel>>();
 
                 showClasses();
@@ -498,39 +479,31 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
                 Utils.Utils.ShowToast(this.Context, "getAlertListResponse() Failed");
-                //ShowToast("getAlertListResponse() Failed");
                 showLayoutInfo();
             }
         }
 
-        private void getQuestionList(int userId)
+        private async void getQuestionList(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getAlertList()");
-
-            var request = new RestRequest(Constants.API_GET_QUESTION_ANSWERS + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_QUESTION_ANSWERS + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                this.Activity.RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    this.Activity.RunOnUiThread(() =>
-                    {
-                        getQuestionListResponse((RestResponse)response);
-                    });
-                }
-            });
+                    getQuestionListResponse(response);
+                });
+            }
         }
 
-        private void getQuestionListResponse(RestResponse restResponse)
+        private async void getQuestionListResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 questionList = array.ToObject<List<QuestionModel>>();
 
                 showClasses();
@@ -539,7 +512,6 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
                 Utils.Utils.ShowToast(this.Context, "getAlertListResponse() Failed");
-                //ShowToast("getAlertListResponse() Failed");
                 showLayoutInfo();
             }
         }
@@ -574,14 +546,6 @@ namespace CSU_PORTABLE.Droid.UI
             //ShowToast("You are in " + selectedClass);
         }
 
-        //private void ShowToast(string message)
-        //{
-        //    if (toast != null)
-        //    {
-        //        toast.Cancel();
-        //    }
-        //    toast = Toast.MakeText(this.Activity, message, ToastLength.Short);
-        //    toast.Show();
-        //}
+       
     }
 }

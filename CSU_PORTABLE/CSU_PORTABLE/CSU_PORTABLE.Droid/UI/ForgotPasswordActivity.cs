@@ -13,9 +13,9 @@ using Android.Support.V7.App;
 using Android.Util;
 using CSU_PORTABLE.Droid.Utils;
 using CSU_PORTABLE.Models;
-using RestSharp;
 using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -40,8 +40,9 @@ namespace CSU_PORTABLE.Droid.UI
             tvResponse = FindViewById<TextView>(Resource.Id.textViewResponse);
 
             progressBar.Visibility = ViewStates.Gone;
-            
-            buttonSubmit.Click += delegate {
+
+            buttonSubmit.Click += delegate
+            {
                 Log.Debug(TAG, "Submit()");
 
                 string username = etUsername.Text.ToString();
@@ -56,51 +57,39 @@ namespace CSU_PORTABLE.Droid.UI
                     else
                     {
                         Utils.Utils.ShowToast(this, "Please enable your internet connection !");
-                        //ShowToast("Please enable your internet connection !");
                     }
                 }
                 else
                 {
                     Utils.Utils.ShowToast(this, "Enter valid Email Id");
-                    //ShowToast("Enter valid Email Id");
                 }
             };
         }
 
-        public void SubmitEmail(ForgotPasswordModel objModel)
+        public async void SubmitEmail(ForgotPasswordModel objModel)
         {
-
+            Log.Debug(TAG, "SubmitEmail() " + objModel.ToString());
             progressBar.Visibility = ViewStates.Visible;
             buttonSubmit.Visibility = ViewStates.Gone;
 
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            Log.Debug(TAG, "SubmitEmail() " + objModel.ToString());
-
-            var request = new RestRequest(Constants.API_FORGOT_PASSWORD, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(objModel);
-
-            //RestResponse restResponse = (RestResponse)client.Execute(request);
-            //ForgotPasswordResponse(restResponse);
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_FORGOT_PASSWORD, JsonConvert.SerializeObject(objModel), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
-                        ForgotPasswordResponse((RestResponse)response);
-                    });
-                }
-            });
+                    ForgotPasswordResponse(response);
+                });
+            }
         }
 
-        private void ForgotPasswordResponse(RestResponse restResponse)
+        private async void ForgotPasswordResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                ForgotPasswordResponseModel response = JsonConvert.DeserializeObject<ForgotPasswordResponseModel>(restResponse.Content);
+                var strContent = await restResponse.Content.ReadAsStringAsync();
+                ForgotPasswordResponseModel response = JsonConvert.DeserializeObject<ForgotPasswordResponseModel>(strContent);
 
                 if (response != null && response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
@@ -118,7 +107,6 @@ namespace CSU_PORTABLE.Droid.UI
                     buttonSubmit.Visibility = ViewStates.Visible;
                     tvResponse.Text = response.Message;
                     tvResponse.SetTextColor(Resources.GetColor(Resource.Color.text_red));
-                    //ShowToast("Please try again.");
                 }
             }
             else
@@ -127,18 +115,7 @@ namespace CSU_PORTABLE.Droid.UI
                 progressBar.Visibility = ViewStates.Gone;
                 buttonSubmit.Visibility = ViewStates.Visible;
                 Utils.Utils.ShowToast(this, "Please try again.");
-                //ShowToast("Please try again.");
             }
         }
-
-        //private void ShowToast(string message)
-        //{
-        //    if (toast != null)
-        //    {
-        //        toast.Cancel();
-        //    }
-        //    toast = Toast.MakeText(this, message, ToastLength.Short);
-        //    toast.Show();
-        //}
     }
 }

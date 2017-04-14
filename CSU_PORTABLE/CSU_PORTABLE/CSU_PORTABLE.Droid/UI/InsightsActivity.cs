@@ -12,12 +12,12 @@ using Android.Widget;
 using CSU_PORTABLE.Models;
 using Android.Support.V7.Widget;
 using CSU_PORTABLE.Droid.Utils;
-using RestSharp;
 using CSU_PORTABLE.Utils;
 using Android.Util;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Android.Support.V7.App;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -27,7 +27,6 @@ namespace CSU_PORTABLE.Droid.UI
         const string TAG = "InsightsActivity";
         private TextView textViewLoading;
         LinearLayout layoutProgress;
-        //Toast toast;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
 
@@ -81,34 +80,28 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void GetRecommendationsList(int userId)
+        private async void GetRecommendationsList(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getAlertList()");
-
-            var request = new RestRequest(Constants.API_GET_RECOMMENDATIONS + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS + "/" + userId, string.Empty, HttpMethod.Get);
+            Console.WriteLine(response);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetRecommendationsListResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetRecommendationsListResponse(response);
+                });
+            }
         }
 
-        private void GetRecommendationsListResponse(RestResponse restResponse)
+        private async void GetRecommendationsListResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 alertList = array.ToObject<List<AlertModel>>();
 
                 ShowAlerts();
@@ -117,7 +110,6 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
                 Utils.Utils.ShowToast(this, "Please try again later !");
-                //ShowToast("Please try again later !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
@@ -147,35 +139,27 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void GetInsights(int userId)
+        private async void GetInsights(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "GetInsights()");
-
-            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetInsightDataResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetInsightDataResponse(response);
+                });
+            }
         }
 
-        private void GetInsightDataResponse(RestResponse restResponse)
+        private async void GetInsightDataResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
-
-
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                InsightDataModel response = JsonConvert.DeserializeObject<InsightDataModel>(strContent);
                 ShowInsights(response);
             }
             else
@@ -185,7 +169,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void ShowInsights(InshghtDataModel response)
+        private void ShowInsights(InsightDataModel response)
         {
             if (response == null)
             {

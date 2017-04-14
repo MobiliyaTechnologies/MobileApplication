@@ -21,8 +21,11 @@ namespace CSU_PORTABLE.Utils
                 client.DefaultRequestHeaders
                          .Accept
                          .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");//CONTENT-TYPE header;
-                                                                                             //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bootstrapContext.Token);
+                if (!string.IsNullOrEmpty(json))
+                {
+                    request.Content = new StringContent(json, Encoding.UTF8, "application/json");//CONTENT-TYPE header;
+                                                                                                 //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bootstrapContext.Token);
+                }
                 return await client.SendAsync(request);
             }
             catch (Exception ex)

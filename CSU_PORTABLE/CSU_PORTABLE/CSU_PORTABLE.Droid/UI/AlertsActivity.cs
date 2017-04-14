@@ -7,7 +7,6 @@ using Android.App;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Widget;
-using RestSharp;
 using Android.Util;
 using CSU_PORTABLE.Utils;
 using CSU_PORTABLE.Droid.Utils;
@@ -15,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using CSU_PORTABLE.Models;
 using Android.Support.V7.Widget;
 using Android.Views;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -25,7 +25,6 @@ namespace CSU_PORTABLE.Droid.UI
         const string TAG = "AlertsActivity";
         private TextView textViewLoading;
         LinearLayout layoutProgress;
-        Toast toast;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
 
@@ -47,12 +46,11 @@ namespace CSU_PORTABLE.Droid.UI
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
                 if (isNetworkEnabled)
                 {
-                    getAlertList(userId);
+                    GetAlertList(userId);
                 }
                 else
                 {
                     Utils.Utils.ShowToast(this, "Please enable your internet connection !");
-                    //ShowToast("Please enable your internet connection !");
                     layoutProgress.Visibility = ViewStates.Gone;
                     textViewLoading.Visibility = ViewStates.Visible;
                 }
@@ -60,7 +58,6 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Utils.Utils.ShowToast(this, "Invalid User Id. Please Login Again !");
-                //ShowToast("Invalid User Id. Please Login Again !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
@@ -74,49 +71,39 @@ namespace CSU_PORTABLE.Droid.UI
             prefs.setUnreadNotificationCount(0);
         }
 
-        private void getAlertList(int userId)
+        private async void GetAlertList(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            Log.Debug(TAG, "getAlertList()");
-
-            var request = new RestRequest(Constants.API_GET_ALL_ALERTS + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        getAlertListResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetAlertListResponse(response);
+                });
+            }
         }
 
-        private void getAlertListResponse(RestResponse restResponse)
+        private async void GetAlertListResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 alertList = array.ToObject<List<AlertModel>>();
-
-                showAlerts();
+                ShowAlerts();
             }
             else
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
                 Utils.Utils.ShowToast(this, "Please try again later !");
-                //ShowToast("Please try again later !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
 
-        private void showAlerts()
+        private void ShowAlerts()
         {
             if (alertList != null)
             {
@@ -139,16 +126,6 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
-
-        //private void ShowToast(string message)
-        //{
-        //    if (toast != null)
-        //    {
-        //        toast.Cancel();
-        //    }
-        //    toast = Toast.MakeText(this, message, ToastLength.Short);
-        //    toast.Show();
-        //}
 
     }
 }

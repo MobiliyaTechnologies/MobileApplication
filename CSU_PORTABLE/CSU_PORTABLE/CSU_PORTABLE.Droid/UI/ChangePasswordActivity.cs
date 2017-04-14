@@ -12,11 +12,11 @@ using Android.Widget;
 using Android.Util;
 using CSU_PORTABLE.Droid.Utils;
 using Android.Support.V7.App;
-using RestSharp;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -49,12 +49,12 @@ namespace CSU_PORTABLE.Droid.UI
             tvMessage.Visibility = ViewStates.Gone;
 
             PreferenceHandler prefs = new PreferenceHandler();
-            userDetails= prefs.GetUserDetails();
+            userDetails = prefs.GetUserDetails();
             if (userDetails.Email == null)
             {
                 Utils.Utils.ShowToast(this, "Invalid Email Id !");
-                //ShowToast("Invalid Email Id !");
-            } else
+            }
+            else
             {
                 tvUsername.Text = userDetails.Email;
                 EnableButton(buttonSubmit);
@@ -81,19 +81,16 @@ namespace CSU_PORTABLE.Droid.UI
                             else
                             {
                                 Utils.Utils.ShowToast(this, "Please enable your internet connection !");
-                                //ShowToast("Please enable your internet connection !");
                             }
                         }
                         else
                         {
                             Utils.Utils.ShowToast(this, "Enter valid new password");
-                            //ShowToast("Enter valid new password");
                         }
                     }
                     else
                     {
                         Utils.Utils.ShowToast(this, "Enter valid password");
-                        //ShowToast("Enter valid password");
                     }
                 };
             }
@@ -110,40 +107,30 @@ namespace CSU_PORTABLE.Droid.UI
             view.Enabled = true;
             view.Alpha = 1f;
         }
-        
-        private void ChangePassword(ChangePasswordModel model)
+
+        private async void ChangePassword(ChangePasswordModel model)
         {
             DisableButton(buttonSubmit);
             progressBar.Visibility = ViewStates.Visible;
-
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "ChangePassword() " + model.ToString());
-
-            var request = new RestRequest(Constants.API_CHANGE_PASSWORD, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(model);
-            
-            //RestResponse restResponse = (RestResponse)client.Execute(request);
-            //LoginResponse(restResponse);
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_CHANGE_PASSWORD, JsonConvert.SerializeObject(model), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
-                        ChangePasswordResponse((RestResponse)response);
-                    });
-                }
-            });
+                    ChangePasswordResponse(response);
+                });
+            }
         }
 
-        private void ChangePasswordResponse(RestResponse restResponse)
+        private async void ChangePasswordResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                ChangePasswordResponseModel response = JsonConvert.DeserializeObject<ChangePasswordResponseModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                ChangePasswordResponseModel response = JsonConvert.DeserializeObject<ChangePasswordResponseModel>(strContent);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {

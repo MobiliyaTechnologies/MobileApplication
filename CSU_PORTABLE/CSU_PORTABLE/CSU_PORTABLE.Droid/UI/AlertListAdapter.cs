@@ -12,7 +12,6 @@ using Android.Widget;
 using Android.Support.V7.Widget;
 using CSU_PORTABLE.Models;
 using static Android.Views.View;
-using RestSharp;
 using Android.Util;
 using CSU_PORTABLE.Utils;
 using CSU_PORTABLE.Droid.Utils;
@@ -20,6 +19,7 @@ using Newtonsoft.Json;
 using Android.Content.Res;
 using Android.Graphics;
 using Java.Text;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -129,28 +129,17 @@ namespace CSU_PORTABLE.Droid.UI
             return dt;
         }
 
-        private void AcknowledgeAlert(AlertAcknowledgeModel acknowledgeModel, int userId)
+        private async void AcknowledgeAlert(AlertAcknowledgeModel acknowledgeModel, int userId)
         {
             if (userId != -1)
             {
-                RestClient client = new RestClient(Constants.SERVER_BASE_URL);
                 Log.Debug(TAG, "getAlertList()");
-
-                var request = new RestRequest(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, Method.POST);
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(acknowledgeModel);
-
-                client.ExecuteAsync(request, response =>
+                var response = await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, JsonConvert.SerializeObject(acknowledgeModel), HttpMethod.Post);
+                if (response.StatusCode != 0)
                 {
-                    Console.WriteLine(response);
-                    if (response.StatusCode != 0)
-                    {
-                        Log.Debug(TAG, "async Response : " + response.ToString());
-                        //RunOnUiThread(() => {
-                        AcknowledgeAlertResponse((RestResponse)response);
-                        //});
-                    }
-                });
+                    Log.Debug(TAG, "async Response : " + response.ToString());
+                    AcknowledgeAlertResponse(response);
+                }
             }
             else
             {
@@ -160,45 +149,30 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void AcknowledgeAlertResponse(RestResponse restResponse)
+        private async void AcknowledgeAlertResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                AlertAcknowledgementResponseModel response = JsonConvert.DeserializeObject<AlertAcknowledgementResponseModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                AlertAcknowledgementResponseModel response = JsonConvert.DeserializeObject<AlertAcknowledgementResponseModel>(strContent);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
                     Log.Debug(TAG, "acknowledgement Successful");
                     Utils.Utils.ShowToast(mContext, "Acknowlwdged successfully.");
-                    //ShowToast("Acknowlwdged successfully.");
-                    //update list
-
                 }
                 else
                 {
                     Log.Debug(TAG, "Acknowledgement Failed");
                     Utils.Utils.ShowToast(mContext, "Failed to acknowlwdge. Please try later !");
-                    //ShowToast("Failed to acknowlwdge. Please try later !");
                 }
             }
             else
             {
                 Log.Debug(TAG, "acknowledgeAlertResponse() Failed");
                 Utils.Utils.ShowToast(mContext, "Failed to acknowlwdge. Please try later !");
-                //ShowToast("Failed to acknowlwdge. Please try later !");
             }
         }
-
-        //private void ShowToast(string message)
-        //{
-        //    if (toast != null)
-        //    {
-        //        toast.Cancel();
-        //    }
-        //    toast = Toast.MakeText(mContext, message, ToastLength.Short);
-        //    toast.Show();
-        //}
     }
 }
