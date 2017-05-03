@@ -4,7 +4,6 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using SidebarNavigation;
 using System;
 using UIKit;

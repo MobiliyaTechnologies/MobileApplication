@@ -5,10 +5,10 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -22,24 +22,6 @@ namespace CSU_PORTABLE.iOS
         public FeedbackViewController(IntPtr handle) : base(handle)
         {
         }
-
-        //// provide access to the navigation controller to all inheriting controllers
-        //protected NavController NavController
-        //{
-        //    get
-        //    {
-        //        return (UIApplication.SharedApplication.Delegate as AppDelegate).RootViewController.NavController;
-        //    }
-        //}
-
-        //// provide access to the storyboard to all inheriting controllers
-        //public override UIStoryboard Storyboard
-        //{
-        //    get
-        //    {
-        //        return (UIApplication.SharedApplication.Delegate as AppDelegate).RootViewController.Storyboard;
-        //    }
-        //}
 
         public override void ViewDidLoad()
         {
@@ -80,7 +62,7 @@ namespace CSU_PORTABLE.iOS
             }
             else
             {
-                ShowMessage("Select class room.");
+                IOSUtil.ShowMessage("Select class room.", loadingOverlay, this);
             }
         }
 
@@ -119,10 +101,6 @@ namespace CSU_PORTABLE.iOS
             };
 
             UIButton btnNext = new UIButton(UIButtonType.Custom);
-            //btnNext.SetTitle("Next", UIControlState.Normal);
-            //btnNext.Font = UIFont.FromName("Futura-Medium", 15f);
-            //btnNext.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
-            //btnNext.SetTitleColor(UIColor.Green, UIControlState.Focused);
             btnNext.SetImage(UIImage.FromBundle("Next_BTN_White.png"), UIControlState.Normal);
             btnNext.Layer.CornerRadius = 20;
             btnNext.TouchUpInside += BtnNext_TouchUpInside;
@@ -131,36 +109,35 @@ namespace CSU_PORTABLE.iOS
             View.AddSubviews(FeedbackHomeHeader, FeedbackHomeSubHeader, btnNext);
         }
 
-        public void GetClassRooms()
+        public async void GetClassRooms()
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             PreferenceHandler prefHandler = new PreferenceHandler();
             UserDetails userDetail = prefHandler.GetUserDetails();
-            var request = new RestRequest(Constants.API_GET_CLASS_ROOMS + "/" + userDetail.User_Id, Method.GET);
-            request.RequestFormat = DataFormat.Json;
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_CLASS_ROOMS + "/" + userDetail.UserId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        CheckClassRoomsResponse(response);
-
-                    });
-                }
-            });
+                    CheckClassRoomsResponse(response);
+                    loadingOverlay.Hide();
+                });
+            }
         }
 
-        private void CheckClassRoomsResponse(IRestResponse restResponse)
+        private async void CheckClassRoomsResponse(HttpResponseMessage restResponse)
         {
-            List<ClassRoomModel> classRoomsList = new List<ClassRoomModel>();
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                classRoomsList = JsonConvert.DeserializeObject<List<ClassRoomModel>>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                List<ClassRoomModel> classRoomsList = JsonConvert.DeserializeObject<List<ClassRoomModel>>(strContent);
+                BindClassRooms(classRoomsList);
             }
-            BindClassRooms(classRoomsList);
+            else
+            {
+                IOSUtil.ShowMessage("No Class Rooms", loadingOverlay, this);
+            }
         }
+
 
         private void BindClassRooms(List<ClassRoomModel> classRoomsList)
         {
@@ -185,21 +162,21 @@ namespace CSU_PORTABLE.iOS
             loadingOverlay.Hide();
         }
 
-        private void ShowMessage(string v)
-        {
-            //BTProgressHUD.ShowToast("Hello from Toast");
-            if (loadingOverlay != null)
-            {
-                loadingOverlay.Hide();
-            }
-            //MessageLabel.Text = " " + v;
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
+        //private void ShowMessage(string v)
+        //{
+        //    //BTProgressHUD.ShowToast("Hello from Toast");
+        //    if (loadingOverlay != null)
+        //    {
+        //        loadingOverlay.Hide();
+        //    }
+        //    //MessageLabel.Text = " " + v;
+        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
 
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
+        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
 
-            PresentViewController(alertController, true, null);
+        //    PresentViewController(alertController, true, null);
 
-        }
+        //}
         #endregion
 
 

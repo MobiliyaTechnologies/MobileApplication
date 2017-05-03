@@ -4,9 +4,9 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using UIKit;
 
@@ -104,31 +104,19 @@ namespace CSU_PORTABLE.iOS
 
         #region "Acknowledge Alert"
 
-        private void Acknowledge_TouchUpInside(object sender, EventArgs e)
+        private async void Acknowledge_TouchUpInside(object sender, EventArgs e)
         {
             var selectedRow = Acknowledge.Tag;
             var subView = (UILabel)ContentView.Subviews[0];
             var superView = Acknowledge.Superview;
             var preferenceHandler = new PreferenceHandler();
             UserDetails userDetails = preferenceHandler.GetUserDetails();
-            int userId = userDetails.User_Id;
+            int userId = userDetails.UserId;
             AlertAcknowledgeModel ackModel = new AlertAcknowledgeModel();
             ackModel.Alert_Id = Convert.ToInt32(subView.Text);
-            ackModel.Acknowledged_By = userDetails.First_Name + " " + userDetails.Last_Name;
+            ackModel.Acknowledged_By = userDetails.FirstName + " " + userDetails.LastName;
 
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(ackModel);
-
-            client.ExecuteAsync(request, response =>
-            {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
-                {
-                    //AcknowledgeAlertResponse((RestResponse)response);
-                }
-            });
+            var response = await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, JsonConvert.SerializeObject(ackModel), HttpMethod.Post);
         }
 
         #endregion

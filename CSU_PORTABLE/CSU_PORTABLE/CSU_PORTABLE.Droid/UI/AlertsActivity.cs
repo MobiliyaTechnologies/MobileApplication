@@ -40,7 +40,7 @@ namespace CSU_PORTABLE.Droid.UI
             layoutProgress.Visibility = ViewStates.Visible;
 
             var preferenceHandler = new PreferenceHandler();
-            int userId = preferenceHandler.GetUserDetails().User_Id;
+            int userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);

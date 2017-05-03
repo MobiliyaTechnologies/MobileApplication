@@ -180,7 +180,7 @@ namespace CSU_PORTABLE.iOS
             PreferenceHandler prefsHandler = new PreferenceHandler();
             if (prefsHandler.IsLoggedIn())
             {
-                int roleId = prefsHandler.GetUserDetails().Role_Id;
+                int roleId = prefsHandler.GetUserDetails().RoleId;
                 if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
                 {
                     BTProgressHUD.ForceiOS6LookAndFeel = true;

@@ -124,7 +124,7 @@ namespace CSU_PORTABLE.Droid.UI
 
             PreferenceHandler preferenceHandler = new PreferenceHandler();
             preferenceHandler.SaveUserDetails(userDetails);
-            if (userDetails.Role_Id == (int)Constants.USER_ROLE.STUDENT)
+            if (userDetails.RoleId == (int)Constants.USER_ROLE.STUDENT)
             {
                 ShowStudentDashboard();
             }

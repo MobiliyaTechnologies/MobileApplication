@@ -4,9 +4,9 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -74,7 +74,7 @@ namespace CSU_PORTABLE.iOS
             if (SelectedAnswer >= 0)
             {
 
-                submitFeedback(userdetail.User_Id);
+                submitFeedback(userdetail.UserId);
                 //var ThankYouViewController = Storyboard.InstantiateViewController("ThankYouViewController") as ThankYouViewController;
                 //ThankYouViewController.NavigationItem.SetHidesBackButton(true, false);
                 //NavigationController.PushViewController(ThankYouViewController, true);
@@ -271,7 +271,7 @@ namespace CSU_PORTABLE.iOS
             return img;
         }
 
-        private void submitFeedback(int userId)
+        private async void submitFeedback(int userId)
         {
             FeedbackModel feedbackModel = new FeedbackModel();
             feedbackModel.QuestionId = 1;
@@ -279,30 +279,23 @@ namespace CSU_PORTABLE.iOS
             feedbackModel.AnswerId = SelectedAnswer + 1;
             feedbackModel.FeedbackDesc = "";
 
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_GIVE_FEEDBACK + "/" + userId, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(feedbackModel);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GIVE_FEEDBACK + "/" + userId, JsonConvert.SerializeObject(feedbackModel), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        submitFeedbackResponse((RestResponse)response);
-                    });
+                    submitFeedbackResponse(response);
+                });
 
-                }
-            });
+            }
         }
 
-        private void submitFeedbackResponse(RestResponse restResponse)
+        private async void submitFeedbackResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(strContent);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {

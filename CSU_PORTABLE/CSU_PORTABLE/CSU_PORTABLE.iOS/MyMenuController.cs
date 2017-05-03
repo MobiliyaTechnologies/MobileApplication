@@ -4,8 +4,8 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -65,10 +65,16 @@ namespace CSU_PORTABLE.iOS
             // show the loading overlay on the UI thread using the correct orientation sizing
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
-            
+
 
             PreferenceHandler preferenceHandler = new PreferenceHandler();
             preferenceHandler.setLoggedIn(false);
+
+            Action ResetSession = () =>
+           {
+
+           };
+            NSUrlSession.SharedSession.Reset(ResetSession);
 
             var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
             ViewController.NavigationItem.SetHidesBackButton(true, false);
@@ -124,11 +130,11 @@ namespace CSU_PORTABLE.iOS
                 Font = UIFont.FromName("Futura-Medium", 20f),
                 BackgroundColor = UIColor.Clear,
                 TextAlignment = UITextAlignment.Center,
-                Text = userdetail.First_Name + " " + userdetail.Last_Name,
+                Text = userdetail.FirstName + " " + userdetail.LastName,
                 TextColor = UIColor.White,
                 LineBreakMode = UILineBreakMode.WordWrap,
                 Lines = 3,
-                
+
             };
 
             UIButton LogOutButton = new UIButton()
@@ -232,7 +238,7 @@ namespace CSU_PORTABLE.iOS
             AlertsButton.InsertSubview(seperatorAlerts, 1);
             InsightsButton.InsertSubview(seperatorInsights, 1);
 
-            if (userdetail.Role_Id == 2)
+            if (userdetail.RoleId == 2)
             {
                 ChangePasswordButton.Frame = new CGRect(0, profileViewHeight + 40, 250, 40);
                 View.AddSubviews(viewProfile, ChangePasswordButton, LogOutButton);
@@ -244,75 +250,37 @@ namespace CSU_PORTABLE.iOS
                 ChangePasswordButton.Frame = new CGRect(0, profileViewHeight + 120, 250, 40);
                 View.AddSubviews(viewProfile, ChangePasswordButton, ReportsButton, AlertsButton, InsightsButton);
             }
-
-
-
         }
 
-       
 
-        private void Logout(LogoutModel logoutModel)
+
+        private async void Logout(LogoutModel logoutModel)
         {
-
-
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-
-            var request = new RestRequest(Constants.API_SIGN_OUT, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(logoutModel);
-
-            client.ExecuteAsync(request, response =>
-            {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
-                {
-                    InvokeOnMainThread(() =>
-                    {
-                        LogoutResponse((RestResponse)response);
-                    });
-                }
-            });
-        }
-
-        private void LogoutResponse(RestResponse restResponse)
-        {
-
-
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-            {
-                GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(restResponse.Content);
-
-                //if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
-                //{
-                //    PreferenceHandler preferenceHandler = new PreferenceHandler();
-                //    preferenceHandler.setLoggedIn(false);
-
-                //    var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
-                //    ViewController.NavigationItem.SetHidesBackButton(true, false);
-                //    NavController.PushViewController(ViewController, false);
-                //    SidebarController.MenuWidth = 0;
-                //    SidebarController.CloseMenu();
-                //    loadingOverlay.Hide();
-
-                //}
-                //else
-                //{
-                //    ShowMessage("Failed to logout, Please try later.");
-                //}
-            }
-            //else
+            var response = await InvokeApi.Invoke(Constants.API_SIGN_OUT, JsonConvert.SerializeObject(logoutModel), HttpMethod.Post);
+            //if (response.StatusCode != 0)
             //{
-            //    ShowMessage("Failed to logout, Please try later.");
+            //    InvokeOnMainThread(() =>
+            //    {
+            //        LogoutResponse(response);
+            //    });
             //}
         }
 
-        private void ShowMessage(string v)
-        {
-            loadingOverlay.Hide();
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-            PresentViewController(alertController, true, null);
-        }
+        //private void LogoutResponse(HttpResponseMessage restResponse)
+        //{
+        //    if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+        //    {
+        //    }
+
+        //}
+
+        //private void ShowMessage(string v)
+        //{
+        //    loadingOverlay.Hide();
+        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
+        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
+        //    PresentViewController(alertController, true, null);
+        //}
 
         #endregion
     }

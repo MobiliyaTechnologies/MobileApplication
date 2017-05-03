@@ -58,7 +58,7 @@ namespace CSU_PORTABLE.iOS
             UserDetails userDetail = preferenceHandler.GetUserDetails();
             if (IsLogged)
             {
-                if (userDetail.Role_Id == 2)
+                if (userDetail.RoleId == 2)
                 {
                     //var ClassRoomController = (ClassRoomController)Storyboard.InstantiateViewController("ClassRoomController");
                     //NavController.PushViewController(ClassRoomController, false);

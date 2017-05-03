@@ -14,6 +14,39 @@ namespace CSU_PORTABLE.Droid.Utils
         string preferenceUserId = "CSUPREF_user_id";
         string preferenceRoleId = "CSUPREF_role_id";
         string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
+        string preferenceToken = "CSUPREF_token";
+        string preferenceAccessCode = "CSUPREF_accesscode";
+
+
+        public bool SetAccessCode(string AccessCode)
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            var contextEdit = contextPref.Edit();
+            contextEdit.PutString(preferenceAccessCode, AccessCode);
+            return contextEdit.Commit();
+        }
+
+
+        public string GetAccessCode()
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            return contextPref.GetString(preferenceAccessCode, string.Empty);
+        }
+
+        public bool SetToken(string Token)
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            var contextEdit = contextPref.Edit();
+            contextEdit.PutString(preferenceToken, Token);
+            return contextEdit.Commit();
+        }
+
+
+        public string GetToken()
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            return contextPref.GetString(preferenceToken, string.Empty);
+        }
 
         public bool setLoggedIn(bool value)
         {
@@ -51,10 +84,10 @@ namespace CSU_PORTABLE.Droid.Utils
                 var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
                 var contextEdit = contextPref.Edit();
                 contextEdit.PutString(preferenceEmail, loginResponse.Email);
-                contextEdit.PutString(preferenceFirstName, loginResponse.First_Name);
-                contextEdit.PutString(preferenceLastName, loginResponse.Last_Name);
-                contextEdit.PutInt(preferenceUserId, loginResponse.User_Id);
-                contextEdit.PutInt(preferenceRoleId, loginResponse.Role_Id);
+                contextEdit.PutString(preferenceFirstName, loginResponse.FirstName);
+                contextEdit.PutString(preferenceLastName, loginResponse.LastName);
+                contextEdit.PutInt(preferenceUserId, loginResponse.UserId);
+                contextEdit.PutInt(preferenceRoleId, loginResponse.RoleId);
                 contextEdit.PutBoolean(preferenceIsLoggedIn, true);
                 resp = contextEdit.Commit();
             }
@@ -66,10 +99,10 @@ namespace CSU_PORTABLE.Droid.Utils
             UserDetails userDetails = new UserDetails();
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             userDetails.Email = contextPref.GetString(preferenceEmail, null);
-            userDetails.First_Name = contextPref.GetString(preferenceFirstName, null);
-            userDetails.Last_Name = contextPref.GetString(preferenceLastName, null);
-            userDetails.User_Id = contextPref.GetInt(preferenceUserId, -1);
-            userDetails.Role_Id = contextPref.GetInt(preferenceRoleId, (int)Constants.USER_ROLE.ADMIN);
+            userDetails.FirstName = contextPref.GetString(preferenceFirstName, null);
+            userDetails.LastName = contextPref.GetString(preferenceLastName, null);
+            userDetails.UserId = contextPref.GetInt(preferenceUserId, -1);
+            userDetails.RoleId = contextPref.GetInt(preferenceRoleId, (int)Constants.USER_ROLE.ADMIN);
             return userDetails;
         }
     }

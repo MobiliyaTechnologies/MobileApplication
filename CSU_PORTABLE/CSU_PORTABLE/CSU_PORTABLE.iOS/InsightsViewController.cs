@@ -5,9 +5,9 @@ using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -38,8 +38,8 @@ namespace CSU_PORTABLE.iOS
             yAxisRecomendation = yAxisRecomendation + NavigationController.NavigationBar.Bounds.Bottom;
             prefHandler = new PreferenceHandler();
             userdetail = prefHandler.GetUserDetails();
-            GetInsights(userdetail.User_Id);
-            getRecommendationsList(userdetail.User_Id);
+            GetInsights(userdetail.UserId);
+            getRecommendationsList(userdetail.UserId);
         }
 
 
@@ -48,7 +48,7 @@ namespace CSU_PORTABLE.iOS
 
 
         #region " Custom Functions "
-        private void GenerateInsightsHeader(InshghtDataModel insightDM)
+        private void GenerateInsightsHeader(InsightDataModel insightDM)
         {
             double insightsHeight = NavigationController.NavigationBar.Bounds.Bottom;
 
@@ -193,63 +193,53 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
-        private void getRecommendationsList(int userId)
+        private async void getRecommendationsList(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_GET_RECOMMENDATIONS + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        getRecommendationsListResponse((RestResponse)response);
-                    });
-                }
-            });
+                    getRecommendationsListResponse(response);
+                });
+            }
         }
 
-        private void getRecommendationsListResponse(RestResponse restResponse)
+        private async void getRecommendationsListResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 lstRecommendations = array.ToObject<List<AlertModel>>();
                 GetRecommendations(lstRecommendations);
             }
             else
             {
-                ShowMessage("Please try again later !");
+                IOSUtil.ShowMessage("Please try again later !", loadingOverlay, this);
             }
         }
 
 
-        private void GetInsights(int userId)
+        private async void GetInsights(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        GetInsightDataResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetInsightDataResponse(response);
+                });
+            }
+
         }
 
-        private void GetInsightDataResponse(RestResponse restResponse)
+        private async void GetInsightDataResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                InsightDataModel response = JsonConvert.DeserializeObject<InsightDataModel>(strContent);
                 GenerateInsightsHeader(response);
             }
             else
@@ -258,18 +248,6 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
-        private void ShowMessage(string v)
-        {
-            //BTProgressHUD.ShowMessage("Hello from Toast");
-            loadingOverlay.Hide();
-            //MessageLabel.Text = " " + v;
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-
-            PresentViewController(alertController, true, null);
-
-        }
 
         #endregion
     }

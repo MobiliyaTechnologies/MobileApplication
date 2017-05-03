@@ -60,6 +60,14 @@
     <DebugSymbols>False</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Identity.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Identity.Client.1.0.304142221-alpha\lib\MonoAndroid10\Microsoft.Identity.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client.Platform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Identity.Client.1.0.304142221-alpha\lib\MonoAndroid10\Microsoft.Identity.Client.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
@@ -160,6 +168,7 @@
     <Compile Include="UI\GlobalReportsActivity.cs" />
     <Compile Include="UI\InsightsActivity.cs" />
     <Compile Include="UI\LoginActivity.cs" />
+    <Compile Include="UI\LoginNewActivity.cs" />
     <Compile Include="UI\MainActivity.cs" />
     <Compile Include="UI\MeterReportActivity.cs" />
     <Compile Include="UI\SplashActivity.cs" />
@@ -206,6 +215,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\feed_update_notification.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\LoginNew.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

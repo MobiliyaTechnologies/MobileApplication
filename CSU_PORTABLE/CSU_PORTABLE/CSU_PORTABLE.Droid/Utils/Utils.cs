@@ -44,5 +44,8 @@ namespace CSU_PORTABLE.Droid.Utils
             toast = Toast.MakeText(context, message, ToastLength.Short);
             toast.Show();
         }
+
+
+
     }
 }

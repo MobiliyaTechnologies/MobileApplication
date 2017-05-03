@@ -4,9 +4,9 @@ using UIKit;
 using CSU_PORTABLE.Models;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using RestSharp;
 using CSU_PORTABLE.Utils;
 using CSU_PORTABLE.iOS.Utils;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -31,42 +31,47 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
-          
+
             GetClassRooms();
         }
 
 
-        public void GetClassRooms()
+        public async void GetClassRooms()
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             PreferenceHandler prefHandler = new PreferenceHandler();
             UserDetails userDetail = prefHandler.GetUserDetails();
-            var request = new RestRequest(Constants.API_GET_CLASS_ROOMS + "/" + userDetail.User_Id, Method.GET);
-            request.RequestFormat = DataFormat.Json;
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_CLASS_ROOMS + "/" + userDetail.UserId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        CheckClassRoomsResponse(response);
-                        loadingOverlay.Hide();
-                    });
-                }
-            });
+                    CheckClassRoomsResponse(response);
+                    loadingOverlay.Hide();
+                });
+            }
+            //RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+
+
+            //var request = new RestRequest(Constants.API_GET_CLASS_ROOMS + "/" + userDetail.User_Id, Method.GET);
+            //request.RequestFormat = DataFormat.Json;
+            //client.ExecuteAsync(request, response =>
+            //{
+            //    Console.WriteLine(response);
+
+            //});
         }
 
-        private void CheckClassRoomsResponse(IRestResponse restResponse)
+        private async void CheckClassRoomsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                List<ClassRoomModel> classRoomsList = JsonConvert.DeserializeObject<List<ClassRoomModel>>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                List<ClassRoomModel> classRoomsList = JsonConvert.DeserializeObject<List<ClassRoomModel>>(strContent);
                 BindClassRooms(classRoomsList);
             }
             else
             {
-                ShowMessage("No Class Rooms");
+                IOSUtil.ShowMessage("No Class Rooms", loadingOverlay, this);
             }
         }
 
@@ -91,13 +96,13 @@ namespace CSU_PORTABLE.iOS
             View.AddSubview(_table);
         }
 
-        private void ShowMessage(string v)
-        {
-            loadingOverlay.Hide();
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-            PresentViewController(alertController, true, null);
+        //private void ShowMessage(string v)
+        //{
+        //    loadingOverlay.Hide();
+        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
+        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
+        //    PresentViewController(alertController, true, null);
 
-        }
+        //}
     }
 }

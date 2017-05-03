@@ -70,11 +70,11 @@ namespace CSU_PORTABLE.Droid.UI
 
                     var preferenceHandler = new PreferenceHandler();
                     UserDetails userDetails = preferenceHandler.GetUserDetails();
-                    int userId = userDetails.User_Id;
+                    int userId = userDetails.UserId;
 
                     AlertAcknowledgeModel ackModel = new AlertAcknowledgeModel();
                     ackModel.Alert_Id = vh.alertId;
-                    ackModel.Acknowledged_By = userDetails.First_Name + " " + userDetails.Last_Name;
+                    ackModel.Acknowledged_By = userDetails.FirstName + " " + userDetails.LastName;
 
                     vh.textViewAck.SaveEnabled = false;
                     vh.textViewAck.SetTextColor(Color.LightGray);

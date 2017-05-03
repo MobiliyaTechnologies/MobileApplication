@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
 using Android.Support.V4.View;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -53,97 +54,132 @@ namespace CSU_PORTABLE.Droid.UI
 
         Activity activityContext;
 
-        protected override void OnCreate(Bundle bundle)
+        protected async override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             activityContext = this;
             Log.Debug(TAG, "google app id: " + Resource.String.google_app_id);
 
-            SetContentView(Resource.Layout.Main);
-            receiver = new MySampleBroadcastReceiver(activityContext);
-            //msgText = FindViewById<TextView>(Resource.Id.msgText);
-            SetDrawer();
-            if (Intent.Extras != null)
+            await CreateDashboard();
+
+        }
+
+        public async Task CreateDashboard()
+        {
+            var preferenceHandler = new PreferenceHandler();
+            string code = preferenceHandler.GetAccessCode();
+            string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.Grant_type, B2CConfig.ClientSecret, B2CConfig.ClientId, code);
+            var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                foreach (var key in Intent.Extras.KeySet())
+                string strContent = await response.Content.ReadAsStringAsync();
+                var token = JsonConvert.DeserializeObject<AccessToken>(strContent);
+
+                // string strRefreshToken = "access&refresh_token=AwABAAAAvPM1KaPlrEqdFSBzjqfTGBCmLdgfSTLEMPGYuNHSUYBrq...&redirect_uri=urn:ietf:wg:oauth:2.0:oob";
+                string strRefreshToken = "https://login.microsoftonline.com/csub2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_b2csignin&grant_type=refresh_token&client_id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&scope=3bdf8223-746c-42a2-ba5e-0322bfd9ff76" + " " + "offline_access&refresh_token=" + token.id_token + "&redirect_uri=urn:ietf:wg:oauth:2.0:oob";
+                var res = await InvokeApi.Authenticate(strRefreshToken, string.Empty, HttpMethod.Post);
+
+                string strRefreshToken1 = "https://login.microsoftonline.com/csub2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_b2csignin&grant_type=refresh_token&client_id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&scope=3bdf8223-746c-42a2-ba5e-0322bfd9ff76" + " " + "offline_access&refresh_token=" + code + "&redirect_uri=urn:ietf:wg:oauth:2.0:oob";
+                var res1 = await InvokeApi.Authenticate(strRefreshToken1, string.Empty, HttpMethod.Post);
+
+                preferenceHandler.SetToken(token.id_token);
+                UserDetails userDetails = new UserDetails()
                 {
-                    //int value = Intent.Extras.GetInt(key);
-                    //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
-
-                    if (key.Equals(KEY_USER_ROLE))
-                    {
-                        userRole = Intent.Extras.GetInt(key);
-                    }
-
-                }
-            }
-
-            layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
-            layoutProgress.Visibility = ViewStates.Gone;
-            IsPlayServicesAvailable();
-
-            if (userRole == (int)Constants.USER_ROLE.ADMIN)
-            {
-                bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
-
-                LayoutInsightData = FindViewById<LinearLayout>(Resource.Id.layout_insight_data);
-                textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
-                textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
-                textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
-                textViewInsights = FindViewById<TextView>(Resource.Id.tv_insights);
-
-                textViewInsights.Click += delegate
-                {
-                    // Show insights(Recommendations) Activity
-                    Intent intent = new Intent(Application.Context, typeof(InsightsActivity));
-                    StartActivity(intent);
+                    FirstName = "Krunal",
+                    LastName = "Lokhande",
+                    Email = "krunal@gmail.com",
+                    Message = "",
+                    RoleId = 2,
+                    Status_Code = 1,
+                    UserId = 3
                 };
+                preferenceHandler.SaveUserDetails(userDetails);
 
-                if (!isNetworkEnabled)
+
+                SetContentView(Resource.Layout.Main);
+                receiver = new MySampleBroadcastReceiver(activityContext);
+                //msgText = FindViewById<TextView>(Resource.Id.msgText);
+                SetDrawer();
+                if (Intent.Extras != null)
                 {
-                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
-                    //ShowToast("Please enable your internet connection !");
-                }
-                //Show Map Fragment
-                GoogleMapOptions mapOptions = new GoogleMapOptions()
-                .InvokeMapType(GoogleMap.MapTypeNormal)
-                .InvokeZoomControlsEnabled(false)
-                .InvokeCompassEnabled(true);
-
-                _myMapFragment = MapFragment.NewInstance(mapOptions);
-                FragmentTransaction tx = FragmentManager.BeginTransaction();
-                tx.Add(Resource.Id.fragment_container, _myMapFragment, "map");
-                tx.Commit();
-
-                _myMapFragment.GetMapAsync(this);
-
-                var preferenceHandler = new PreferenceHandler();
-                int userId = preferenceHandler.GetUserDetails().User_Id;
-                if (userId != -1)
-                {
-                    if (isNetworkEnabled)
+                    foreach (var key in Intent.Extras.KeySet())
                     {
-                        GetMeterDetails(userId);
-                        GetMonthlyConsumptionDetails(userId);
-                        ShowInsights(null);
-                        GetInsights(userId);
+                        //int value = Intent.Extras.GetInt(key);
+                        //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+
+                        if (key.Equals(KEY_USER_ROLE))
+                        {
+                            userRole = Intent.Extras.GetInt(key);
+                        }
+
+                    }
+                }
+                layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
+                layoutProgress.Visibility = ViewStates.Gone;
+                IsPlayServicesAvailable();
+                if (userRole == (int)Constants.USER_ROLE.ADMIN)
+                {
+                    bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
+
+                    LayoutInsightData = FindViewById<LinearLayout>(Resource.Id.layout_insight_data);
+                    textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
+                    textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
+                    textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
+                    textViewInsights = FindViewById<TextView>(Resource.Id.tv_insights);
+
+                    textViewInsights.Click += delegate
+                    {
+                        // Show insights(Recommendations) Activity
+                        Intent intent = new Intent(Application.Context, typeof(InsightsActivity));
+                        StartActivity(intent);
+                    };
+
+                    if (!isNetworkEnabled)
+                    {
+                        Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                        //ShowToast("Please enable your internet connection !");
+                    }
+                    //Show Map Fragment
+                    GoogleMapOptions mapOptions = new GoogleMapOptions()
+                    .InvokeMapType(GoogleMap.MapTypeNormal)
+                    .InvokeZoomControlsEnabled(false)
+                    .InvokeCompassEnabled(true);
+
+                    _myMapFragment = MapFragment.NewInstance(mapOptions);
+                    FragmentTransaction tx = FragmentManager.BeginTransaction();
+                    tx.Add(Resource.Id.fragment_container, _myMapFragment, "map");
+                    tx.Commit();
+
+                    _myMapFragment.GetMapAsync(this);
+
+                    //var preferenceHandler = new PreferenceHandler();
+                    int userId = preferenceHandler.GetUserDetails().UserId;
+                    if (userId != -1)
+                    {
+                        if (isNetworkEnabled)
+                        {
+                            GetMeterDetails(userId);
+                            GetMonthlyConsumptionDetails(userId);
+                            ShowInsights(null);
+                            GetInsights(userId);
+                        }
+                    }
+                    else
+                    {
+                        Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                        ShowToast("Invalid User Id. Please Login Again !");
                     }
                 }
                 else
                 {
-                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
-                    ShowToast("Invalid User Id. Please Login Again !");
-                }
-            }
-            else
-            {
-                //Show Student Fragment
+                    //Show Student Fragment
 
-                var newFragment = new StudentFragment();
-                var ft = FragmentManager.BeginTransaction();
-                ft.Add(Resource.Id.fragment_container, newFragment);
-                ft.Commit();
-                HideInsights();
+                    var newFragment = new StudentFragment();
+                    var ft = FragmentManager.BeginTransaction();
+                    ft.Add(Resource.Id.fragment_container, newFragment);
+                    ft.Commit();
+                    HideInsights();
+                }
             }
 
         }
@@ -244,7 +280,7 @@ namespace CSU_PORTABLE.Droid.UI
             bool isLoggedIn = preferenceHandler.IsLoggedIn();
             if (isLoggedIn)
             {
-                int roleId = preferenceHandler.GetUserDetails().Role_Id;
+                int roleId = preferenceHandler.GetUserDetails().RoleId;
                 if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.STUDENT)
                 {
                     IMenu nav_Menu = navigationView.Menu;
@@ -260,7 +296,7 @@ namespace CSU_PORTABLE.Droid.UI
                     Resource.Id.textViewUserName);
             PreferenceHandler pref = new PreferenceHandler();
             UserDetails user = pref.GetUserDetails();
-            textViewUserName.Text = user.First_Name + " " + user.Last_Name;
+            textViewUserName.Text = user.FirstName + " " + user.LastName;
 
             TextView textViewLogout =
                  navigationView.GetHeaderView(0).FindViewById<TextView>(

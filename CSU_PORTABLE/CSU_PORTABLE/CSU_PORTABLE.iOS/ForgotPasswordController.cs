@@ -2,10 +2,10 @@
 using System;
 using UIKit;
 using CSU_PORTABLE.Models;
-using RestSharp;
 using CSU_PORTABLE.Utils;
 using Newtonsoft.Json;
 using CSU_PORTABLE.iOS.Utils;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -44,7 +44,7 @@ namespace CSU_PORTABLE.iOS
             if (string.IsNullOrEmpty(Email.Text.Trim()))
             {
                 loadingOverlay.Hide();
-                ShowMessage("Enter valid Email.");
+                IOSUtil.ShowMessage("Enter valid Email.", loadingOverlay, this);
             }
             else
             {
@@ -52,66 +52,40 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
-        // shows pop up messages
-        private void ShowMessage(string v)
+        public async void SubmitEmail(ForgotPasswordModel objModel)
         {
-
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-            PresentViewController(alertController, true, null);
-
-        }
-
-
-        public void SubmitEmail(ForgotPasswordModel objModel)
-        {
-
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_FORGOT_PASSWORD, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(objModel);
-
-            //RestResponse restResponse = (RestResponse)client.Execute(request);
-            //ForgotPasswordResponse(restResponse);
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_FORGOT_PASSWORD, JsonConvert.SerializeObject(objModel), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-
-                    InvokeOnMainThread(() =>
-                    {
-                        ForgotPasswordResponse((RestResponse)response);
-                        loadingOverlay.Hide();
-                    });
-                }
-            });
-
+                    ForgotPasswordResponse(response);
+                    loadingOverlay.Hide();
+                });
+            }
         }
 
-        private void ForgotPasswordResponse(RestResponse restResponse)
+        private async void ForgotPasswordResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-
-                ForgotPasswordResponseModel response = JsonConvert.DeserializeObject<ForgotPasswordResponseModel>(restResponse.Content);
-
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                ForgotPasswordResponseModel response = JsonConvert.DeserializeObject<ForgotPasswordResponseModel>(strContent);
                 if (response != null && response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
 
                     PreferenceHandler preferenceHandler = new PreferenceHandler();
                     preferenceHandler.setLoggedIn(false);
-                    ShowMessage("Please check your Email.");
+                    IOSUtil.ShowMessage("Please check your Email.", loadingOverlay, this);
                 }
                 else
                 {
-                    ShowMessage("Please try again.");
+                    IOSUtil.ShowMessage("Please try again.", loadingOverlay, this);
                 }
             }
             else
             {
-                ShowMessage("Please try again.");
-
+                IOSUtil.ShowMessage("Please try again.", loadingOverlay, this);
             }
         }
     }

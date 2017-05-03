@@ -3,9 +3,9 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using UIKit;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -55,7 +55,7 @@ namespace CSU_PORTABLE.iOS
 
             if (string.IsNullOrEmpty(User.Email))
             {
-                ShowMessage("Enter valid Email.");
+                IOSUtil.ShowMessage("Enter valid Email.", loadingOverlay, this);
             }
             else
             {
@@ -73,12 +73,12 @@ namespace CSU_PORTABLE.iOS
                     }
                     else
                     {
-                        ShowMessage("Enter valid confirm password");
+                        IOSUtil.ShowMessage("Enter valid confirm password", loadingOverlay, this);
                     }
                 }
                 else
                 {
-                    ShowMessage("Enter valid password");
+                    IOSUtil.ShowMessage("Enter valid password", loadingOverlay, this);
                 }
             }
             Submit.Enabled = true;
@@ -88,57 +88,38 @@ namespace CSU_PORTABLE.iOS
 
         #region "Custom Functions"
 
-        private void ChangePassword(ChangePasswordModel model)
+        private async void ChangePassword(ChangePasswordModel model)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_CHANGE_PASSWORD, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(model);
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_CHANGE_PASSWORD, JsonConvert.SerializeObject(model), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        ChangePasswordResponse((RestResponse)response);
-                    });
-                }
-            });
+                    ChangePasswordResponse(response);
+                });
+            }
         }
 
-        private void ChangePasswordResponse(RestResponse restResponse)
+        private async void ChangePasswordResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                ChangePasswordResponseModel response = JsonConvert.DeserializeObject<ChangePasswordResponseModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                ChangePasswordResponseModel response = JsonConvert.DeserializeObject<ChangePasswordResponseModel>(strContent);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
-                    ShowMessage("Password Changed Successfully. Please check your Email.");
+                    IOSUtil.ShowMessage("Password Changed Successfully. Please check your Email.", loadingOverlay, this);
                 }
                 else
                 {
-                    ShowMessage("Failed to change password, Plesase try again later.");
+                    IOSUtil.ShowMessage("Failed to change password, Plesase try again later.", loadingOverlay, this);
                 }
             }
             else
             {
-                ShowMessage("Error in changing password. Please try again.");
+                IOSUtil.ShowMessage("Error in changing password. Please try again.", loadingOverlay, this);
             }
-
-        }
-
-        private void ShowMessage(string v)
-        {
-            if (loadingOverlay != null)
-            {
-                loadingOverlay.Hide();
-            }
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-            PresentViewController(alertController, true, null);
-
         }
         #endregion
     }

@@ -7,9 +7,9 @@ using Foundation;
 using MapKit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -52,7 +52,7 @@ namespace CSU_PORTABLE.iOS
 
             prefHandler = new PreferenceHandler();
             userdetail = prefHandler.GetUserDetails();
-            GetInsights(userdetail.User_Id);
+            GetInsights(userdetail.UserId);
             //GenerateInsightsHeader();
 
             double mapHeight = NavigationController.NavigationBar.Bounds.Bottom + 160;
@@ -75,7 +75,7 @@ namespace CSU_PORTABLE.iOS
             View.AddSubviews(map);
 
             var preferenceHandler = new PreferenceHandler();
-            int userId = preferenceHandler.GetUserDetails().User_Id;
+            int userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
                 GetMeterDetails(userId);
@@ -95,7 +95,7 @@ namespace CSU_PORTABLE.iOS
             });
         }
 
-        private void GenerateInsightsHeader(InshghtDataModel insightDM)
+        private void GenerateInsightsHeader(InsightDataModel insightDM)
         {
             double insightsHeight = NavigationController.NavigationBar.Bounds.Bottom;
 
@@ -282,29 +282,25 @@ namespace CSU_PORTABLE.iOS
 
         #region INSIGHTS
 
-        private void GetInsights(int userId)
+        private async void GetInsights(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get);
+            Console.WriteLine(response);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        GetInsightDataResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetInsightDataResponse(response);
+                });
+            }
         }
 
-        private void GetInsightDataResponse(RestResponse restResponse)
+        private async void GetInsightDataResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                InsightDataModel response = JsonConvert.DeserializeObject<InsightDataModel>(strContent);
                 GenerateInsightsHeader(response);
             }
             else
@@ -318,71 +314,61 @@ namespace CSU_PORTABLE.iOS
 
         #region " Maps "
         //for api call
-        private void GetMonthlyConsumptionDetails(int userId)
+        private async void GetMonthlyConsumptionDetails(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-
-            var request = new RestRequest(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + 2, string.Empty, HttpMethod.Get);
+            Console.WriteLine(response);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        GetMonthlyConsumptionResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMonthlyConsumptionResponse(response);
+                });
+            }
         }
 
-        private void GetMeterDetails(int userId)
+        private async void GetMeterDetails(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-
-            var request = new RestRequest(Constants.API_GET_METER_LIST + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_METER_LIST + "/" + userId, string.Empty, HttpMethod.Get);
+            Console.WriteLine(response);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        GetMeterDetailsResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMeterDetailsResponse(response);
+                });
+            }
         }
 
-        private void GetMeterDetailsResponse(RestResponse restResponse)
+        private async void GetMeterDetailsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 meterList = array.ToObject<List<MeterDetails>>();
 
                 addPinAndCircle();
             }
             else
             {
-                ShowMessage("Failed to get details. Please try again later.");
+                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
             }
         }
 
-        private void GetMonthlyConsumptionResponse(RestResponse restResponse)
+        private async void GetMonthlyConsumptionResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 monthlyConsumptionList = array.ToObject<List<MonthlyConsumptionDetails>>();
 
                 addPinAndCircle();
             }
             else
             {
-                ShowMessage("Failed to get details. Please try again later.");
+                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
             }
         }
 

@@ -4,16 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace CSU_PORTABLE.Models
 {
     public class UserDetails
     {
+        
         public int Status_Code;
         public string Message;
-        public string First_Name;
-        public string Last_Name;
+        public string FirstName;
+        public string LastName;
         public string Email;
-        public int User_Id;
-        public int Role_Id;
+        public int UserId;
+        public int RoleId;
+        public int RoleType;
+        public string B2C_ObjectIdentifier;
+        public string Avatar;
     }
 }

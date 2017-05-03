@@ -282,7 +282,7 @@ namespace CSU_PORTABLE.Droid.UI
             mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
 
             var preferenceHandler = new PreferenceHandler();
-            userId = preferenceHandler.GetUserDetails().User_Id;
+            userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this.Activity);

@@ -46,7 +46,7 @@ namespace CSU_PORTABLE.Droid.UI
                 if (prefHandler.IsLoggedIn())
                 {
                     UserDetails userDetails = prefHandler.GetUserDetails();
-                    if (userDetails.Role_Id == (int)Constants.USER_ROLE.ADMIN)
+                    if (userDetails.RoleId == (int)Constants.USER_ROLE.ADMIN)
                     {
                         Intent intent = new Intent(Application.Context, typeof(MainActivity));
                         intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
@@ -62,7 +62,7 @@ namespace CSU_PORTABLE.Droid.UI
                     }
                 } else
                 {
-                    StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+                    StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));
                     Finish();
                 }
 
