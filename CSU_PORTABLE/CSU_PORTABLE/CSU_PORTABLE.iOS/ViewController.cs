@@ -3,9 +3,8 @@ using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
-
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -137,6 +136,9 @@ namespace CSU_PORTABLE.iOS
             //TextFieldUsername.Text = "sss@123.com";
             //TextFieldPassword.Text = "sss@123";
 
+            TextFieldUsername.Text = "krunal@gmail.com";
+            TextFieldPassword.Text = "1111@111";
+
             TextFieldUsername.BecomeFirstResponder();
 
             TextFieldUsername.ShouldReturn = delegate
@@ -174,11 +176,12 @@ namespace CSU_PORTABLE.iOS
                      //buttonLogin.Visibility = ViewStates.Gone;
                      //progressBar.Visibility = ViewStates.Visible;
                      //MessageLabel.Text = "Logging in...";
-                     Login(new LoginModel(username, password));
+                     ShowLogin();
+                     //Login(new LoginModel(username, password));
                  }
                  else
                  {
-                     ShowMessage("Enter valid email and password");
+                     IOSUtil.ShowMessage("Enter valid email and password", loadingOverlay, this);
                  }
              };
             UIButton btnForgotPassword = new UIButton(UIButtonType.Custom);
@@ -208,32 +211,25 @@ namespace CSU_PORTABLE.iOS
 
 
         #region " Custom Functions" 
-        public void Login(LoginModel loginModel)
+        public async void Login(LoginModel loginModel)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-
-            var request = new RestRequest(Constants.API_SIGN_IN, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(loginModel);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_SIGN_IN, JsonConvert.SerializeObject(loginModel), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        LoginResponse((RestResponse)response);
-                    });
-                }
-            });
+                    LoginResponse(response);
+                });
+            }
+
         }
 
-        private void LoginResponse(RestResponse restResponse)
+        private async void LoginResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                UserDetails response = JsonConvert.DeserializeObject<UserDetails>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                UserDetails response = JsonConvert.DeserializeObject<UserDetails>(strContent);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
@@ -241,12 +237,12 @@ namespace CSU_PORTABLE.iOS
                 }
                 else
                 {
-                    ShowMessage("Login Failed");
+                    IOSUtil.ShowMessage("Login Failed", loadingOverlay, this);
                 }
             }
             else
             {
-                ShowMessage("Login Failed");
+                IOSUtil.ShowMessage("Login Failed", loadingOverlay, this);
             }
         }
 
@@ -256,7 +252,7 @@ namespace CSU_PORTABLE.iOS
 
             PreferenceHandler preferenceHandler = new PreferenceHandler();
             preferenceHandler.SaveUserDetails(userDetails);
-            if (userDetails.Role_Id == 2)
+            if (userDetails.RoleId == 2)
             {
                 ShowClassRooms();
             }
@@ -264,6 +260,18 @@ namespace CSU_PORTABLE.iOS
             {
                 ShowMap();
             }
+        }
+
+        private void ShowLogin()
+        {
+            LoginViewController LoginView = this.Storyboard.InstantiateViewController("LoginViewController") as LoginViewController;
+            LoginView.NavigationItem.SetHidesBackButton(true, false);
+
+            this.NavController.PushViewController(LoginView, false);
+            var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
+            SidebarController.ChangeMenuView(menuController);
+            SidebarController.MenuWidth = 250;
+            SidebarController.ReopenOnRotate = false;
         }
 
         private void ShowClassRooms()
@@ -293,18 +301,18 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
-        private void ShowMessage(string v)
-        {
-            //BTProgressHUD.ShowToast("Hello from Toast");
-            loadingOverlay.Hide();
-            //MessageLabel.Text = " " + v;
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
+        //private void ShowMessage(string v)
+        //{
+        //    //BTProgressHUD.ShowToast("Hello from Toast");
+        //    loadingOverlay.Hide();
+        //    //MessageLabel.Text = " " + v;
+        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
 
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
+        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
 
-            PresentViewController(alertController, true, null);
+        //    PresentViewController(alertController, true, null);
 
-        }
+        //}
 
         #endregion
     }

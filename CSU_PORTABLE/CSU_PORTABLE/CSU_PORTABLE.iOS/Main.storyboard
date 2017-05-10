@@ -38,7 +38,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="178" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-730" y="-13"/>
+            <point key="canvasLocation" x="-626" y="-278"/>
         </scene>
         <scene sceneID="547">
             <objects>
@@ -395,6 +395,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1342" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2152" y="720"/>
+        </scene>
+        <scene sceneID="1426">
+            <objects>
+                <viewController id="1427" sceneMemberID="viewController" storyboardIdentifier="LoginViewController" customClass="LoginViewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1424"/>
+                        <viewControllerLayoutGuide type="bottom" id="1425"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1428">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1429" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-88" y="-818"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

@@ -12,12 +12,12 @@ using Android.Widget;
 using CSU_PORTABLE.Models;
 using Android.Support.V7.Widget;
 using CSU_PORTABLE.Droid.Utils;
-using RestSharp;
 using CSU_PORTABLE.Utils;
 using Android.Util;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Android.Support.V7.App;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -27,10 +27,9 @@ namespace CSU_PORTABLE.Droid.UI
         const string TAG = "InsightsActivity";
         private TextView textViewLoading;
         LinearLayout layoutProgress;
-        Toast toast;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
-
+        PreferenceHandler preferenceHandler;
         LinearLayout LayoutInsightData;
         TextView textViewConsumed;
         TextView textViewExpected;
@@ -39,7 +38,7 @@ namespace CSU_PORTABLE.Droid.UI
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            preferenceHandler = new PreferenceHandler();
             SetContentView(Resource.Layout.insights);
 
             textViewLoading = FindViewById<TextView>(Resource.Id.textViewLoading);
@@ -51,10 +50,8 @@ namespace CSU_PORTABLE.Droid.UI
             textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
             textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
             textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
-
-
-            var preferenceHandler = new PreferenceHandler();
-            int userId = preferenceHandler.GetUserDetails().User_Id;
+           
+            int userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
@@ -62,65 +59,61 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     ShowInsights(null);
                     GetInsights(userId);
-                    getRecommendationsList(userId);
+                    GetRecommendationsList(userId);
                 }
                 else
                 {
-                    ShowToast("Please enable your internet connection !");
+                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                    //ShowToast("Please enable your internet connection !");
                     layoutProgress.Visibility = ViewStates.Gone;
                     textViewLoading.Visibility = ViewStates.Visible;
                 }
             }
             else
             {
-                ShowToast("Invalid User Id. Please Login Again !");
+                Utils.Utils.ShowToast(this, "Invalid User Id. Please Login Again !");
+                //ShowToast("Invalid User Id. Please Login Again !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
 
-        private void getRecommendationsList(int userId)
+        private async void GetRecommendationsList(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getAlertList()");
-
-            var request = new RestRequest(Constants.API_GET_RECOMMENDATIONS + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            Console.WriteLine(response);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        getRecommendationsListResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetRecommendationsListResponse(response);
+                });
+            }
         }
 
-        private void getRecommendationsListResponse(RestResponse restResponse)
+        private async void GetRecommendationsListResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 alertList = array.ToObject<List<AlertModel>>();
 
-                showAlerts();
+                ShowAlerts();
             }
             else
             {
                 Log.Debug(TAG, "getAlertListResponse() Failed");
-                ShowToast("Please try again later !");
+                Utils.Utils.ShowToast(this, "Please try again later !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
 
-        private void showAlerts()
+        private void ShowAlerts()
         {
             if (alertList != null)
             {
@@ -144,35 +137,27 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void GetInsights(int userId)
+        private async void GetInsights(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "GetInsights()");
-
-            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetInsightDataResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetInsightDataResponse(response);
+                });
+            }
         }
 
-        private void GetInsightDataResponse(RestResponse restResponse)
+        private async void GetInsightDataResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
-
-
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                InsightDataModel response = JsonConvert.DeserializeObject<InsightDataModel>(strContent);
                 ShowInsights(response);
             }
             else
@@ -182,7 +167,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void ShowInsights(InshghtDataModel response)
+        private void ShowInsights(InsightDataModel response)
         {
             if (response == null)
             {
@@ -201,15 +186,15 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
-        }
+        //private void ShowToast(string message)
+        //{
+        //    if (toast != null)
+        //    {
+        //        toast.Cancel();
+        //    }
+        //    toast = Toast.MakeText(this, message, ToastLength.Short);
+        //    toast.Show();
+        //}
 
     }
 }

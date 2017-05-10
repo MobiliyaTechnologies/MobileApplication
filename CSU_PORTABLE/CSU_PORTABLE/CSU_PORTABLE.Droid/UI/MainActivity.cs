@@ -10,7 +10,6 @@ using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
 using CSU_PORTABLE.Droid.Utils;
 using CSU_PORTABLE.Models;
-using RestSharp;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using Android.Content;
@@ -21,6 +20,8 @@ using Android.Views;
 using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
 using Android.Support.V4.View;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -41,6 +42,7 @@ namespace CSU_PORTABLE.Droid.UI
         NavigationView navigationView;
         LinearLayout layoutProgress;
         int userRole;
+        PreferenceHandler preferenceHandler;
 
         LinearLayout LayoutInsightData;
         TextView textViewConsumed;
@@ -53,36 +55,66 @@ namespace CSU_PORTABLE.Droid.UI
 
         Activity activityContext;
 
-        protected override void OnCreate(Bundle bundle)
+        protected async override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             activityContext = this;
             Log.Debug(TAG, "google app id: " + Resource.String.google_app_id);
-
             SetContentView(Resource.Layout.Main);
             receiver = new MySampleBroadcastReceiver(activityContext);
             //msgText = FindViewById<TextView>(Resource.Id.msgText);
-            SetDrawer();
-            if (Intent.Extras != null)
+            preferenceHandler = new Utils.PreferenceHandler();
+            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            if (responseUser.StatusCode != 0)
             {
-                foreach (var key in Intent.Extras.KeySet())
-                {
-                    //int value = Intent.Extras.GetInt(key);
-                    //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
-
-                    if (key.Equals(KEY_USER_ROLE))
-                    {
-                        userRole = Intent.Extras.GetInt(key);
-                    }
-
-                }
+                GetCurrentUserResponse(responseUser);
             }
 
+            //if (Intent.Extras != null)
+            //{
+            //    foreach (var key in Intent.Extras.KeySet())
+            //    {
+            //        //int value = Intent.Extras.GetInt(key);
+            //        //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+
+            //        if (key.Equals(KEY_USER_ROLE))
+            //        {
+            //            userRole = Intent.Extras.GetInt(key);
+            //        }
+
+            //    }
+            //}
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Gone;
             IsPlayServicesAvailable();
 
-            if (userRole == (int)Constants.USER_ROLE.ADMIN)
+
+
+
+        }
+
+        public void CreateDashboard()
+        {
+            //var preferenceHandler = new PreferenceHandler();
+            //string code = preferenceHandler.GetAccessCode();
+            //string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.Grant_type, B2CConfig.ClientSecret, B2CConfig.ClientId, code);
+            //var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            //if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //{
+            //    string strContent = await response.Content.ReadAsStringAsync();
+            //    var token = JsonConvert.DeserializeObject<AccessToken>(strContent);
+
+            //    // string strRefreshToken = "access&refresh_token=AwABAAAAvPM1KaPlrEqdFSBzjqfTGBCmLdgfSTLEMPGYuNHSUYBrq...&redirect_uri=urn:ietf:wg:oauth:2.0:oob";
+            //    string strRefreshToken = "https://login.microsoftonline.com/csub2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_b2csignin&grant_type=refresh_token&client_id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&scope=3bdf8223-746c-42a2-ba5e-0322bfd9ff76" + " " + "offline_access&refresh_token=" + token.id_token + "&redirect_uri=urn:ietf:wg:oauth:2.0:oob";
+            //    var res = await InvokeApi.Authenticate(strRefreshToken, string.Empty, HttpMethod.Post);
+
+            //    string strRefreshToken1 = "https://login.microsoftonline.com/csub2c.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1_b2csignin&grant_type=refresh_token&client_id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&scope=3bdf8223-746c-42a2-ba5e-0322bfd9ff76" + " " + "offline_access&refresh_token=" + code + "&redirect_uri=urn:ietf:wg:oauth:2.0:oob";
+            //    var res1 = await InvokeApi.Authenticate(strRefreshToken1, string.Empty, HttpMethod.Post);
+
+            //    preferenceHandler.SetToken(token.id_token);
+
+            UserDetails user = preferenceHandler.GetUserDetails();
+            if (user.RoleId == (int)Constants.USER_ROLE.ADMIN)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
 
@@ -101,7 +133,8 @@ namespace CSU_PORTABLE.Droid.UI
 
                 if (!isNetworkEnabled)
                 {
-                    ShowToast("Please enable your internet connection !");
+                    Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                    //ShowToast("Please enable your internet connection !");
                 }
                 //Show Map Fragment
                 GoogleMapOptions mapOptions = new GoogleMapOptions()
@@ -116,8 +149,8 @@ namespace CSU_PORTABLE.Droid.UI
 
                 _myMapFragment.GetMapAsync(this);
 
-                var preferenceHandler = new PreferenceHandler();
-                int userId = preferenceHandler.GetUserDetails().User_Id;
+                //var preferenceHandler = new PreferenceHandler();
+                int userId = preferenceHandler.GetUserDetails().UserId;
                 if (userId != -1)
                 {
                     if (isNetworkEnabled)
@@ -127,10 +160,15 @@ namespace CSU_PORTABLE.Droid.UI
                         ShowInsights(null);
                         GetInsights(userId);
                     }
+                    else
+                    {
+                        Utils.Utils.ShowToast(this, "Please enable your internet connection !");
+                    }
                 }
                 else
                 {
-                    ShowToast("Invalid User Id. Please Login Again !");
+
+                    Utils.Utils.ShowToast(this, "Invalid User Id. Please Login Again !");
                 }
             }
             else
@@ -143,7 +181,24 @@ namespace CSU_PORTABLE.Droid.UI
                 ft.Commit();
                 HideInsights();
             }
+            // }
 
+        }
+
+        private async void GetCurrentUserResponse(HttpResponseMessage responseUser)
+        {
+            if (responseUser != null && responseUser.StatusCode == System.Net.HttpStatusCode.OK && responseUser.Content != null)
+            {
+                string strContent = await responseUser.Content.ReadAsStringAsync();
+                UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
+                preferenceHandler.SaveUserDetails(user);
+                SetDrawer();
+                CreateDashboard();
+            }
+            else
+            {
+                Utils.Utils.ShowToast(this, "User details not found!");
+            }
         }
 
         protected override void OnResume()
@@ -242,7 +297,7 @@ namespace CSU_PORTABLE.Droid.UI
             bool isLoggedIn = preferenceHandler.IsLoggedIn();
             if (isLoggedIn)
             {
-                int roleId = preferenceHandler.GetUserDetails().Role_Id;
+                int roleId = preferenceHandler.GetUserDetails().RoleId;
                 if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.STUDENT)
                 {
                     IMenu nav_Menu = navigationView.Menu;
@@ -258,7 +313,7 @@ namespace CSU_PORTABLE.Droid.UI
                     Resource.Id.textViewUserName);
             PreferenceHandler pref = new PreferenceHandler();
             UserDetails user = pref.GetUserDetails();
-            textViewUserName.Text = user.First_Name + " " + user.Last_Name;
+            textViewUserName.Text = user.FirstName + " " + user.LastName;
 
             TextView textViewLogout =
                  navigationView.GetHeaderView(0).FindViewById<TextView>(
@@ -301,35 +356,27 @@ namespace CSU_PORTABLE.Droid.UI
             StartActivity(new Intent(Application.Context, typeof(AlertsActivity)));
         }
 
-        private void GetInsights(int userId)
+        private async void GetInsights(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "GetInsights()");
-
-            var request = new RestRequest(Constants.API_GET_INSIGHT_DATA + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetInsightDataResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetInsightDataResponse(response);
+                });
+            }
         }
 
-        private void GetInsightDataResponse(RestResponse restResponse)
+        private async void GetInsightDataResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                InshghtDataModel response = JsonConvert.DeserializeObject<InshghtDataModel>(restResponse.Content);
-
-
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                InsightDataModel response = JsonConvert.DeserializeObject<InsightDataModel>(strContent);
                 ShowInsights(response);
             }
             else
@@ -339,7 +386,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void ShowInsights(InshghtDataModel response)
+        private void ShowInsights(InsightDataModel response)
         {
             if (response == null)
             {
@@ -358,85 +405,70 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        private void GetMonthlyConsumptionDetails(int userId)
+        private async void GetMonthlyConsumptionDetails(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getMeterDetails()");
-
-            var request = new RestRequest(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetMonthlyConsumptionResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMonthlyConsumptionResponse(response);
+                });
+            }
         }
 
-        private void GetMeterDetails(int userId)
+        private async void GetMeterDetails(int userId)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getMeterDetails()");
-
-            var request = new RestRequest(Constants.API_GET_METER_LIST + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_METER_LIST + "/" + userId, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        GetMeterDetailsResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMeterDetailsResponse(response);
+                });
+            }
         }
 
-        private void GetMeterDetailsResponse(RestResponse restResponse)
+        private async void GetMeterDetailsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 meterList = array.ToObject<List<MeterDetails>>();
-
-                addPinAndCircle();
+                AddPinAndCircle();
             }
             else
             {
                 Log.Debug(TAG, "GetMeterDetailsResponse() Failed");
-                ShowToast("GetMeterDetailsResponse() Failed");
+                Utils.Utils.ShowToast(this, "GetMeterDetailsResponse() Failed");
             }
         }
 
-        private void GetMonthlyConsumptionResponse(RestResponse restResponse)
+        private async void GetMonthlyConsumptionResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                JArray array = JArray.Parse(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
                 monthlyConsumptionList = array.ToObject<List<MonthlyConsumptionDetails>>();
 
-                addPinAndCircle();
+                AddPinAndCircle();
             }
             else
             {
                 Log.Debug(TAG, "GetMonthlyConsumptionResponse() Failed");
-                ShowToast("GetMonthlyConsumptionResponse() Failed");
+                Utils.Utils.ShowToast(this, "GetMonthlyConsumptionResponse() Failed");
             }
         }
 
-        private void addPinAndCircle()
+        private void AddPinAndCircle()
         {
             if (meterList != null && monthlyConsumptionList != null && IsMapReady)
             {
@@ -597,7 +629,6 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 string message = "Google Play Services is available.";
-                //ShowToast(message);
                 return true;
             }
         }
@@ -618,7 +649,7 @@ namespace CSU_PORTABLE.Droid.UI
 
             IsMapReady = true;
             map.MoveCamera(cameraUpdate);
-            addPinAndCircle();
+            AddPinAndCircle();
         }
 
         private bool SetupMapIfNeeded()
@@ -653,33 +684,21 @@ namespace CSU_PORTABLE.Droid.UI
             toast.Show();
         }
 
-        private void Logout(LogoutModel logoutModel)
+        private async void Logout(LogoutModel logoutModel)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "Logout() " + logoutModel.ToString());
-
-            var request = new RestRequest(Constants.API_SIGN_OUT, Method.POST);
-            request.RequestFormat = DataFormat.Json;
-            request.AddBody(logoutModel);
-
-            layoutProgress.Visibility = ViewStates.Visible;
-            //RestResponse restResponse = (RestResponse)client.Execute(request);
-            //LoginResponse(restResponse);
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_SIGN_OUT, JsonConvert.SerializeObject(logoutModel), HttpMethod.Post);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() =>
-                    {
-                        LogoutResponse((RestResponse)response);
-                    });
-                }
-            });
+                    LogoutResponse(response);
+                });
+            }
         }
 
-        private void LogoutResponse(RestResponse restResponse)
+        private void LogoutResponse(HttpResponseMessage restResponse)
         {
             /*if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
@@ -714,7 +733,7 @@ namespace CSU_PORTABLE.Droid.UI
             preferenceHandler.setLoggedIn(false);
             layoutProgress.Visibility = ViewStates.Gone;
             Finish();
-            StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+            StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));
         }
 
         [BroadcastReceiver(Enabled = true, Exported = false)]

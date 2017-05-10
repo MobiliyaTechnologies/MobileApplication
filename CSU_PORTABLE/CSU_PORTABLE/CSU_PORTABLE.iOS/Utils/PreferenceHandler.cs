@@ -1,5 +1,6 @@
 using CSU_PORTABLE.Models;
 using Foundation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,40 @@ namespace CSU_PORTABLE.iOS.Utils
         string preferenceLastName = "CSUPREF_last_name";
         string preferenceUserId = "CSUPREF_user_id";
         string preferenceRoleId = "CSUPREF_role_id";
+        string preferenceUserCampus = "CSUPREF_user_campus";
         string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
+        string preferenceToken = "CSUPREF_token";
+        string preferenceAccessCode = "CSUPREF_accesscode";
+
+
+        public void SetAccessCode(string AccessCode)
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            plist.SetString(AccessCode, preferenceAccessCode);
+            plist.Synchronize();
+        }
+
+
+        public string GetAccessCode()
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            return plist.StringForKey(preferenceAccessCode);
+        }
+
+        public void SetToken(string Token)
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            plist.SetString(Token, preferenceToken);
+            plist.Synchronize();
+        }
+
+
+        public string GetToken()
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            return plist.StringForKey(preferenceToken);
+        }
+
 
         public bool IsLoggedIn()
         {
@@ -36,11 +70,12 @@ namespace CSU_PORTABLE.iOS.Utils
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             plist.SetString(loginResponse.Email, preferenceEmail);
-            plist.SetString(loginResponse.First_Name, preferenceFirstName);
-            plist.SetString(loginResponse.Last_Name, preferenceLastName);
-            plist.SetInt(loginResponse.User_Id, preferenceUserId);
-            plist.SetInt(loginResponse.Role_Id, preferenceRoleId);
+            plist.SetString(loginResponse.FirstName, preferenceFirstName);
+            plist.SetString(loginResponse.LastName, preferenceLastName);
+            plist.SetInt(loginResponse.UserId, preferenceUserId);
+            plist.SetInt(loginResponse.RoleId, preferenceRoleId);
             plist.SetBool(true, preferenceIsLoggedIn);
+            plist.SetString(JsonConvert.SerializeObject(loginResponse.UserCampus), preferenceUserCampus);
             return plist.Synchronize();
         }
 
@@ -50,10 +85,15 @@ namespace CSU_PORTABLE.iOS.Utils
             var plist = NSUserDefaults.StandardUserDefaults;
 
             userDetails.Email = plist.StringForKey(preferenceEmail);
-            userDetails.First_Name = plist.StringForKey(preferenceFirstName);
-            userDetails.Last_Name = plist.StringForKey(preferenceLastName);
-            userDetails.User_Id = (int)plist.IntForKey(preferenceUserId);
-            userDetails.Role_Id = (int)plist.IntForKey(preferenceRoleId);
+            userDetails.FirstName = plist.StringForKey(preferenceFirstName);
+            userDetails.LastName = plist.StringForKey(preferenceLastName);
+            userDetails.UserId = (int)plist.IntForKey(preferenceUserId);
+            userDetails.RoleId = (int)plist.IntForKey(preferenceRoleId);
+            string userCampus = plist.StringForKey(preferenceUserCampus);
+            if (!string.IsNullOrWhiteSpace(userCampus))
+            {
+                userDetails.UserCampus = JsonConvert.DeserializeObject<List<CampusModel>>(userCampus);
+            }
             return userDetails;
         }
     }

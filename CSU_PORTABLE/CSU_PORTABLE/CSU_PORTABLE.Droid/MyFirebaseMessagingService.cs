@@ -26,7 +26,7 @@ namespace CSU_PORTABLE.Droid
                 bool isLoggedIn = preferenceHandler.IsLoggedIn();
                 if(isLoggedIn)
                 {
-                    int roleId = preferenceHandler.GetUserDetails().Role_Id;
+                    int roleId = preferenceHandler.GetUserDetails().RoleId;
                     if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
                     {
                         SendNotification(message.GetNotification().Body);

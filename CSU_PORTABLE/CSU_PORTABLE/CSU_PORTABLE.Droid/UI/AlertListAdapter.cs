@@ -12,7 +12,6 @@ using Android.Widget;
 using Android.Support.V7.Widget;
 using CSU_PORTABLE.Models;
 using static Android.Views.View;
-using RestSharp;
 using Android.Util;
 using CSU_PORTABLE.Utils;
 using CSU_PORTABLE.Droid.Utils;
@@ -20,6 +19,7 @@ using Newtonsoft.Json;
 using Android.Content.Res;
 using Android.Graphics;
 using Java.Text;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -28,7 +28,6 @@ namespace CSU_PORTABLE.Droid.UI
         const string TAG = "AlertListAdapter";
         public List<AlertModel> mAlertModels;
         Context mContext;
-        Toast toast;
         bool isAcknowledgementEnabled = true;
 
         public AlertListAdapter(Context context, List<AlertModel> alertModels, bool enableAcknowledgement)
@@ -51,29 +50,31 @@ namespace CSU_PORTABLE.Droid.UI
             AlertViewHolder vh = holder as AlertViewHolder;
             vh.textViewAlert.Text = mAlertModels[position].Alert_Desc;
             vh.textViewClass.Text = mAlertModels[position].Class_Desc;
-            string dt = getFormatedDate(mAlertModels[position].Timestamp);
+            string dt = GetFormatedDate(mAlertModels[position].Timestamp);
             if (dt == null)
             {
                 dt = mAlertModels[position].Timestamp;
             }
             vh.textViewTime.Text = dt;
             vh.alertId = mAlertModels[position].Alert_Id;
-            if(!isAcknowledgementEnabled || mAlertModels[position].Is_Acknowledged)
+            if (!isAcknowledgementEnabled || mAlertModels[position].Is_Acknowledged)
             {
                 vh.textViewAck.Visibility = ViewStates.Gone;
                 vh.divider.Visibility = ViewStates.Gone;
-            } else
+            }
+            else
             {
                 vh.textViewAck.Visibility = ViewStates.Visible;
-                vh.textViewAck.Click += delegate {
+                vh.textViewAck.Click += delegate
+                {
 
                     var preferenceHandler = new PreferenceHandler();
                     UserDetails userDetails = preferenceHandler.GetUserDetails();
-                    int userId = userDetails.User_Id;
+                    int userId = userDetails.UserId;
 
                     AlertAcknowledgeModel ackModel = new AlertAcknowledgeModel();
                     ackModel.Alert_Id = vh.alertId;
-                    ackModel.Acknowledged_By = userDetails.First_Name + " " + userDetails.Last_Name;
+                    ackModel.Acknowledged_By = userDetails.FirstName + " " + userDetails.LastName;
 
                     vh.textViewAck.SaveEnabled = false;
                     vh.textViewAck.SetTextColor(Color.LightGray);
@@ -82,11 +83,12 @@ namespace CSU_PORTABLE.Droid.UI
                     bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(mContext);
                     if (isNetworkEnabled)
                     {
-                        acknowledgeAlert(ackModel, userId);
+                        AcknowledgeAlert(ackModel, userId);
                     }
                     else
                     {
-                        ShowToast("Please enable your internet connection !");
+                        Utils.Utils.ShowToast(mContext, "Please enable your internet connection !");
+                        //ShowToast("Please enable your internet connection !");
                     }
                 };
             }
@@ -108,7 +110,7 @@ namespace CSU_PORTABLE.Droid.UI
 
             public int alertId;
 
-            public AlertViewHolder(View itemView) : base (itemView)
+            public AlertViewHolder(View itemView) : base(itemView)
             {
                 textViewAlert = itemView.FindViewById<TextView>(Resource.Id.textViewAlert);
                 textViewClass = itemView.FindViewById<TextView>(Resource.Id.textViewClass);
@@ -117,8 +119,8 @@ namespace CSU_PORTABLE.Droid.UI
                 divider = itemView.FindViewById(Resource.Id.divider);
             }
         }
-        
-        private string getFormatedDate(string date)
+
+        private string GetFormatedDate(string date)
         {
             //string format = "MM/dd/yyyy HH:mm:ss";
             string format = "dd MMM hh:mm a";
@@ -127,72 +129,50 @@ namespace CSU_PORTABLE.Droid.UI
             return dt;
         }
 
-        private void acknowledgeAlert(AlertAcknowledgeModel acknowledgeModel, int userId)
+        private async void AcknowledgeAlert(AlertAcknowledgeModel acknowledgeModel, int userId)
         {
             if (userId != -1)
             {
-                RestClient client = new RestClient(Constants.SERVER_BASE_URL);
                 Log.Debug(TAG, "getAlertList()");
-
-                var request = new RestRequest(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, Method.POST);
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(acknowledgeModel);
-
-                client.ExecuteAsync(request, response =>
+                var response = await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, JsonConvert.SerializeObject(acknowledgeModel), HttpMethod.Post);
+                if (response.StatusCode != 0)
                 {
-                    Console.WriteLine(response);
-                    if (response.StatusCode != 0)
-                    {
-                        Log.Debug(TAG, "async Response : " + response.ToString());
-                        //RunOnUiThread(() => {
-                        acknowledgeAlertResponse((RestResponse)response);
-                        //});
-                    }
-                });
+                    Log.Debug(TAG, "async Response : " + response.ToString());
+                    AcknowledgeAlertResponse(response);
+                }
             }
             else
             {
                 Log.Debug(TAG, "Invalid User Id. Please Login Again !");
-                ShowToast("Invalid User Id. Please Login Again !");
+                Utils.Utils.ShowToast(mContext, "Invalid User Id. Please Login Again !");
+                //ShowToast("Invalid User Id. Please Login Again !");
             }
         }
 
-        private void acknowledgeAlertResponse(RestResponse restResponse)
+        private async void AcknowledgeAlertResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-
-                AlertAcknowledgementResponseModel response = JsonConvert.DeserializeObject<AlertAcknowledgementResponseModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                AlertAcknowledgementResponseModel response = JsonConvert.DeserializeObject<AlertAcknowledgementResponseModel>(strContent);
 
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
                     Log.Debug(TAG, "acknowledgement Successful");
-                    ShowToast("Acknowlwdged successfully.");
-                    //update list
-
+                    Utils.Utils.ShowToast(mContext, "Acknowlwdged successfully.");
                 }
                 else
                 {
                     Log.Debug(TAG, "Acknowledgement Failed");
-                    ShowToast("Failed to acknowlwdge. Please try later !");
+                    Utils.Utils.ShowToast(mContext, "Failed to acknowlwdge. Please try later !");
                 }
             }
             else
             {
                 Log.Debug(TAG, "acknowledgeAlertResponse() Failed");
-                ShowToast("Failed to acknowlwdge. Please try later !");
+                Utils.Utils.ShowToast(mContext, "Failed to acknowlwdge. Please try later !");
             }
-        }
-
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(mContext, message, ToastLength.Short);
-            toast.Show();
         }
     }
 }

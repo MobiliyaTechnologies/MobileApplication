@@ -11,12 +11,12 @@ using Android.Views;
 using Android.Widget;
 using Android.Webkit;
 using CSU_PORTABLE.Droid.Utils;
-using RestSharp;
 using Android.Util;
 using Newtonsoft.Json;
 using CSU_PORTABLE.Models;
 using Android.Support.V7.App;
 using CSU_PORTABLE.Utils;
+using System.Net.Http;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -29,7 +29,6 @@ namespace CSU_PORTABLE.Droid.UI
         private String meterName;
         private String meterSerialNumber;
         private WebView localWebView;
-        private Toast toast;
         private MeterReports meterReports;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -55,7 +54,7 @@ namespace CSU_PORTABLE.Droid.UI
                 showContentOnWebView(body);
 
                 var preferenceHandler = new PreferenceHandler();
-                int userId = preferenceHandler.GetUserDetails().User_Id;
+                int userId = preferenceHandler.GetUserDetails().UserId;
                 if (userId != -1)
                 {
                     bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
@@ -65,52 +64,46 @@ namespace CSU_PORTABLE.Droid.UI
                     }
                     else
                     {
-                        ShowToast("Please enable your internet connection !");
+                        Utils.Utils.ShowToast(this, "Please enable your internet connection !");
                     }
                 }
                 else
                 {
-                    ShowToast("Invalid User Id. Please Login Again !");
+                    Utils.Utils.ShowToast(this, "Invalid User Id. Please Login Again !");
                 }
             }
         }
 
-        private void getMeterReports(int userId, string serialNumber)
+        private async void getMeterReports(int userId, string serialNumber)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
             Log.Debug(TAG, "getMeterDetails()");
-
-            var request = new RestRequest(
-                Constants.API_GET_METER_REPORTS + "/" + userId + "/" + serialNumber, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_METER_REPORTS + "/" + userId + "/" + serialNumber, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
-                        GetMeterReportsResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMeterReportsResponse(response);
+                });
+            }
         }
 
-        private void GetMeterReportsResponse(RestResponse restResponse)
+        private async void GetMeterReportsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                meterReports = JsonConvert.DeserializeObject<MeterReports>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                meterReports = JsonConvert.DeserializeObject<MeterReports>(strContent);
 
                 if (meterReports != null)
                 {
                     GetAccessToken();
-                } else
+                }
+                else
                 {
                     Log.Debug(TAG, "GetMeterReportsResponse() Failed");
-                    ShowToast("Reports are not available");
-
+                    Utils.Utils.ShowToast(this, "Reports are not available");
                     String body = "<html><body>Failed to load reports for <b>" + meterName + ".</b></body></html>";
                     showContentOnWebView(body);
                 }
@@ -118,40 +111,33 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "GetMeterReportsResponse() Failed");
-                ShowToast("Failed to load reports");
-
+                Utils.Utils.ShowToast(this, "Failed to load reports");
                 String body = "<html><body>Failed to load reports for <b>" + meterName + ".</b></body></html>";
                 showContentOnWebView(body);
             }
         }
 
-        private void GetAccessToken()
+        private async void GetAccessToken()
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL_FOR_TOKEN);
             Log.Debug(TAG, "GetAccessToken()");
-
-            var request = new RestRequest(Constants.API_GET_TOKEN, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_TOKEN, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Log.Debug(TAG, "async Response : " + response.ToString());
+                RunOnUiThread(() =>
                 {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    RunOnUiThread(() => {
-                        GetAccessTokenResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetAccessTokenResponse(response);
+                });
+            }
         }
 
-        private void GetAccessTokenResponse(RestResponse restResponse)
+        private async void GetAccessTokenResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
-                AccessTokenResponse response = JsonConvert.DeserializeObject<AccessTokenResponse>(restResponse.Content);
-
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                AccessTokenResponse response = JsonConvert.DeserializeObject<AccessTokenResponse>(strContent);
                 if (response != null && meterReports != null)
                 {
                     LoadReports(meterReports, response.tokens.AccessToken);
@@ -160,8 +146,7 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Log.Debug(TAG, "GetAccessTokenResponse() Failed");
-                ShowToast("Authentication Token not available");
-
+                Utils.Utils.ShowToast(this, "Authentication Token not available");
                 String body = "<html><body>Failed to load reports for <b>" + meterName + ".</b></body></html>";
                 showContentOnWebView(body);
             }
@@ -174,17 +159,8 @@ namespace CSU_PORTABLE.Droid.UI
 
         private void showErrorMessage()
         {
-            String body = "<html><body>Reports are not available for <b>" + meterName+ "</b>.</body></html>";
+            String body = "<html><body>Reports are not available for <b>" + meterName + "</b>.</body></html>";
             showContentOnWebView(body);
-        }
-        private void ShowToast(string message)
-        {
-            if (toast != null)
-            {
-                toast.Cancel();
-            }
-            toast = Toast.MakeText(this, message, ToastLength.Short);
-            toast.Show();
         }
 
         private void LoadReports(MeterReports meterReports, String token)

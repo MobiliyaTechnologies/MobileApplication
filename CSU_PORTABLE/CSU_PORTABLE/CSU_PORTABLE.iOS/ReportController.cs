@@ -3,20 +3,24 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.IO;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
     public partial class ReportController : UIViewController
     {
+        PreferenceHandler prefHandler = null;
+        UserDetails User = null;
         private UIWebView webView;
         private GlobalReportsModel reports;
 
-        public ReportController (IntPtr handle) : base (handle)
+        public ReportController(IntPtr handle) : base(handle)
         {
+            this.prefHandler = new PreferenceHandler();
+            this.User = prefHandler.GetUserDetails();
         }
 
         public override void ViewDidLoad()
@@ -31,45 +35,39 @@ namespace CSU_PORTABLE.iOS
             showContentOnWebView(body);
 
             var preferenceHandler = new PreferenceHandler();
-            int userId = preferenceHandler.GetUserDetails().User_Id;
+            int userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
-                getReports(userId);
+                getReports();
             }
             else
             {
-                ShowAlert("Invalid Email. Please Login Again !");
+                IOSUtil.ShowAlert("Invalid Email. Please Login Again !");
             }
 
         }
 
-        private void getReports(int userId)
+        private async void getReports()
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            Console.WriteLine("getReports()");
+            var response = await InvokeApi.Invoke(Constants.API_GET_GLOBAL_REPORTS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
 
-            var request = new RestRequest(
-                Constants.API_GET_GLOBAL_REPORTS + "/" + userId, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Console.WriteLine("async Response : " + response.ToString());
+                InvokeOnMainThread(() =>
                 {
-                    Console.WriteLine("async Response : " + response.ToString());
-                    InvokeOnMainThread(() => {
-                        GetReportsResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetReportsResponse(response);
+                });
+            }
         }
 
-        private void GetReportsResponse(RestResponse restResponse)
+        private async void GetReportsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Console.WriteLine(restResponse.Content.ToString());
-                reports = JsonConvert.DeserializeObject<GlobalReportsModel>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                reports = JsonConvert.DeserializeObject<GlobalReportsModel>(strContent);
 
                 if (reports != null)
                 {
@@ -78,7 +76,7 @@ namespace CSU_PORTABLE.iOS
                 else
                 {
                     Console.WriteLine("GetReportsResponse() Failed");
-                    ShowAlert("Reports are not available");
+                    IOSUtil.ShowAlert("Reports are not available");
 
                     String body = "<html><body>Failed to load reports.</b></body></html>";
                     showContentOnWebView(body);
@@ -87,39 +85,33 @@ namespace CSU_PORTABLE.iOS
             else
             {
                 Console.WriteLine("GetReportsResponse() Failed");
-                ShowAlert("Failed to load reports");
+                IOSUtil.ShowAlert("Failed to load reports");
 
                 String body = "<html><body>Failed to load reports.</b></body></html>";
                 showContentOnWebView(body);
             }
         }
 
-        private void GetAccessToken()
+        private async void GetAccessToken()
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL_FOR_TOKEN);
-            Console.WriteLine("GetAccessToken()");
-
-            var request = new RestRequest(Constants.API_GET_TOKEN, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_TOKEN, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Console.WriteLine("async Response : " + response.ToString());
+                InvokeOnMainThread(() =>
                 {
-                    Console.WriteLine("async Response : " + response.ToString());
-                    InvokeOnMainThread(() => {
-                        GetAccessTokenResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetAccessTokenResponse(response);
+                });
+            }
         }
 
-        private void GetAccessTokenResponse(RestResponse restResponse)
+        private async void GetAccessTokenResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Console.WriteLine(restResponse.Content.ToString());
-                AccessTokenResponse response = JsonConvert.DeserializeObject<AccessTokenResponse>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                AccessTokenResponse response = JsonConvert.DeserializeObject<AccessTokenResponse>(strContent);
 
                 if (response != null)
                 {
@@ -129,7 +121,7 @@ namespace CSU_PORTABLE.iOS
             else
             {
                 Console.WriteLine("GetAccessTokenResponse() Failed");
-                ShowAlert("Authentication Token not available");
+                IOSUtil.ShowAlert("Authentication Token not available");
 
                 String body = "<html><body>Failed to load reports.</b></body></html>";
                 showContentOnWebView(body);
@@ -142,11 +134,11 @@ namespace CSU_PORTABLE.iOS
             webView.LoadHtmlString(body, new NSUrl(contentDirectoryPath, true));
         }
 
-        private void ShowAlert(string message)
-        {
-            var alert = new UIAlertView(message, "", null, "OK");
-            alert.Show();
-        }
+        //private void ShowAlert(string message)
+        //{
+        //    var alert = new UIAlertView(message, "", null, "OK");
+        //    alert.Show();
+        //}
 
         private void LoadReports(GlobalReportsModel reports, String token)
         {

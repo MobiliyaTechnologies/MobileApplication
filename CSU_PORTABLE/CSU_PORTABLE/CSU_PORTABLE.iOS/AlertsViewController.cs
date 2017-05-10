@@ -3,9 +3,9 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -39,23 +39,25 @@ namespace CSU_PORTABLE.iOS
 
         }
 
-        public void GetAlerts()
+        public async void GetAlerts()
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            var request = new RestRequest(Constants.API_GET_ALL_ALERTS + "/" + User.User_Id, Method.GET);
-            request.RequestFormat = DataFormat.Json;
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                InvokeOnMainThread(() =>
                 {
-                    InvokeOnMainThread(() =>
-                    {
-                        CheckAlertsResponse(response);
-                        loadingOverlay.Hide();
-                    });
-                }
-            });
+                    CheckAlertsResponse(response);
+                    loadingOverlay.Hide();
+                });
+            }
+            //RestClient client = new RestClient(Constants.SERVER_BASE_URL);
+            //var request = new RestRequest(Constants.API_GET_ALL_ALERTS + "/" + User.User_Id, Method.GET);
+            //request.RequestFormat = DataFormat.Json;
+            //client.ExecuteAsync(request, response =>
+            //{
+            //    Console.WriteLine(response);
+
+            //});
         }
 
         public void AcknowledgeAlert(string Alert_Id)
@@ -64,16 +66,17 @@ namespace CSU_PORTABLE.iOS
         }
 
 
-        public void CheckAlertsResponse(IRestResponse restResponse)
+        public async void CheckAlertsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
-                List<AlertModel> alertsList = JsonConvert.DeserializeObject<List<AlertModel>>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                List<AlertModel> alertsList = JsonConvert.DeserializeObject<List<AlertModel>>(strContent);
                 BindAlerts(alertsList);
             }
             else
             {
-                ShowMessage("No Alerts.");
+                IOSUtil.ShowMessage("No Alerts.", loadingOverlay, this);
             }
 
         }
@@ -91,14 +94,14 @@ namespace CSU_PORTABLE.iOS
             View.AddSubview(_table);
         }
 
-        private void ShowMessage(string v)
-        {
-            loadingOverlay.Hide();
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-            PresentViewController(alertController, true, null);
+        //private void ShowMessage(string v)
+        //{
+        //    loadingOverlay.Hide();
+        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
+        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
+        //    PresentViewController(alertController, true, null);
 
-        }
+        //}
     }
 
 

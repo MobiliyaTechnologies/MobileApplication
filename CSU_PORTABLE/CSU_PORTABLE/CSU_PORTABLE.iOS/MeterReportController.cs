@@ -3,9 +3,9 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.IO;
+using System.Net.Http;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -39,46 +39,39 @@ namespace CSU_PORTABLE.iOS
                 showContentOnWebView(body);
 
                 var preferenceHandler = new PreferenceHandler();
-                int userId = preferenceHandler.GetUserDetails().User_Id;
+                int userId = preferenceHandler.GetUserDetails().UserId;
                 if (userId != -1)
                 {
                     getMeterReports(userId, meterSerialNumber);
                 }
                 else
                 {
-                    ShowAlert("Invalid Email. Please Login Again !");
+                    IOSUtil.ShowAlert("Invalid Email. Please Login Again !");
                 }
             }
-            
+
         }
 
-        private void getMeterReports(int userId, string serialNumber)
+        private async void getMeterReports(int userId, string serialNumber)
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL);
-            Console.WriteLine("getMeterDetails()");
-
-            var request = new RestRequest(
-                Constants.API_GET_METER_REPORTS + "/" + userId + "/" + serialNumber, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_METER_REPORTS + "/" + userId + "/" + serialNumber, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Console.WriteLine("async Response : " + response.ToString());
+                InvokeOnMainThread(() =>
                 {
-                    Console.WriteLine("async Response : " + response.ToString());
-                    InvokeOnMainThread(() => {
-                        GetMeterReportsResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetMeterReportsResponse(response);
+                });
+            }
         }
 
-        private void GetMeterReportsResponse(RestResponse restResponse)
+        private async void GetMeterReportsResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Console.WriteLine(restResponse.Content.ToString());
-                meterReports = JsonConvert.DeserializeObject<MeterReports>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                meterReports = JsonConvert.DeserializeObject<MeterReports>(strContent);
 
                 if (meterReports != null)
                 {
@@ -87,7 +80,7 @@ namespace CSU_PORTABLE.iOS
                 else
                 {
                     Console.WriteLine("GetMeterReportsResponse() Failed");
-                    ShowAlert("Reports are not available");
+                    IOSUtil.ShowAlert("Reports are not available");
 
                     String body = "<html><body>Failed to load reports for <b>" + meterName + ".</b></body></html>";
                     showContentOnWebView(body);
@@ -96,39 +89,33 @@ namespace CSU_PORTABLE.iOS
             else
             {
                 Console.WriteLine("GetMeterReportsResponse() Failed");
-                ShowAlert("Failed to load reports");
+                IOSUtil.ShowAlert("Failed to load reports");
 
                 String body = "<html><body>Failed to load reports for <b>" + meterName + ".</b></body></html>";
                 showContentOnWebView(body);
             }
         }
 
-        private void GetAccessToken()
+        private async void GetAccessToken()
         {
-            RestClient client = new RestClient(Constants.SERVER_BASE_URL_FOR_TOKEN);
-            Console.WriteLine("GetAccessToken()");
-
-            var request = new RestRequest(Constants.API_GET_TOKEN, Method.GET);
-
-            client.ExecuteAsync(request, response =>
+            var response = await InvokeApi.Invoke(Constants.API_GET_TOKEN, string.Empty, HttpMethod.Get);
+            if (response.StatusCode != 0)
             {
-                Console.WriteLine(response);
-                if (response.StatusCode != 0)
+                Console.WriteLine("async Response : " + response.ToString());
+                InvokeOnMainThread(() =>
                 {
-                    Console.WriteLine("async Response : " + response.ToString());
-                    InvokeOnMainThread(() => {
-                        GetAccessTokenResponse((RestResponse)response);
-                    });
-                }
-            });
+                    GetAccessTokenResponse(response);
+                });
+            }
         }
 
-        private void GetAccessTokenResponse(RestResponse restResponse)
+        private async void GetAccessTokenResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Console.WriteLine(restResponse.Content.ToString());
-                AccessTokenResponse response = JsonConvert.DeserializeObject<AccessTokenResponse>(restResponse.Content);
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                AccessTokenResponse response = JsonConvert.DeserializeObject<AccessTokenResponse>(strContent);
 
                 if (response != null && meterReports != null)
                 {
@@ -138,7 +125,7 @@ namespace CSU_PORTABLE.iOS
             else
             {
                 Console.WriteLine("GetAccessTokenResponse() Failed");
-                ShowAlert("Authentication Token not available");
+                IOSUtil.ShowAlert("Authentication Token not available");
 
                 String body = "<html><body>Failed to load reports for <b>" + meterName + ".</b></body></html>";
                 showContentOnWebView(body);
@@ -156,11 +143,11 @@ namespace CSU_PORTABLE.iOS
             String body = "<html><body>Reports are not available for <b>" + meterName + "</b>.</body></html>";
             showContentOnWebView(body);
         }
-        private void ShowAlert(string message)
-        {
-            var alert = new UIAlertView(message, "", null, "OK");
-            alert.Show();
-        }
+        //private void ShowAlert(string message)
+        //{
+        //    var alert = new UIAlertView(message, "", null, "OK");
+        //    alert.Show();
+        //}
 
         private void LoadReports(MeterReports meterReports, String token)
         {
