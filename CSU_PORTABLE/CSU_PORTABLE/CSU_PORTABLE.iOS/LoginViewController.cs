@@ -11,15 +11,17 @@ using WebKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    public partial class LoginViewController : BaseController, IWKUIDelegate
+    public partial class LoginViewController : BaseController
     {
         private UIWebView webView;
-        LoadingOverlay loadingOverlay;
         PreferenceHandler preferenceHandler;
+        UserDetails userDetails;
+        private LoadingOverlay loadingOverlay;
+
         public LoginViewController(IntPtr handle) : base(handle)
         {
-
-
+            preferenceHandler = new PreferenceHandler();
+            userDetails = preferenceHandler.GetUserDetails();
         }
 
 
@@ -30,47 +32,27 @@ namespace CSU_PORTABLE.iOS
             var wkConfig = new WKWebViewConfiguration();
             webView.ScalesPageToFit = false;
             View.AddSubview(webView);
-            NSUrlRequest request = new NSUrlRequest(new NSUrl("https://login.microsoftonline.com/csub2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_b2csignin&client_id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&response_type=code&redirect_uri=com.onmicrosoft.csu://iosresponse/&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response"));
+            string strLogin = string.Format(B2CConfig.AuthorizeURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, B2CConfig.Redirect_Uri);
+            NSUrlRequest request = new NSUrlRequest(new NSUrl(strLogin));
+
             //NSUrlRequest request = new NSUrlRequest(new NSUrl("https://login.microsoftonline.com/CSUB2C.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_b2cSignup&client_Id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&nonce=defaultNonce&redirect_uri=com.onmicrosoft.csu%3A%2F%2Fiosresponse%2F&scope=openid&response_type=id_token&prompt=login"));
             //NSUrlRequest request = new NSUrlRequest(new NSUrl("https://login.microsoftonline.com/CSUB2C.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_b2cSignin&client_Id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&nonce=defaultNonce&redirect_uri=com.onmicrosoft.csu%3A%2F%2Fiosresponse%2F&scope=openid&response_type=id_token&prompt=login"));
             //NSUrlRequest request = new NSUrlRequest(new NSUrl("https://login.microsoftonline.com/CSUB2C.onmicrosoft.com/oauth2/v2.0/logout?p=b2c_1_sign_in&post_logout_redirect_uri=com.onmicrosoft.csu://iosresponse/"));
-
             //webView.UserInteractionEnabled = true;
-            //NSUrlCache.SharedCache.RemoveAllCachedResponses();
-            //NSUrlCache.SharedCache.MemoryCapacity = 0;
-            //NSUrlCache.SharedCache.DiskCapacity = 0;
+            // Action ResetSession = () =>
+            //{
 
-           // Action ResetSession = () =>
-           //{
-
-           //};
-           // NSUrlSession.SharedSession.Reset(ResetSession);
+            //};
+            // NSUrlSession.SharedSession.Reset(ResetSession);
             webView.LoadRequest(request);
             webView.LoadError += WebView_LoadError;
-            // webView.LoadFinished += WebView_LoadFinished;
 
         }
-
-        //private void WebView_LoadFinished(object sender, EventArgs e)
-        //{
-        //    NSUrlCache.SharedCache.RemoveAllCachedResponses();
-        //    NSUrlCache.SharedCache.MemoryCapacity = 0;
-        //    NSUrlCache.SharedCache.DiskCapacity = 0;
-        //    var URL = webView.Request.Url;
-        //    if (webView.Request.Url.LastPathComponent == "code")
-        //    {
-
-        //    }
-        //    if (URL.AbsoluteUrl.ToString().Contains("&code="))
-        //    {
-
-        //    }
-        //}
 
         private async void WebView_LoadError(object sender, UIWebErrorArgs e)
         {
             var URL = (NSObject)e.Error.UserInfo.Values[2];
-            preferenceHandler = new PreferenceHandler();
+
             string req = URL.ToString();
 
             if (req.Contains("&code="))
@@ -102,18 +84,6 @@ namespace CSU_PORTABLE.iOS
                 });
             }
 
-        }
-
-        private void ShowLogin()
-        {
-            LoginViewController LoginView = this.Storyboard.InstantiateViewController("LoginViewController") as LoginViewController;
-            LoginView.NavigationItem.SetHidesBackButton(true, false);
-
-            this.NavController.PushViewController(LoginView, false);
-            var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
-            SidebarController.ChangeMenuView(menuController);
-            SidebarController.MenuWidth = 250;
-            SidebarController.ReopenOnRotate = false;
         }
 
         private void ShowClassRooms()
@@ -150,18 +120,23 @@ namespace CSU_PORTABLE.iOS
                 string strContent = await responseUser.Content.ReadAsStringAsync();
                 UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
                 preferenceHandler.SaveUserDetails(user);
-                if (user.RoleId == 2)
-                {
-                    ShowClassRooms();
-                }
-                else
-                {
-                    ShowMap();
-                }
+                ShowDashboard(user);
             }
             else
             {
                 IOSUtil.ShowMessage("User details not found", loadingOverlay, this);
+            }
+        }
+
+        private void ShowDashboard(UserDetails user)
+        {
+            if (user.RoleId == 2)
+            {
+                ShowClassRooms();
+            }
+            else
+            {
+                ShowMap();
             }
         }
 

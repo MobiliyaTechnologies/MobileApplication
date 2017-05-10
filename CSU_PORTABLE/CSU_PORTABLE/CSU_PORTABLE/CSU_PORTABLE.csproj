@@ -36,6 +36,8 @@
     <Compile Include="Models\AlertAcknowledgeModel.cs" />
     <Compile Include="Models\AlertModel.cs" />
     <Compile Include="Models\AnswerModel.cs" />
+    <Compile Include="Models\BuildingModel.cs" />
+    <Compile Include="Models\CampusModel.cs" />
     <Compile Include="Models\ChangePasswordModel.cs" />
     <Compile Include="Models\ChangePasswordResponseModel.cs" />
     <Compile Include="Models\ClassRoomModel.cs" />
@@ -44,6 +46,7 @@
     <Compile Include="Models\ForgotPasswordResponseModel.cs" />
     <Compile Include="Models\GeneralResponseModel.cs" />
     <Compile Include="Models\GlobalReportsModel.cs" />
+    <Compile Include="Models\IMapPoints.cs" />
     <Compile Include="Models\InsightDataModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\LogoutModel.cs" />
@@ -73,6 +76,9 @@
     <Reference Include="System.Net.Http.Primitives, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Primitives.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Xamarin.iOS">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Xamarin.iOS\v1.0\Xamarin.iOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

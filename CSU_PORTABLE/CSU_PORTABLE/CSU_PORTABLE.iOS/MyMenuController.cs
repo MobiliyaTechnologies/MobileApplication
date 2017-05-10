@@ -75,14 +75,12 @@ namespace CSU_PORTABLE.iOS
 
            };
             NSUrlSession.SharedSession.Reset(ResetSession);
-
             var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
             ViewController.NavigationItem.SetHidesBackButton(true, false);
             NavController.PushViewController(ViewController, false);
             SidebarController.MenuWidth = 0;
             SidebarController.CloseMenu();
             loadingOverlay.Hide();
-
             Logout(new LogoutModel(preferenceHandler.GetUserDetails().Email));
 
         }

@@ -26,20 +26,22 @@ namespace CSU_PORTABLE.Droid.UI
         {
             base.OnCreate(savedInstanceState, persistentState);
             Log.Debug(TAG, "SplashActivity.OnCreate");
-            
+
         }
 
         protected override void OnResume()
         {
             base.OnResume();
 
-            Task startupWork = new Task(() => {
+            Task startupWork = new Task(() =>
+            {
                 Log.Debug(TAG, "Performing some startup work that takes a bit of time.");
                 Task.Delay(3000);  // Simulate a bit of startup work.
                 Log.Debug(TAG, "Working in the background - important stuff.");
             });
 
-            startupWork.ContinueWith(t => {
+            startupWork.ContinueWith(t =>
+            {
                 Log.Debug(TAG, "Work is finished.");
 
                 PreferenceHandler prefHandler = new PreferenceHandler();
@@ -60,7 +62,8 @@ namespace CSU_PORTABLE.Droid.UI
                         StartActivity(intent);
                         Finish();
                     }
-                } else
+                }
+                else
                 {
                     StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));
                     Finish();

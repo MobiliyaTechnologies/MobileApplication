@@ -29,7 +29,7 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutProgress;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
-
+        PreferenceHandler preferenceHandler;
         LinearLayout LayoutInsightData;
         TextView textViewConsumed;
         TextView textViewExpected;
@@ -38,7 +38,7 @@ namespace CSU_PORTABLE.Droid.UI
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            preferenceHandler = new PreferenceHandler();
             SetContentView(Resource.Layout.insights);
 
             textViewLoading = FindViewById<TextView>(Resource.Id.textViewLoading);
@@ -50,9 +50,7 @@ namespace CSU_PORTABLE.Droid.UI
             textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
             textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
             textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
-
-
-            var preferenceHandler = new PreferenceHandler();
+           
             int userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
@@ -83,7 +81,7 @@ namespace CSU_PORTABLE.Droid.UI
         private async void GetRecommendationsList(int userId)
         {
             Log.Debug(TAG, "getAlertList()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
@@ -142,7 +140,7 @@ namespace CSU_PORTABLE.Droid.UI
         private async void GetInsights(int userId)
         {
             Log.Debug(TAG, "GetInsights()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());

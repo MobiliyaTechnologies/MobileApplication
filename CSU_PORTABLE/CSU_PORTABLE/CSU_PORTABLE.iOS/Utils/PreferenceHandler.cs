@@ -1,5 +1,6 @@
 using CSU_PORTABLE.Models;
 using Foundation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace CSU_PORTABLE.iOS.Utils
         string preferenceLastName = "CSUPREF_last_name";
         string preferenceUserId = "CSUPREF_user_id";
         string preferenceRoleId = "CSUPREF_role_id";
+        string preferenceUserCampus = "CSUPREF_user_campus";
         string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
         string preferenceToken = "CSUPREF_token";
         string preferenceAccessCode = "CSUPREF_accesscode";
@@ -73,6 +75,7 @@ namespace CSU_PORTABLE.iOS.Utils
             plist.SetInt(loginResponse.UserId, preferenceUserId);
             plist.SetInt(loginResponse.RoleId, preferenceRoleId);
             plist.SetBool(true, preferenceIsLoggedIn);
+            plist.SetString(JsonConvert.SerializeObject(loginResponse.UserCampus), preferenceUserCampus);
             return plist.Synchronize();
         }
 
@@ -86,6 +89,11 @@ namespace CSU_PORTABLE.iOS.Utils
             userDetails.LastName = plist.StringForKey(preferenceLastName);
             userDetails.UserId = (int)plist.IntForKey(preferenceUserId);
             userDetails.RoleId = (int)plist.IntForKey(preferenceRoleId);
+            string userCampus = plist.StringForKey(preferenceUserCampus);
+            if (!string.IsNullOrWhiteSpace(userCampus))
+            {
+                userDetails.UserCampus = JsonConvert.DeserializeObject<List<CampusModel>>(userCampus);
+            }
             return userDetails;
         }
     }

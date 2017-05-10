@@ -35,6 +35,9 @@ namespace CSU_PORTABLE.Droid.UI
 
             progressBar.Visibility = ViewStates.Gone;
 
+            etUsername.Text = "ajit.bhosale@mobiliya.com";
+            etPassword.Text = "Mobiliya@123";
+
             tvForgotPassword.Click += delegate
             {
                 Log.Debug(TAG, "ForgotPassword()");

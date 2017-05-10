@@ -41,7 +41,7 @@ namespace CSU_PORTABLE.iOS
 
         public async void GetAlerts()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS + "/" + User.UserId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>

@@ -27,6 +27,7 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutProgress;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
+        PreferenceHandler preferenceHandler;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -39,7 +40,7 @@ namespace CSU_PORTABLE.Droid.UI
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Visible;
 
-            var preferenceHandler = new PreferenceHandler();
+            preferenceHandler = new PreferenceHandler();
             int userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
@@ -73,7 +74,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         private async void GetAlertList(int userId)
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());

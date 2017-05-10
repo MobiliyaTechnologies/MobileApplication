@@ -12,11 +12,15 @@ namespace CSU_PORTABLE.iOS
 {
     public partial class ReportController : UIViewController
     {
+        PreferenceHandler prefHandler = null;
+        UserDetails User = null;
         private UIWebView webView;
         private GlobalReportsModel reports;
 
         public ReportController(IntPtr handle) : base(handle)
         {
+            this.prefHandler = new PreferenceHandler();
+            this.User = prefHandler.GetUserDetails();
         }
 
         public override void ViewDidLoad()
@@ -34,7 +38,7 @@ namespace CSU_PORTABLE.iOS
             int userId = preferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
-                getReports(userId);
+                getReports();
             }
             else
             {
@@ -43,9 +47,9 @@ namespace CSU_PORTABLE.iOS
 
         }
 
-        private async void getReports(int userId)
+        private async void getReports()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_GLOBAL_REPORTS + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_GLOBAL_REPORTS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
 
             if (response.StatusCode != 0)
             {
@@ -90,7 +94,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void GetAccessToken()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_TOKEN, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_TOKEN, string.Empty, HttpMethod.Get, prefHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Console.WriteLine("async Response : " + response.ToString());

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using UIKit;
 
@@ -22,6 +23,7 @@ namespace CSU_PORTABLE.iOS
         private PreferenceHandler prefHandler;
         private UserDetails userdetail;
         private LoadingOverlay loadingOverlay;
+        private string localToken = string.Empty;
 
         public MapViewController(IntPtr handle) : base(handle)
         {
@@ -30,14 +32,15 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
-            addPinAndCircle();
+            //addPinAndCircle();
+            //GetMeterDetails(1);
+            MapCampus();
         }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
             //this.SidebarController.MenuWidth = 250;
-
 
 
 
@@ -52,7 +55,9 @@ namespace CSU_PORTABLE.iOS
 
             prefHandler = new PreferenceHandler();
             userdetail = prefHandler.GetUserDetails();
+            this.localToken = prefHandler.GetToken();
             GetInsights(userdetail.UserId);
+
             //GenerateInsightsHeader();
 
             double mapHeight = NavigationController.NavigationBar.Bounds.Bottom + 160;
@@ -63,9 +68,9 @@ namespace CSU_PORTABLE.iOS
             map.ScrollEnabled = true;
 
 
-            CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(40.571276, -105.085522);
+            CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(userdetail.UserCampus[0].Latitude, userdetail.UserCampus[0].Longitude);
 
-            MKCoordinateSpan span = new MKCoordinateSpan(0.004, 0.004);
+            MKCoordinateSpan span = new MKCoordinateSpan(0.008, 0.008);
             map.Region = new MKCoordinateRegion(coordinate, span);
 
             var mapViewDelegate = new MyMapDelegate();
@@ -74,17 +79,19 @@ namespace CSU_PORTABLE.iOS
 
             View.AddSubviews(map);
 
-            var preferenceHandler = new PreferenceHandler();
-            int userId = preferenceHandler.GetUserDetails().UserId;
-            if (userId != -1)
-            {
-                GetMeterDetails(userId);
-                GetMonthlyConsumptionDetails(userId);
-            }
-            else
-            {
-                ShowMessage("Invalid Email. Please Login Again !");
-            }
+
+            //var preferenceHandler = new PreferenceHandler();
+            //int userId = preferenceHandler.GetUserDetails().UserId;
+            //if (userId != -1)
+            //{
+            //    GetMeterDetails(userId);
+            //    GetMonthlyConsumptionDetails(userId);
+            //}
+            //else
+            //{
+            //    ShowMessage("Invalid Email. Please Login Again !");
+            //}
+
             InvokeOnMainThread(() =>
             {
                 // Added for showing loading screen
@@ -92,6 +99,8 @@ namespace CSU_PORTABLE.iOS
                 // show the loading overlay on the UI thread using the correct orientation sizing
                 loadingOverlay = new LoadingOverlay(bounds);
                 View.Add(loadingOverlay);
+
+                //GetMeterDetails(1);
             });
         }
 
@@ -284,7 +293,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void GetInsights(int userId)
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, localToken);
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
@@ -303,6 +312,10 @@ namespace CSU_PORTABLE.iOS
                 InsightDataModel response = JsonConvert.DeserializeObject<InsightDataModel>(strContent);
                 GenerateInsightsHeader(response);
             }
+            else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                IOSUtil.RefreshToken(this, loadingOverlay);
+            }
             else
             {
                 HideOverlay();
@@ -314,9 +327,52 @@ namespace CSU_PORTABLE.iOS
 
         #region " Maps "
         //for api call
+
+        private void MapCampus()
+        {
+            if (userdetail.UserCampus != null)
+            {
+                List<MapPoints> campusPoints = userdetail.UserCampus.ConvertAll(new Converter<CampusModel, MapPoints>(IOSUtil.ConvertCampusToPoints));
+                addPinAndCircle(campusPoints);
+            }
+        }
+
+        private async void GetBuildingWiseConsumptionforCampus(int campusId)
+        {
+            var response = await InvokeApi.Invoke(Constants.API_GET_BUILDINGSBYCAMPUS + "/" + campusId, string.Empty, HttpMethod.Get, localToken);
+            Console.WriteLine(response);
+            if (response.StatusCode != 0)
+            {
+                InvokeOnMainThread(() =>
+                {
+                    GetBuildingWiseConsumptionforCampusResponse(response);
+                });
+            }
+        }
+
+        private async void GetBuildingWiseConsumptionforCampusResponse(HttpResponseMessage restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            {
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
+                var buildingModels = array.ToObject<List<BuildingModel>>();
+                List<MapPoints> points = buildingModels.ConvertAll(new Converter<BuildingModel, MapPoints>(IOSUtil.ConvertBuildingToPoints));
+                addPinAndCircle(points);
+            }
+            else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                IOSUtil.RefreshToken(this, loadingOverlay);
+            }
+            else
+            {
+                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
+            }
+        }
+
         private async void GetMonthlyConsumptionDetails(int userId)
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_MONTHLY_CONSUMPTION + "/" + 2, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_MONTHLY_CONSUMPTION + "/2/2017", string.Empty, HttpMethod.Get, localToken);
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
@@ -327,12 +383,33 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
+        private async void GetMonthlyConsumptionResponse(HttpResponseMessage restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            {
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
+                monthlyConsumptionList = array.ToObject<List<MonthlyConsumptionDetails>>();
+
+                addPinAndCircle();
+            }
+            else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                IOSUtil.RefreshToken(this, loadingOverlay);
+            }
+            else
+            {
+                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
+            }
+        }
+
         private async void GetMeterDetails(int userId)
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_METER_LIST + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_METER_LIST + "/2", string.Empty, HttpMethod.Get, localToken);
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
+
                 InvokeOnMainThread(() =>
                 {
                     GetMeterDetailsResponse(response);
@@ -347,8 +424,12 @@ namespace CSU_PORTABLE.iOS
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 JArray array = JArray.Parse(strContent);
                 meterList = array.ToObject<List<MeterDetails>>();
-
-                addPinAndCircle();
+                var points = meterList.ConvertAll(new Converter<MeterDetails, MapPoints>(IOSUtil.ConvertMetersToPoints));
+                addPinAndCircle(points);
+            }
+            else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                IOSUtil.RefreshToken(this, loadingOverlay);
             }
             else
             {
@@ -356,21 +437,7 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
-        private async void GetMonthlyConsumptionResponse(HttpResponseMessage restResponse)
-        {
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-            {
-                string strContent = await restResponse.Content.ReadAsStringAsync();
-                JArray array = JArray.Parse(strContent);
-                monthlyConsumptionList = array.ToObject<List<MonthlyConsumptionDetails>>();
 
-                addPinAndCircle();
-            }
-            else
-            {
-                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
-            }
-        }
 
         private void ShowMeterReports(string meterName, string meterSerial)
         {
@@ -491,6 +558,98 @@ namespace CSU_PORTABLE.iOS
             }
             return radius;
         }
+
+        private void addPinAndCircle(List<MapPoints> points)
+        {
+            if (points != null && map != null)
+            {
+                IMKAnnotation[] an = map.Annotations;
+                if (an != null)
+                {
+                    map.RemoveAnnotations(an);
+                }
+                IMKOverlay[] ov = map.Overlays;
+                if (ov != null)
+                {
+                    map.RemoveOverlays(map.Overlays);
+                }
+
+                foreach (var item in points)
+                {
+                    CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(item.Latitude, item.Longitude);
+                    map.AddAnnotations(new MKPointAnnotation()
+                    {
+                        Title = item.Name,
+                        Subtitle = item.Description,
+                        Coordinate = coordinate
+                    });
+
+                    var circleOverlay = MKCircle.Circle(coordinate, getRadius(item.MonthlyConsumption));
+                    circleOverlay.Subtitle = item.Description;
+                    map.AddOverlay(circleOverlay);
+                }
+            }
+        }
+
+        private double getRadius(double Monthly_KWH_Consumption)
+        {
+            double radius = 0;
+            if (Monthly_KWH_Consumption == 0)
+            {
+                radius = 2;
+            }
+            else if (Monthly_KWH_Consumption > 0 && Monthly_KWH_Consumption <= 1000)
+            {
+                if (Monthly_KWH_Consumption < 500)
+                {
+                    //Minimum radius for the circle
+                    radius = 10;
+                }
+                else
+                {
+                    radius = Monthly_KWH_Consumption / 50;
+                }
+            }
+            else if (Monthly_KWH_Consumption > 1000 && Monthly_KWH_Consumption <= 10000)
+            {
+                if (Monthly_KWH_Consumption < 5250)
+                {
+                    //Minimum radius for the circle
+                    radius = 21;
+                }
+                else
+                {
+                    radius = Monthly_KWH_Consumption / 250;
+                }
+            }
+            else if (Monthly_KWH_Consumption > 10000 && Monthly_KWH_Consumption <= 38000)
+            {
+                if (Monthly_KWH_Consumption < 25625)
+                {
+                    //Minimum radius for the circle
+                    radius = 41;
+                }
+                else
+                {
+                    radius = Monthly_KWH_Consumption / 625;
+                }
+            }
+            else
+            {
+                if (Monthly_KWH_Consumption < 61000)
+                {
+                    //Minimum radius for the circle
+                    radius = 61;
+                }
+                else
+                {
+                    radius = Monthly_KWH_Consumption / 1000;
+                }
+            }
+            return radius;
+        }
+
+
 
         //for overlay
         public class SearchResultsUpdator : UISearchResultsUpdating

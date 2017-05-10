@@ -9,7 +9,7 @@ namespace CSU_PORTABLE.Models
 {
     public class UserDetails
     {
-        
+
         public int Status_Code;
         public string Message;
         public string FirstName;
@@ -20,5 +20,7 @@ namespace CSU_PORTABLE.Models
         public int RoleType;
         public string B2C_ObjectIdentifier;
         public string Avatar;
+        public List<CampusModel> UserCampus { get; set; }
+
     }
 }

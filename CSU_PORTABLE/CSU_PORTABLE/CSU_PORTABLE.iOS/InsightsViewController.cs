@@ -22,6 +22,8 @@ namespace CSU_PORTABLE.iOS
 
         public InsightsViewController(IntPtr handle) : base(handle)
         {
+            prefHandler = new PreferenceHandler();
+            userdetail = prefHandler.GetUserDetails();
         }
 
 
@@ -36,10 +38,8 @@ namespace CSU_PORTABLE.iOS
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
             yAxisRecomendation = yAxisRecomendation + NavigationController.NavigationBar.Bounds.Bottom;
-            prefHandler = new PreferenceHandler();
-            userdetail = prefHandler.GetUserDetails();
-            GetInsights(userdetail.UserId);
-            getRecommendationsList(userdetail.UserId);
+            GetInsights();
+            getRecommendationsList();
         }
 
 
@@ -193,9 +193,9 @@ namespace CSU_PORTABLE.iOS
             }
         }
 
-        private async void getRecommendationsList(int userId)
+        private async void getRecommendationsList()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -221,9 +221,9 @@ namespace CSU_PORTABLE.iOS
         }
 
 
-        private async void GetInsights(int userId)
+        private async void GetInsights()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get);
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, prefHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
