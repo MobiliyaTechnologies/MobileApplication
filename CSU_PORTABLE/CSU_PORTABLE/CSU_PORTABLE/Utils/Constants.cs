@@ -13,6 +13,7 @@ namespace CSU_PORTABLE.Utils
 
         public static string SERVER_BASE_URL = "http://energymanagementapi.azurewebsites.net/api/";
         //public static string SERVER_BASE_URL = "http://powergridrestservice.azurewebsites.net/api/";
+        //public static string SERVER_BASE_URL = "http://emrestdemodeploy123.azurewebsites.net/api/";
         public static string API_SIGN_IN = "signin";
         public static string API_SIGN_OUT = "signout";
         public static string API_CHANGE_PASSWORD = "changepassword";
@@ -28,8 +29,11 @@ namespace CSU_PORTABLE.Utils
         public static string API_GIVE_FEEDBACK = "storefeedback";
         public static string API_GET_INSIGHT_DATA = "getinsightdata";
         public static string API_GET_RECOMMENDATIONS = "getrecommendations";
-        public static string API_GET_CURRENTUSER = "GetCurrentUserWithCampus";
+        public static string API_GET_CURRENTUSER = "GetCurrentUserWithPremise";
         public static string API_GET_BUILDINGSBYCAMPUS = "GetBuildingsByCampus";
+        public static string API_GET_ALLPREMISES = "GetAllPremise";
+        public static string API_GET_ALLBUILDINGS_BY_PREMISEID = "GetBuildingsByPremise";
+        public static string API_GET_ALLMETERS_BY_BUILDINGID = "GetMeterList";
 
         //public static string SERVER_BASE_URL_FOR_TOKEN = "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/";
         public static string SERVER_BASE_URL_FOR_TOKEN = "http://13.72.102.73/CSU/Powerbiservice.asmx";
@@ -41,7 +45,20 @@ namespace CSU_PORTABLE.Utils
             STUDENT = 2
         }
 
+        public enum SignInType
+        {
+            SIGN_IN = 1,
+            SIGN_UP = 2
+        }
+
     }
+
+    public enum ConsumptionFor
+    {
+        Premises = 1,
+        Buildings = 2,
+        Meters = 3
+    };
 
 
     public class AccessToken
@@ -74,8 +91,10 @@ namespace CSU_PORTABLE.Utils
         //https://login.microsoftonline.com/CSUB2C.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_b2cSSPR&client_Id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&nonce=defaultNonce&redirect_uri=com.onmicrosoft.csu://iosresponse/&scope=openid&response_type=id_token&prompt=login
         public static string ClientId = "3bdf8223-746c-42a2-ba5e-0322bfd9ff76";
         public static string ClientSecret = ":63s]7`4F^3261*}";
-        public static string Grant_type = "authorization_code";
-        public static string Redirect_Uri = "http://localhost:65328";
         public static string Tenant = "csub2c.onmicrosoft.com";
+        public static string Grant_type = "authorization_code";
+        public static string Token_Grant_type = "offline_access";
+        public static string Redirect_Uri = "http://localhost:65328";
+
     }
 }

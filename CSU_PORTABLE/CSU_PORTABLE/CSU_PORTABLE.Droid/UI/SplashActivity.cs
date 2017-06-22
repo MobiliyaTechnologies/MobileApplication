@@ -47,25 +47,14 @@ namespace CSU_PORTABLE.Droid.UI
                 PreferenceHandler prefHandler = new PreferenceHandler();
                 if (prefHandler.IsLoggedIn())
                 {
-                    UserDetails userDetails = prefHandler.GetUserDetails();
-                    if (userDetails.RoleId == (int)Constants.USER_ROLE.ADMIN)
-                    {
-                        Intent intent = new Intent(Application.Context, typeof(MainActivity));
-                        intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
-                        StartActivity(intent);
-                        Finish();
-                    }
-                    else
-                    {
-                        Intent intent = new Intent(Application.Context, typeof(MainActivity));
-                        intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
-                        StartActivity(intent);
-                        Finish();
-                    }
+                    Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
+                    intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
+                    StartActivity(intent);
+                    Finish();
                 }
                 else
                 {
-                    StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));
+                    StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
                     Finish();
                 }
 

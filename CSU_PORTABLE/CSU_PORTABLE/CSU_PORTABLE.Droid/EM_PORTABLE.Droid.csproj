@@ -161,9 +161,12 @@
     <Compile Include="MyFirebaseMessagingService.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\AdminDashboardActivity.cs" />
     <Compile Include="UI\AlertListAdapter.cs" />
     <Compile Include="UI\AlertsActivity.cs" />
     <Compile Include="UI\ChangePasswordActivity.cs" />
+    <Compile Include="UI\ConsumptionListAdapter.cs" />
+    <Compile Include="UI\ConsumptionViewHolder.cs" />
     <Compile Include="UI\ForgotPasswordActivity.cs" />
     <Compile Include="UI\GlobalReportsActivity.cs" />
     <Compile Include="UI\InsightsActivity.cs" />
@@ -218,6 +221,12 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\LoginNew.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\AdminDashboard.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\ConsumptionItemView.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -378,6 +387,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\main_menu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\lock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

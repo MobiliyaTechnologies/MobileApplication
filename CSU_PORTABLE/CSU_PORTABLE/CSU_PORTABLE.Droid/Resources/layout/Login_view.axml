@@ -20,7 +20,7 @@
                 android:scaleType="center"
                 android:elevation="1dp"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/CSU_Logo" />
+                android:src="@drawable/logo" />
             <LinearLayout
                 android:id="@+id/layout_image_bg"
                 android:layout_width="match_parent"
@@ -55,25 +55,6 @@
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:background="@color/white_fade">
-            <EditText
-                android:id="@+id/editTextUsername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Username"
-                android:drawableLeft="@drawable/Mail_Icon"
-                android:inputType="textEmailAddress"
-                android:drawablePadding="20dp"
-                android:layout_margin="20dp" />
-            <EditText
-                android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                android:drawableLeft="@drawable/Lock_Icon"
-                android:inputType="textPassword"
-                android:drawablePadding="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp" />
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
@@ -82,14 +63,23 @@
                 android:visibility="gone"
                 android:layout_margin="20dp" />
             <Button
-                android:id="@+id/loginButton"
+                android:id="@+id/SignInButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="20dp"
                 android:textColor="@color/white"
                 android:background="@color/green_theme"
-                android:text="Login" />
+                android:text="Sign In" />
+          <Button
+               android:id="@+id/SignUpButton"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:layout_margin="20dp"
+               android:textColor="@color/white"
+               android:background="@color/green_theme"
+               android:text="Sign Up" />
             <TextView
                 android:id="@+id/textViewForgotPassword"
                 android:layout_width="match_parent"
