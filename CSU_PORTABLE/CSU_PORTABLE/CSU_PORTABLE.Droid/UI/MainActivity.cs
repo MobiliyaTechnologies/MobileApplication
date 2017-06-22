@@ -64,36 +64,50 @@ namespace CSU_PORTABLE.Droid.UI
             receiver = new MySampleBroadcastReceiver(activityContext);
             //msgText = FindViewById<TextView>(Resource.Id.msgText);
             preferenceHandler = new Utils.PreferenceHandler();
-            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
-            if (responseUser.StatusCode != 0)
+            SetDrawer();
+            CreateDashboard();
+
+
+            //SetDrawer();
+
+            if (Intent.Extras != null)
             {
-                GetCurrentUserResponse(responseUser);
+                foreach (var key in Intent.Extras.KeySet())
+                {
+                    //int value = Intent.Extras.GetInt(key);
+                    //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+
+                    if (key.Equals(KEY_USER_ROLE))
+                    {
+                        userRole = Intent.Extras.GetInt(key);
+                    }
+
+                }
             }
-
-            //if (Intent.Extras != null)
-            //{
-            //    foreach (var key in Intent.Extras.KeySet())
-            //    {
-            //        //int value = Intent.Extras.GetInt(key);
-            //        //Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
-
-            //        if (key.Equals(KEY_USER_ROLE))
-            //        {
-            //            userRole = Intent.Extras.GetInt(key);
-            //        }
-
-            //    }
-            //}
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Gone;
             IsPlayServicesAvailable();
 
 
-
-
         }
 
-        public void CreateDashboard()
+        private async void GetCurrentUserResponse(HttpResponseMessage responseUser)
+        {
+            if (responseUser != null && responseUser.StatusCode == System.Net.HttpStatusCode.OK && responseUser.Content != null)
+            {
+                string strContent = await responseUser.Content.ReadAsStringAsync();
+                UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
+                var preferenceHandler = new PreferenceHandler();
+                preferenceHandler.SaveUserDetails(user);
+
+            }
+            else
+            {
+                Utils.Utils.ShowToast(Application.Context, "User details not found!");
+            }
+        }
+
+        public async void CreateDashboard()
         {
             //var preferenceHandler = new PreferenceHandler();
             //string code = preferenceHandler.GetAccessCode();
@@ -112,7 +126,12 @@ namespace CSU_PORTABLE.Droid.UI
             //    var res1 = await InvokeApi.Authenticate(strRefreshToken1, string.Empty, HttpMethod.Post);
 
             //    preferenceHandler.SetToken(token.id_token);
+            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            if (responseUser.StatusCode != 0)
+            {
+                GetCurrentUserResponse(responseUser);
 
+            }
             UserDetails user = preferenceHandler.GetUserDetails();
             if (user.RoleId == (int)Constants.USER_ROLE.ADMIN)
             {
@@ -136,18 +155,18 @@ namespace CSU_PORTABLE.Droid.UI
                     Utils.Utils.ShowToast(this, "Please enable your internet connection !");
                     //ShowToast("Please enable your internet connection !");
                 }
-                //Show Map Fragment
-                GoogleMapOptions mapOptions = new GoogleMapOptions()
-                .InvokeMapType(GoogleMap.MapTypeNormal)
-                .InvokeZoomControlsEnabled(false)
-                .InvokeCompassEnabled(true);
+                ////Show Map Fragment
+                //GoogleMapOptions mapOptions = new GoogleMapOptions()
+                //.InvokeMapType(GoogleMap.MapTypeNormal)
+                //.InvokeZoomControlsEnabled(false)
+                //.InvokeCompassEnabled(true);
 
-                _myMapFragment = MapFragment.NewInstance(mapOptions);
-                FragmentTransaction tx = FragmentManager.BeginTransaction();
-                tx.Add(Resource.Id.fragment_container, _myMapFragment, "map");
-                tx.Commit();
+                //_myMapFragment = MapFragment.NewInstance(mapOptions);
+                //FragmentTransaction tx = FragmentManager.BeginTransaction();
+                //tx.Add(Resource.Id.fragment_container, _myMapFragment, "map");
+                //tx.Commit();
 
-                _myMapFragment.GetMapAsync(this);
+                //_myMapFragment.GetMapAsync(this);
 
                 //var preferenceHandler = new PreferenceHandler();
                 int userId = preferenceHandler.GetUserDetails().UserId;
@@ -185,21 +204,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         }
 
-        private async void GetCurrentUserResponse(HttpResponseMessage responseUser)
-        {
-            if (responseUser != null && responseUser.StatusCode == System.Net.HttpStatusCode.OK && responseUser.Content != null)
-            {
-                string strContent = await responseUser.Content.ReadAsStringAsync();
-                UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
-                preferenceHandler.SaveUserDetails(user);
-                SetDrawer();
-                CreateDashboard();
-            }
-            else
-            {
-                Utils.Utils.ShowToast(this, "User details not found!");
-            }
-        }
+
 
         protected override void OnResume()
         {
@@ -302,7 +307,7 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     IMenu nav_Menu = navigationView.Menu;
                     nav_Menu.FindItem(Resource.Id.nav_dashboard).SetVisible(false);
-                    nav_Menu.FindItem(Resource.Id.nav_reports).SetVisible(false);
+                    //nav_Menu.FindItem(Resource.Id.nav_reports).SetVisible(false);
                     nav_Menu.FindItem(Resource.Id.nav_insights).SetVisible(false);
                     nav_Menu.FindItem(Resource.Id.nav_alerts).SetVisible(false);
                 }
@@ -332,9 +337,9 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     case Resource.Id.nav_dashboard:
                         break;
-                    case Resource.Id.nav_reports:
-                        StartActivity(new Intent(Application.Context, typeof(GlobalReportsActivity)));
-                        break;
+                    //case Resource.Id.nav_reports:
+                    //    StartActivity(new Intent(Application.Context, typeof(GlobalReportsActivity)));
+                    //    break;
                     case Resource.Id.nav_alerts:
                         showAlerts();
                         break;
@@ -684,18 +689,24 @@ namespace CSU_PORTABLE.Droid.UI
             toast.Show();
         }
 
-        private async void Logout(LogoutModel logoutModel)
+        private void Logout(LogoutModel logoutModel)
         {
-            Log.Debug(TAG, "Logout() " + logoutModel.ToString());
-            var response = await InvokeApi.Invoke(Constants.API_SIGN_OUT, JsonConvert.SerializeObject(logoutModel), HttpMethod.Post);
-            if (response.StatusCode != 0)
-            {
-                Log.Debug(TAG, "async Response : " + response.ToString());
-                RunOnUiThread(() =>
-                {
-                    LogoutResponse(response);
-                });
-            }
+            Log.Debug(TAG, "Local Logout Successful");
+            PreferenceHandler preferenceHandler = new PreferenceHandler();
+            preferenceHandler.setLoggedIn(false);
+            layoutProgress.Visibility = ViewStates.Gone;
+            Finish();
+            StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));
+            //Log.Debug(TAG, "Logout() " + logoutModel.ToString());
+            //var response = await InvokeApi.Invoke(Constants.API_SIGN_OUT, JsonConvert.SerializeObject(logoutModel), HttpMethod.Post);
+            //if (response.StatusCode != 0)
+            //{
+            //    Log.Debug(TAG, "async Response : " + response.ToString());
+            //    RunOnUiThread(() =>
+            //    {
+            //        LogoutResponse(response);
+            //    });
+            //}
         }
 
         private void LogoutResponse(HttpResponseMessage restResponse)
