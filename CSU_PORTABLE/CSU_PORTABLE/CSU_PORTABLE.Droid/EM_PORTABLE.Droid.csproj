@@ -165,6 +165,7 @@
     <Compile Include="UI\AlertListAdapter.cs" />
     <Compile Include="UI\AlertsActivity.cs" />
     <Compile Include="UI\ChangePasswordActivity.cs" />
+    <Compile Include="UI\ConfigActivity.cs" />
     <Compile Include="UI\ConsumptionListAdapter.cs" />
     <Compile Include="UI\ConsumptionViewHolder.cs" />
     <Compile Include="UI\ForgotPasswordActivity.cs" />
@@ -227,6 +228,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\ConsumptionItemView.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Config.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

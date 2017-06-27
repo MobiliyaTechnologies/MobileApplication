@@ -17,10 +17,11 @@ using CSU_PORTABLE.Models;
 using Android.Support.V7.App;
 using CSU_PORTABLE.Utils;
 using System.Net.Http;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "Global Reports", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "Global Reports", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class GlobalReportsActivity : AppCompatActivity
     {
         const string TAG = "GlobalReportsActivity";

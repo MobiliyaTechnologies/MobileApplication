@@ -3,9 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <WebView
-          android:id="@+id/LocalWebView"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent">
-  </WebView>
+    <WebView
+        android:id="@+id/LocalWebView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>
