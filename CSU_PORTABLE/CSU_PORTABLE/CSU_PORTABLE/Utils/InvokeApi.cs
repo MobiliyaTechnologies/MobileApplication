@@ -11,13 +11,19 @@ namespace CSU_PORTABLE.Utils
 {
     public class InvokeApi
     {
+        private static string ServerBaseURL = null;
+
+        public static void SetDomainUrl(string domainUrl)
+        {
+            ServerBaseURL = domainUrl+ "/api/";
+        }
 
         public static async Task<HttpResponseMessage> Invoke(string serviceUrl, string json, HttpMethod method, string token = "")
         {
             HttpClient client = new HttpClient();
             try
             {
-                HttpRequestMessage request = new HttpRequestMessage(method, Constants.SERVER_BASE_URL + serviceUrl);
+                 HttpRequestMessage request = new HttpRequestMessage(method, ServerBaseURL + serviceUrl);
                 client.DefaultRequestHeaders
                          .Accept
                          .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header

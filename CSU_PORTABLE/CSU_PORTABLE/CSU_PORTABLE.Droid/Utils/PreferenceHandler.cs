@@ -16,7 +16,39 @@ namespace CSU_PORTABLE.Droid.Utils
         string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
         string preferenceToken = "CSUPREF_token";
         string preferenceAccessCode = "CSUPREF_accesscode";
+        string preferenceConfig = "CSUPREF_config";
+        string preferenceDomainKey = "CSUPREF_domainkey";
 
+        public bool SetDomainKey(string domainKey)
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            var contextEdit = contextPref.Edit();
+            contextEdit.PutString(preferenceDomainKey, domainKey);
+            return contextEdit.Commit();
+        }
+
+
+        public string GetDomainKey()
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            return contextPref.GetString(preferenceDomainKey, string.Empty);
+        }
+
+
+        public bool SetConfig(string Config)
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            var contextEdit = contextPref.Edit();
+            contextEdit.PutString(preferenceConfig, Config);
+            return contextEdit.Commit();
+        }
+
+
+        public string GetConfig()
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            return contextPref.GetString(preferenceConfig, string.Empty);
+        }
 
         public bool SetAccessCode(string AccessCode)
         {

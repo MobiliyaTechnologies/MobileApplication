@@ -24,10 +24,11 @@ using System.Threading.Tasks;
 using Android.Util;
 using System.Net;
 using static CSU_PORTABLE.Utils.Constants;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "Dashboard", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "Dashboard", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class AdminDashboardActivity : AppCompatActivity
     {
         const string TAG = "MainActivity";
@@ -40,6 +41,8 @@ namespace CSU_PORTABLE.Droid.UI
         ConsumptionListAdapter mAdapter;
         LinearLayoutManager mLayoutManager;
         ConsumptionFor CurrentConsumption;
+        int CurrentBuildingId = 0;
+        int CurrentPremisesId = 0;
         List<ConsumptionModel> consumpModels;
         int userRole;
         public static TextView notifCount;
@@ -60,11 +63,12 @@ namespace CSU_PORTABLE.Droid.UI
 
         private async Task CreateDashboard()
         {
-
             string token = preferenceHandler.GetToken();
             if (string.IsNullOrEmpty(token))
             {
-                string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.Grant_type, B2CConfig.ClientSecret, B2CConfig.ClientId, preferenceHandler.GetAccessCode());
+                string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, preferenceHandler.GetAccessCode());
+                //string tokenURL = B2CConfigManager.GetInstance().GetB2CTokenUrl(preferenceHandler.GetAccessCode());
+                
                 var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -79,6 +83,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
 
             UserDetails user = preferenceHandler.GetUserDetails();
+            token = preferenceHandler.GetToken();
             //Get User Details
             if (user.UserId == -1)
             {
@@ -95,7 +100,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
 
             // tempaory made admin
-            if (user.RoleId == 2)
+            if (user.RoleId == 1)
             {
                 GetConsumptionDetails(CurrentConsumption, 0);
             }
@@ -128,6 +133,29 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 Utils.Utils.ShowToast(Application.Context, "User details not found!");
             }
+        }
+
+        public override void OnBackPressed()
+        {
+            //base.OnBackPressed();
+            layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
+            layoutProgress.Visibility = ViewStates.Visible;
+            layoutProgress.Enabled = true;
+            switch (CurrentConsumption)
+            {
+                case ConsumptionFor.Buildings:
+                    CurrentConsumption = ConsumptionFor.Premises;
+                    GetConsumptionDetails(CurrentConsumption, 0);
+                    CurrentPremisesId = 0;
+                    break;
+                case ConsumptionFor.Meters:
+
+                    CurrentConsumption = ConsumptionFor.Buildings;
+                    GetConsumptionDetails(CurrentConsumption, CurrentPremisesId);
+
+                    break;
+            }
+
         }
 
         #region " Consumption "
@@ -189,6 +217,7 @@ namespace CSU_PORTABLE.Droid.UI
             if (responseConsumption.StatusCode == HttpStatusCode.OK)
             {
                 GetConsumptionResponse(responseConsumption);
+                layoutProgress.Visibility = ViewStates.Gone;
             }
             else if (responseConsumption.StatusCode == HttpStatusCode.BadRequest || responseConsumption.StatusCode == HttpStatusCode.Unauthorized)
             {
@@ -233,7 +262,7 @@ namespace CSU_PORTABLE.Droid.UI
                     return modelBuilding.ConvertAll(x => new ConsumptionModel()
                     {
                         Id = x.BuildingID,
-                        Name = x.BuildingName,
+                        Name = CurrentConsumption.ToString() + " - " + x.BuildingName,
                         Consumed = Convert.ToString(Math.Round((x.MonthlyConsumption / 1000), 2)) + " K",
                         Expected = Convert.ToString(Math.Round((x.MonthlyPrediction / 1000), 2)) + " K",
                         Overused = Convert.ToString(Math.Round((x.MonthlyPrediction - x.MonthlyConsumption) / 1000, 2)) + " K"
@@ -243,7 +272,7 @@ namespace CSU_PORTABLE.Droid.UI
                     return modelMeter.ConvertAll(x => new ConsumptionModel()
                     {
                         Id = x.Id,
-                        Name = x.PowerScout,
+                        Name = CurrentConsumption.ToString() + " - " + x.PowerScout,
                         Consumed = Convert.ToString(Math.Round((x.MonthlyConsumption / 1000), 2)) + " K",
                         Expected = Convert.ToString(Math.Round((x.MonthlyPrediction / 1000), 2)) + " K",
                         Overused = Convert.ToString(Math.Round((x.MonthlyPrediction - x.MonthlyConsumption) / 1000, 2)) + " K"
@@ -284,24 +313,27 @@ namespace CSU_PORTABLE.Droid.UI
 
         void OnItemClick(object sender, int position)
         {
-            //if (CurrentConsumption != ConsumptionFor.Meters)
-            //{
-            layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
-            layoutProgress.Visibility = ViewStates.Visible;
-            int photoNum = position + 1;
-            ConsumptionListAdapter consumptionListAdapter = (ConsumptionListAdapter)sender;
-            //Toast.MakeText(this, "This is photo number " + photoNum.ToString(), ToastLength.Short).Show();
-            switch (CurrentConsumption)
+            if (CurrentConsumption != ConsumptionFor.Meters)
             {
-                case ConsumptionFor.Premises:
-                    CurrentConsumption = ConsumptionFor.Buildings;
-                    break;
-                case ConsumptionFor.Buildings:
-                    CurrentConsumption = ConsumptionFor.Meters;
-                    break;
+                layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
+                layoutProgress.Visibility = ViewStates.Visible;
+                layoutProgress.Enabled = true;
+                int photoNum = position + 1;
+                ConsumptionListAdapter consumptionListAdapter = (ConsumptionListAdapter)sender;
+                //Toast.MakeText(this, "This is photo number " + photoNum.ToString(), ToastLength.Short).Show();
+                switch (CurrentConsumption)
+                {
+                    case ConsumptionFor.Premises:
+                        CurrentPremisesId = consumptionListAdapter.mConsumptionModels[position].Id;
+                        CurrentConsumption = ConsumptionFor.Buildings;
+                        break;
+                    case ConsumptionFor.Buildings:
+                        //CurrentBuildingId = consumptionListAdapter.mConsumptionModels[position].Id;
+                        CurrentConsumption = ConsumptionFor.Meters;
+                        break;
+                }
+                GetConsumptionDetails(CurrentConsumption, consumptionListAdapter.mConsumptionModels[position].Id);
             }
-            GetConsumptionDetails(CurrentConsumption, consumptionListAdapter.mConsumptionModels[position].Id);
-            layoutProgress.Visibility = ViewStates.Gone;
         }
 
         #endregion
@@ -491,7 +523,7 @@ namespace CSU_PORTABLE.Droid.UI
             preferenceHandler.setLoggedIn(false);
             layoutProgress.Visibility = ViewStates.Gone;
             Finish();
-            StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));
+            StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
 
         }
 

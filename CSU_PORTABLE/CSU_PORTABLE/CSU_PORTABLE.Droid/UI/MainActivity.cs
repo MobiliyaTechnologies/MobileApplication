@@ -22,10 +22,11 @@ using CSU_PORTABLE.Utils;
 using Android.Support.V4.View;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class MainActivity : AppCompatActivity, IOnMapReadyCallback
     {
 

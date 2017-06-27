@@ -17,11 +17,12 @@ using Newtonsoft.Json;
 using CSU_PORTABLE.Utils;
 using System.Net.Http;
 using Android.Webkit;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
 
-    [Activity(Label = "Forgot Password", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "Forgot Password", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     class ForgotPasswordActivity : AppCompatActivity
     {
         const string TAG = "MainActivity";

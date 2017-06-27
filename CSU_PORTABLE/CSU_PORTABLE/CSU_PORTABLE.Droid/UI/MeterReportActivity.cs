@@ -17,10 +17,11 @@ using CSU_PORTABLE.Models;
 using Android.Support.V7.App;
 using CSU_PORTABLE.Utils;
 using System.Net.Http;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "Meter Reports", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "Meter Reports", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class MeterReportActivity : AppCompatActivity
     {
         const string TAG = "MeterReportActivity";

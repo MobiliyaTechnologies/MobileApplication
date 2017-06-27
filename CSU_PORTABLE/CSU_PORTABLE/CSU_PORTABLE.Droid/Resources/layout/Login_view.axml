@@ -71,15 +71,15 @@
                 android:textColor="@color/white"
                 android:background="@color/green_theme"
                 android:text="Sign In" />
-          <Button
-               android:id="@+id/SignUpButton"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_gravity="center_horizontal"
-               android:layout_margin="20dp"
-               android:textColor="@color/white"
-               android:background="@color/green_theme"
-               android:text="Sign Up" />
+            <Button
+                android:id="@+id/SignUpButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="20dp"
+                android:textColor="@color/white"
+                android:background="@color/green_theme"
+                android:text="Sign Up" />
             <TextView
                 android:id="@+id/textViewForgotPassword"
                 android:layout_width="match_parent"

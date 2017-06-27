@@ -14,10 +14,12 @@ using System.Threading.Tasks;
 using CSU_PORTABLE.Droid.Utils;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
+using Newtonsoft.Json;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
+    [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, NoHistory = true)]
     class SplashActivity : Activity
     {
         static readonly string TAG = "X:" + typeof(SplashActivity).Name;
@@ -45,17 +47,37 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Work is finished.");
 
                 PreferenceHandler prefHandler = new PreferenceHandler();
-                if (prefHandler.IsLoggedIn())
+                prefHandler = new Utils.PreferenceHandler();
+                if (string.IsNullOrEmpty(prefHandler.GetDomainKey()))
                 {
-                    Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
-                    intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
-                    StartActivity(intent);
+                    StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
                     Finish();
                 }
                 else
                 {
-                    StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
-                    Finish();
+                    InvokeApi.SetDomainUrl(prefHandler.GetDomainKey());
+                    if (string.IsNullOrEmpty(prefHandler.GetConfig()))
+                    {
+                        StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
+                        Finish();
+                    }
+                    else
+                    {
+                        var config = JsonConvert.DeserializeObject<B2CConfiguration>(prefHandler.GetConfig());
+                        B2CConfigManager.GetInstance().Initialize(config);
+                        if (prefHandler.IsLoggedIn())
+                        {
+                            Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
+                            intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
+                            StartActivity(intent);
+                            Finish();
+                        }
+                        else
+                        {
+                            StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+                            Finish();
+                        }
+                    }
                 }
 
             }, TaskScheduler.FromCurrentSynchronizationContext());

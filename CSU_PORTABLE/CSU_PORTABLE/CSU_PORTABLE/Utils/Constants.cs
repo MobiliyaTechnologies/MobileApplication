@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSU_PORTABLE.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace CSU_PORTABLE.Utils
         public static int STATUS_CODE_SUCCESS = 200;
         public static int STATUS_CODE_FAILED = 0;
 
-        public static string SERVER_BASE_URL = "http://energymanagementapi.azurewebsites.net/api/";
+      //R  public static string SERVER_BASE_URL = "http://energymanagementapi.azurewebsites.net/api/";
         //public static string SERVER_BASE_URL = "http://powergridrestservice.azurewebsites.net/api/";
         //public static string SERVER_BASE_URL = "http://emrestdemodeploy123.azurewebsites.net/api/";
         public static string API_SIGN_IN = "signin";
@@ -34,6 +35,7 @@ namespace CSU_PORTABLE.Utils
         public static string API_GET_ALLPREMISES = "GetAllPremise";
         public static string API_GET_ALLBUILDINGS_BY_PREMISEID = "GetBuildingsByPremise";
         public static string API_GET_ALLMETERS_BY_BUILDINGID = "GetMeterList";
+        public static string API_GET_MOBILE_CONFIGURATION = "GetMobileConfiguration";
 
         //public static string SERVER_BASE_URL_FOR_TOKEN = "http://csuwebapp.azurewebsites.net/PowerBIService.asmx/";
         public static string SERVER_BASE_URL_FOR_TOKEN = "http://13.72.102.73/CSU/Powerbiservice.asmx";
@@ -73,8 +75,8 @@ namespace CSU_PORTABLE.Utils
 
     public class B2CPolicy
     {
-        public static string SignUpPolicyId = "B2C_1_b2cSignup";
-        public static string SignInPolicyId = "b2c_1_b2csignin";
+        public static string SignUpPolicyId = "B2C_1_amarb2csignup";
+        public static string SignInPolicyId = "B2C_1_amar_b2c_signin";
         public static string ChangePasswordPolicyId = "B2C_1_b2cSSPR";
         public static string signInMFAPolicyId = "B2C_1_Signin_MFA";
         public static string UserClaimsURL = "http://schemas.microsoft.com/identity/claims/objectidentifier";
@@ -83,18 +85,38 @@ namespace CSU_PORTABLE.Utils
 
     public class B2CConfig
     {
-        public static string AuthorizeURL = "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri={3}&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
-        public static string TokenURL = "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type={2}&client_secret={3}&client_id={4}&code={5}";
+
+        public static string AuthorizeURL = "";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri={3}&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri={3}&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
+        public static string TokenURL = "";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type=authorization_code&client_id={2}&code={3}";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type={2}&client_secret={3}&client_id={4}&code={5}";
         //public static string AuthorizeURLIOS = "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri=com.onmicrosoft.csu://iosresponse/&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
-        public static string TokenURLIOS = "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type={2}&client_id={3}&code={4}";
-        public static string ChangePasswordURL = "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_Id={2}&nonce=defaultNonce&redirect_uri={3}&scope=openid&response_type=id_token&prompt=login";
+        public static string TokenURLIOS = "";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type={2}&client_id={3}&code={4}";
+        public static string ChangePasswordURL = "";//  "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_Id={2}&nonce=defaultNonce&redirect_uri={3}&scope=openid&response_type=id_token&prompt=login";
         //https://login.microsoftonline.com/CSUB2C.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_b2cSSPR&client_Id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&nonce=defaultNonce&redirect_uri=com.onmicrosoft.csu://iosresponse/&scope=openid&response_type=id_token&prompt=login
-        public static string ClientId = "3bdf8223-746c-42a2-ba5e-0322bfd9ff76";
-        public static string ClientSecret = ":63s]7`4F^3261*}";
-        public static string Tenant = "csub2c.onmicrosoft.com";
+        public static string ClientId = "";// "71523912-cd15-43a4-bff3-c61dda018089";//3bdf8223-746c-42a2-ba5e-0322bfd9ff76";
+        public static string ClientSecret = "";//  ":63s]7`4F^3261*}";//":63s]7`4F^3261*}";
+        public static string Tenant = "";// "amartest123.onmicrosoft.com";//"csub2c.onmicrosoft.com";
         public static string Grant_type = "authorization_code";
         public static string Token_Grant_type = "offline_access";
-        public static string Redirect_Uri = "http://localhost:65328";
+        public static string Redirect_Uri = "";// "https://login.microsoftonline.com/tfp/oauth2/nativeclient";
 
+        public void  ReInitialize(B2CConfiguration config)
+        {
+            AuthorizeURL = config.B2cAuthorizeURL;
+            TokenURL = config.B2cTokenURL;
+            TokenURLIOS = config.B2cTokenURLIOS;
+            ChangePasswordURL = config.B2cChangePasswordURL;
+            ClientId = config.B2cClientId;
+            ClientSecret = config.B2cClientSecret;
+            Tenant = config.B2cTenant;
+            B2CPolicy.SignUpPolicyId = config.B2cSignUpPolicy;
+            B2CPolicy.SignInPolicyId = config.B2cSignInPolicy;
+            B2CPolicy.ChangePasswordPolicyId = config.B2cChangePasswordPolicy;
+
+            //
+            Redirect_Uri = config.B2cRedirectUrl;
+
+
+
+        }
     }
 }

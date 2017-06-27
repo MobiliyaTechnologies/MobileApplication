@@ -15,10 +15,11 @@ using CSU_PORTABLE.Models;
 using Android.Support.V7.Widget;
 using Android.Views;
 using System.Net.Http;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "Alerts", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "Alerts", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class AlertsActivity : AppCompatActivity
     {
 

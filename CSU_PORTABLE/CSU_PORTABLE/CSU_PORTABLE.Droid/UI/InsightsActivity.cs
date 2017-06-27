@@ -18,10 +18,11 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Android.Support.V7.App;
 using System.Net.Http;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "Insights", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "Insights", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class InsightsActivity : AppCompatActivity
     {
         const string TAG = "InsightsActivity";

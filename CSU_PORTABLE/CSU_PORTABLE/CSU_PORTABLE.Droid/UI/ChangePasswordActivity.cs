@@ -19,10 +19,11 @@ using CSU_PORTABLE.Utils;
 using System.Net.Http;
 using Android.Webkit;
 using Android.Graphics;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "Change Password", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "Change Password", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class ChangePasswordActivity : AppCompatActivity
     {
         const string TAG = "ChangePasswordActivity";

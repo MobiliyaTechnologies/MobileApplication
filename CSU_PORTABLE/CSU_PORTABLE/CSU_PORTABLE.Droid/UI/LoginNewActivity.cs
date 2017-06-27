@@ -17,10 +17,11 @@ using Newtonsoft.Json;
 using CSU_PORTABLE.Droid.Utils;
 using CSU_PORTABLE.Models;
 using static CSU_PORTABLE.Utils.Constants;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     public class LoginNewActivity : Activity
     {
         private WebView localWebView;
@@ -45,6 +46,7 @@ namespace CSU_PORTABLE.Droid.UI
                 }
             }
             //string strLogin = "https://login.microsoftonline.com/csub2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_b2csignin&client_id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&response_type=code&redirect_uri=http://localhost:65328&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
+
             string strLogin = string.Format(B2CConfig.AuthorizeURL, B2CConfig.Tenant, (signInType == SignInType.SIGN_IN ? B2CPolicy.SignInPolicyId : B2CPolicy.SignUpPolicyId), B2CConfig.ClientId, B2CConfig.Redirect_Uri);
             SetContentView(Resource.Layout.LoginNew);
             localWebView = FindViewById<WebView>(Resource.Id.LocalWebView);
@@ -70,7 +72,8 @@ namespace CSU_PORTABLE.Droid.UI
         public override void OnPageStarted(WebView view, string url, Bitmap favicon)
         {
             base.OnPageStarted(view, url, favicon);
-
+            
+            
             if (url.Contains("&code="))
             {
                 //view.Context.StartActivity(new Intent(Application.Context, typeof(MainActivity)));

@@ -12,10 +12,11 @@ using CSU_PORTABLE.Utils;
 using System.Net.Http;
 using Android.Webkit;
 using static CSU_PORTABLE.Utils.Constants;
+using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", Theme = "@style/MyTheme")]
+    [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     class LoginActivity : Activity
     {
         const string TAG = "LoginActivity";
@@ -25,6 +26,7 @@ namespace CSU_PORTABLE.Droid.UI
         private Button buttonSignUp;
         private ProgressBar progressBar;
         private TextView tvForgotPassword;
+        PreferenceHandler preferenceHandler;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -32,6 +34,13 @@ namespace CSU_PORTABLE.Droid.UI
             SetContentView(Resource.Layout.Login_view);
             //etUsername = FindViewById<EditText>(Resource.Id.editTextUsername);
             //etPassword = FindViewById<EditText>(Resource.Id.editTextPassword);
+            preferenceHandler = new Utils.PreferenceHandler();
+            if (string.IsNullOrEmpty(preferenceHandler.GetConfig()))
+            {
+                StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
+                Finish();
+            }
+
             buttonSignIn = FindViewById<Button>(Resource.Id.SignInButton);
             buttonSignUp = FindViewById<Button>(Resource.Id.SignUpButton);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
