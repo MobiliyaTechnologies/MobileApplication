@@ -56,7 +56,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         Activity activityContext;
 
-        protected async override void OnCreate(Bundle bundle)
+        protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             activityContext = this;
@@ -634,7 +634,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-                string message = "Google Play Services is available.";
+                //string message = "Google Play Services is available.";
                 return true;
             }
         }

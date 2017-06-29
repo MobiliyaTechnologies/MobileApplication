@@ -30,15 +30,28 @@ namespace CSU_PORTABLE.Droid.UI
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.Forgot_password_view);
-            string strLogin = string.Format(B2CConfig.ChangePasswordURL, B2CConfig.Tenant, B2CPolicy.ChangePasswordPolicyId, B2CConfig.ClientId, B2CConfig.Redirect_Uri);
-            SetContentView(Resource.Layout.LoginNew);
-            localWebView = FindViewById<WebView>(Resource.Id.LocalWebView);
+            if (!Utils.Utils.IsNetworkEnabled(this))
+            {
+                RunOnUiThread(() =>
+                {
+                    Utils.Utils.ShowDialog(this, "Internet not available.");
+                });
+                StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+                Finish();
+            }
+            else
+            {
+                string strLogin = string.Format(B2CConfig.ChangePasswordURL, B2CConfig.Tenant, B2CPolicy.ChangePasswordPolicyId, B2CConfig.ClientId, B2CConfig.Redirect_Uri);
+                SetContentView(Resource.Layout.LoginNew);
+                localWebView = FindViewById<WebView>(Resource.Id.LocalWebView);
 
-            localWebView.SetWebViewClient(new ChangePasswordView()); // stops request going to Web Browser
-            localWebView.Settings.JavaScriptEnabled = true;
-            localWebView.LoadUrl(strLogin);
+                localWebView.SetWebViewClient(new ChangePasswordView()); // stops request going to Web Browser
+                localWebView.Settings.JavaScriptEnabled = true;
+                localWebView.LoadUrl(strLogin);
+            }
         }
 
 

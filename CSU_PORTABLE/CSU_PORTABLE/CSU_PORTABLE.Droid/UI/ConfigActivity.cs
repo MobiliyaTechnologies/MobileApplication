@@ -18,7 +18,7 @@ using Android.Content.PM;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "ConfigActivity" , ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait) ]
+    [Activity(Label = "Configuration", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class ConfigActivity : Activity
     {
         private EditText textConfigURL;
@@ -31,7 +31,7 @@ namespace CSU_PORTABLE.Droid.UI
             SetContentView(Resource.Layout.Config);
             textConfigURL = FindViewById<EditText>(Resource.Id.textConfigURL);
             SubmitButton = FindViewById<Button>(Resource.Id.SubmitButton);
-           
+
             preferenceHandler = new PreferenceHandler();
             SubmitButton.Click += SubmitButton_Click;
             // Create your application here
@@ -52,7 +52,7 @@ namespace CSU_PORTABLE.Droid.UI
                 dialog.SetTitle("Loading...");
                 dialog.Show();
                 var response = await InvokeApi.Invoke(Constants.API_GET_MOBILE_CONFIGURATION, string.Empty, HttpMethod.Get);
-               
+
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     string strContent = await response.Content.ReadAsStringAsync();
@@ -72,7 +72,7 @@ namespace CSU_PORTABLE.Droid.UI
                         StartActivity(intent);
                         Finish();
                     }
-                   
+
                 }
                 else
                 {

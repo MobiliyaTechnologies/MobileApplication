@@ -34,27 +34,34 @@ namespace CSU_PORTABLE.Droid.UI
         {
             localContext = this;
             base.OnCreate(savedInstanceState);
-            if (Intent.Extras != null)
+            if (!Utils.Utils.IsNetworkEnabled(this))
             {
-                foreach (var key in Intent.Extras.KeySet())
-                {
-                    if (key.Equals(KEY_SHOW_PAGE))
-                    {
-                        signInType = (SignInType)Intent.Extras.GetInt(key);
-                    }
-
-                }
+                Utils.Utils.ShowDialog(this, "Internet not available.");
+                StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+                Finish();
             }
-            //string strLogin = "https://login.microsoftonline.com/csub2c.onmicrosoft.com/oauth2/v2.0/authorize?p=b2c_1_b2csignin&client_id=3bdf8223-746c-42a2-ba5e-0322bfd9ff76&response_type=code&redirect_uri=http://localhost:65328&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
+            else
+            {
+                if (Intent.Extras != null)
+                {
+                    foreach (var key in Intent.Extras.KeySet())
+                    {
+                        if (key.Equals(KEY_SHOW_PAGE))
+                        {
+                            signInType = (SignInType)Intent.Extras.GetInt(key);
+                        }
 
-            string strLogin = string.Format(B2CConfig.AuthorizeURL, B2CConfig.Tenant, (signInType == SignInType.SIGN_IN ? B2CPolicy.SignInPolicyId : B2CPolicy.SignUpPolicyId), B2CConfig.ClientId, B2CConfig.Redirect_Uri);
-            SetContentView(Resource.Layout.LoginNew);
-            localWebView = FindViewById<WebView>(Resource.Id.LocalWebView);
-            localWebView.SetWebViewClient(new MyWebView()); // stops request going to Web Browser
-            localWebView.ClearCache(true);
-            localWebView.Settings.JavaScriptEnabled = true;
-            localWebView.LoadUrl(strLogin);
+                    }
+                }
 
+                string strLogin = string.Format(B2CConfig.AuthorizeURL, B2CConfig.Tenant, (signInType == SignInType.SIGN_IN ? B2CPolicy.SignInPolicyId : B2CPolicy.SignUpPolicyId), B2CConfig.ClientId, B2CConfig.Redirect_Uri);
+                SetContentView(Resource.Layout.LoginNew);
+                localWebView = FindViewById<WebView>(Resource.Id.LocalWebView);
+                localWebView.SetWebViewClient(new MyWebView()); // stops request going to Web Browser
+                localWebView.ClearCache(true);
+                localWebView.Settings.JavaScriptEnabled = true;
+                localWebView.LoadUrl(strLogin);
+            }
         }
 
 
@@ -72,8 +79,6 @@ namespace CSU_PORTABLE.Droid.UI
         public override void OnPageStarted(WebView view, string url, Bitmap favicon)
         {
             base.OnPageStarted(view, url, favicon);
-            
-            
             if (url.Contains("&code="))
             {
                 //view.Context.StartActivity(new Intent(Application.Context, typeof(MainActivity)));
@@ -84,22 +89,8 @@ namespace CSU_PORTABLE.Droid.UI
                 string code = Common.FunGetValuefromQueryString(url, "code");
                 var preferenceHandler = new PreferenceHandler();
                 preferenceHandler.SetAccessCode(code);
-
-                //string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.Grant_type, B2CConfig.ClientSecret, B2CConfig.ClientId, code);
-                //var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
-                //if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                //{
-                //    string strContent = await response.Content.ReadAsStringAsync();
-                //    var token = JsonConvert.DeserializeObject<AccessToken>(strContent);
-                //    preferenceHandler.SetToken(token.id_token);
-                //}
-
+                preferenceHandler.setLoggedIn(true);
             }
-
-
         }
-
-
-
     }
 }

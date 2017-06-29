@@ -10,7 +10,7 @@
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="com.mobiliya.csu.permission.MAPS_RECEIVE" />
-	<application android:label="Energy Management">
+	<application android:label="Energy Management" android:icon="@drawable/logo">
 		<!-- Firebase receiver -->
 		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
 		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">

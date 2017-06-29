@@ -25,6 +25,7 @@ using Android.Util;
 using System.Net;
 using static CSU_PORTABLE.Utils.Constants;
 using Android.Content.PM;
+using Android.Webkit;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -35,16 +36,12 @@ namespace CSU_PORTABLE.Droid.UI
         DrawerLayout drawerLayout;
         NavigationView navigationView;
         PreferenceHandler preferenceHandler;
-        Activity activityContext;
         LinearLayout layoutProgress;
         RecyclerView mRecyclerView;
         ConsumptionListAdapter mAdapter;
         LinearLayoutManager mLayoutManager;
         ConsumptionFor CurrentConsumption;
-        int CurrentBuildingId = 0;
         int CurrentPremisesId = 0;
-        List<ConsumptionModel> consumpModels;
-        int userRole;
         public static TextView notifCount;
         MySampleBroadcastReceiver receiver;
 
@@ -55,20 +52,34 @@ namespace CSU_PORTABLE.Droid.UI
             //activityContext = this;
             preferenceHandler = new PreferenceHandler();
             CurrentConsumption = ConsumptionFor.Premises;
+            receiver = new MySampleBroadcastReceiver(this);
             // Create your application here
-            SetDrawer();
-            await CreateDashboard();
-            IsPlayServicesAvailable();
+            if (!Utils.Utils.IsNetworkEnabled(this))
+            {
+                RunOnUiThread(() =>
+                {
+                    Utils.Utils.ShowDialog(this, "Internet not available.");
+                });
+                StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+                Finish();
+            }
+            else
+            {
+                SetDrawer();
+                await CreateDashboard();
+                IsPlayServicesAvailable();
+            }
         }
 
         private async Task CreateDashboard()
         {
+
             string token = preferenceHandler.GetToken();
             if (string.IsNullOrEmpty(token))
             {
                 string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, preferenceHandler.GetAccessCode());
                 //string tokenURL = B2CConfigManager.GetInstance().GetB2CTokenUrl(preferenceHandler.GetAccessCode());
-                
+
                 var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -78,7 +89,7 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    RedirectToLogin();
+                    RefreshToken();
                 }
             }
 
@@ -95,7 +106,7 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 else
                 {
-                    RedirectToLogin();
+                    RefreshToken();
                 }
             }
 
@@ -153,6 +164,10 @@ namespace CSU_PORTABLE.Droid.UI
                     CurrentConsumption = ConsumptionFor.Buildings;
                     GetConsumptionDetails(CurrentConsumption, CurrentPremisesId);
 
+                    break;
+                case ConsumptionFor.Premises:
+                    this.CloseContextMenu();
+                    layoutProgress.Visibility = ViewStates.Gone;
                     break;
             }
 
@@ -221,7 +236,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else if (responseConsumption.StatusCode == HttpStatusCode.BadRequest || responseConsumption.StatusCode == HttpStatusCode.Unauthorized)
             {
-                RedirectToLogin();
+                RefreshToken();
             }
         }
 
@@ -295,7 +310,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-                RedirectToLogin();
+                RefreshToken();
             }
         }
 
@@ -309,6 +324,24 @@ namespace CSU_PORTABLE.Droid.UI
             StartActivity(intent);
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Gone;
+        }
+
+        private async void RefreshToken()
+        {
+            string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, preferenceHandler.GetAccessCode());
+            //string tokenURL = B2CConfigManager.GetInstance().GetB2CTokenUrl(preferenceHandler.GetAccessCode());
+
+            var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string strContent = await response.Content.ReadAsStringAsync();
+                var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+                preferenceHandler.SetToken(tokenNew.id_token);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                RedirectToLogin();
+            }
         }
 
         void OnItemClick(object sender, int position)
@@ -469,27 +502,27 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-                string message = "Google Play Services is available.";
+                // string message = "Google Play Services is available.";
                 return true;
             }
         }
 
-        //protected override void OnResume()
-        //{
-        //    base.OnResume();
-        //    RegisterReceiver(receiver, new IntentFilter(Utils.Utils.ALERT_BROADCAST));
-        //    if (userRole == (int)Constants.USER_ROLE.ADMIN)
-        //    {
-        //        setNotificationCount();
-        //    }
-        //}
+        protected override void OnResume()
+        {
+            base.OnResume();
+            RegisterReceiver(receiver, new IntentFilter(Utils.Utils.ALERT_BROADCAST));
+            if (preferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.ADMIN)
+            {
+                setNotificationCount();
+            }
+        }
 
-        //protected override void OnPause()
-        //{
-        //    UnregisterReceiver(receiver);
-        //    // Code omitted for clarity
-        //    base.OnPause();
-        //}
+        protected override void OnPause()
+        {
+            UnregisterReceiver(receiver);
+            // Code omitted for clarity
+            base.OnPause();
+        }
 
         public void setNotificationCount()
         {
@@ -523,6 +556,8 @@ namespace CSU_PORTABLE.Droid.UI
             preferenceHandler.setLoggedIn(false);
             layoutProgress.Visibility = ViewStates.Gone;
             Finish();
+            // Delete Existing User Details from cache
+            CookieManager.Instance.RemoveAllCookie();
             StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
 
         }
@@ -532,7 +567,7 @@ namespace CSU_PORTABLE.Droid.UI
 
             Log.Debug(TAG, "Local Logout Successful");
             layoutProgress.Visibility = ViewStates.Gone;
-            RedirectToLogin();
+            RefreshToken();
         }
 
         [BroadcastReceiver(Enabled = true, Exported = false)]
@@ -554,7 +589,7 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     ((MainActivity)activityContext).setNotificationCount();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 
                 }

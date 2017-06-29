@@ -18,6 +18,11 @@ namespace CSU_PORTABLE.Droid.Utils
         public const string ALERT_BROADCAST = "com.mobiliya.csu.Alerts";
         private static Toast toast;
 
+        /// <summary>
+        /// Common fuction to check Internet Connectivity
+        /// </summary>
+        /// <param name="context">Activity from where function is invoked</param>
+        /// <returns>True if connected</returns>
         public static bool IsNetworkEnabled(Context context)
         {
             bool isOnline = false;
@@ -45,7 +50,21 @@ namespace CSU_PORTABLE.Droid.Utils
             toast.Show();
         }
 
-
+        /// <summary>
+        /// Common Dialog option
+        /// </summary>
+        /// <param name="context">Activiy context which invokes the Dialog </param>
+        /// <param name="message">Message to be showed in Dialog</param>
+        public static void ShowDialog(Context context, string message)
+        {
+            var builder = new AlertDialog.Builder(context);
+            builder.SetTitle("Energy Management");
+            builder.SetMessage(message);
+            builder.SetPositiveButton("OK", (sender, args) => { /* do stuff on OK */ });
+            //builder.SetNegativeButton("No", (sender, args) => { cmd = "cancel"; });
+            builder.SetCancelable(false);
+            builder.Show();
+        }
 
     }
 }
