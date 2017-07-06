@@ -43,7 +43,7 @@ namespace CSU_PORTABLE.Droid.UI
         NavigationView navigationView;
         LinearLayout layoutProgress;
         int userRole;
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
 
         LinearLayout LayoutInsightData;
         TextView textViewConsumed;
@@ -56,15 +56,15 @@ namespace CSU_PORTABLE.Droid.UI
 
         Activity activityContext;
 
-        protected async override void OnCreate(Bundle bundle)
+        protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             activityContext = this;
-            Log.Debug(TAG, "google app id: " + Resource.String.google_app_id);
+            // Log.Debug(TAG, "google app id: " + Resource.String.google_app_id);
             SetContentView(Resource.Layout.Main);
             receiver = new MySampleBroadcastReceiver(activityContext);
             //msgText = FindViewById<TextView>(Resource.Id.msgText);
-            preferenceHandler = new Utils.PreferenceHandler();
+            // preferenceHandler = new Utils.PreferenceHandler();
             SetDrawer();
             CreateDashboard();
 
@@ -98,8 +98,8 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 string strContent = await responseUser.Content.ReadAsStringAsync();
                 UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
-                var preferenceHandler = new PreferenceHandler();
-                preferenceHandler.SaveUserDetails(user);
+                // var preferenceHandler = new PreferenceHandler();
+                PreferenceHandler.SaveUserDetails(user);
 
             }
             else
@@ -127,13 +127,13 @@ namespace CSU_PORTABLE.Droid.UI
             //    var res1 = await InvokeApi.Authenticate(strRefreshToken1, string.Empty, HttpMethod.Post);
 
             //    preferenceHandler.SetToken(token.id_token);
-            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (responseUser.StatusCode != 0)
             {
                 GetCurrentUserResponse(responseUser);
 
             }
-            UserDetails user = preferenceHandler.GetUserDetails();
+            UserDetails user = PreferenceHandler.GetUserDetails();
             if (user.RoleId == (int)Constants.USER_ROLE.ADMIN)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
@@ -170,7 +170,7 @@ namespace CSU_PORTABLE.Droid.UI
                 //_myMapFragment.GetMapAsync(this);
 
                 //var preferenceHandler = new PreferenceHandler();
-                int userId = preferenceHandler.GetUserDetails().UserId;
+                int userId = PreferenceHandler.GetUserDetails().UserId;
                 if (userId != -1)
                 {
                     if (isNetworkEnabled)
@@ -258,8 +258,8 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 return;
             }
-            PreferenceHandler prefs = new PreferenceHandler();
-            int notificationCount = prefs.getUnreadNotificationCount();
+            // PreferenceHandler prefs = new PreferenceHandler();
+            int notificationCount = PreferenceHandler.getUnreadNotificationCount();
 
             if (notificationCount <= 0)
             {
@@ -299,11 +299,11 @@ namespace CSU_PORTABLE.Droid.UI
             drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
 
-            var preferenceHandler = new PreferenceHandler();
-            bool isLoggedIn = preferenceHandler.IsLoggedIn();
+            // var preferenceHandler = new PreferenceHandler();
+            bool isLoggedIn = PreferenceHandler.IsLoggedIn();
             if (isLoggedIn)
             {
-                int roleId = preferenceHandler.GetUserDetails().RoleId;
+                int roleId = PreferenceHandler.GetUserDetails().RoleId;
                 if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.STUDENT)
                 {
                     IMenu nav_Menu = navigationView.Menu;
@@ -317,8 +317,8 @@ namespace CSU_PORTABLE.Droid.UI
             TextView textViewUserName =
                 navigationView.GetHeaderView(0).FindViewById<TextView>(
                     Resource.Id.textViewUserName);
-            PreferenceHandler pref = new PreferenceHandler();
-            UserDetails user = pref.GetUserDetails();
+            //PreferenceHandler pref = new PreferenceHandler();
+            UserDetails user = PreferenceHandler.GetUserDetails();
             textViewUserName.Text = user.FirstName + " " + user.LastName;
 
             TextView textViewLogout =
@@ -326,7 +326,7 @@ namespace CSU_PORTABLE.Droid.UI
                 Resource.Id.tv_logout);
             textViewLogout.Click += delegate
             {
-                Logout(new LogoutModel(pref.GetUserDetails().Email));
+                Logout(new LogoutModel(PreferenceHandler.GetUserDetails().Email));
             };
 
             navigationView.NavigationItemSelected += (sender, e) =>
@@ -365,7 +365,7 @@ namespace CSU_PORTABLE.Droid.UI
         private async void GetInsights(int userId)
         {
             Log.Debug(TAG, "GetInsights()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA + "/" + userId, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());
@@ -634,7 +634,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-                string message = "Google Play Services is available.";
+                //string message = "Google Play Services is available.";
                 return true;
             }
         }
@@ -693,8 +693,8 @@ namespace CSU_PORTABLE.Droid.UI
         private void Logout(LogoutModel logoutModel)
         {
             Log.Debug(TAG, "Local Logout Successful");
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
-            preferenceHandler.setLoggedIn(false);
+            //PreferenceHandler preferenceHandler = new PreferenceHandler();
+            PreferenceHandler.setLoggedIn(false);
             layoutProgress.Visibility = ViewStates.Gone;
             Finish();
             StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));
@@ -741,8 +741,8 @@ namespace CSU_PORTABLE.Droid.UI
             }*/
 
             Log.Debug(TAG, "Local Logout Successful");
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
-            preferenceHandler.setLoggedIn(false);
+            //PreferenceHandler preferenceHandler = new PreferenceHandler();
+            PreferenceHandler.setLoggedIn(false);
             layoutProgress.Visibility = ViewStates.Gone;
             Finish();
             StartActivity(new Intent(Application.Context, typeof(LoginNewActivity)));

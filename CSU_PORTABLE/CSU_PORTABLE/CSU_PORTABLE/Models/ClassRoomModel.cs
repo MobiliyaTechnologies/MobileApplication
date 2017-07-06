@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace CSU_PORTABLE.Models
 {
-   public class ClassRoomModel
+    public class ClassRoomModel
     {
-        //public string ClassRoomId { get; set; }
-        //public string ClassRoomDesc { get; set; }
-        //public string SensorId { get; set; }
-
         public int ClassId { get; set; }
         public string ClassName { get; set; }
         public string ClassDescription { get; set; }
@@ -19,5 +15,16 @@ namespace CSU_PORTABLE.Models
         public string Building { get; set; }
         public string Breaker_details { get; set; }
 
+    }
+
+
+    public class RoomModel
+    {
+        public int RoomId { get; set; }
+        public string RoomName { get; set; }
+        public string SensorId { get; set; }
+        public string Building { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

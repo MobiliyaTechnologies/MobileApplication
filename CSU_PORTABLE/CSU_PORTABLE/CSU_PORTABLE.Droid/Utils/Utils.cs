@@ -10,6 +10,12 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Net;
+using CSU_PORTABLE.Utils;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Threading.Tasks;
+using CSU_PORTABLE.Droid.UI;
+using static CSU_PORTABLE.Utils.Constants;
 
 namespace CSU_PORTABLE.Droid.Utils
 {
@@ -18,6 +24,11 @@ namespace CSU_PORTABLE.Droid.Utils
         public const string ALERT_BROADCAST = "com.mobiliya.csu.Alerts";
         private static Toast toast;
 
+        /// <summary>
+        /// Common fuction to check Internet Connectivity
+        /// </summary>
+        /// <param name="context">Activity from where function is invoked</param>
+        /// <returns>True if connected</returns>
         public static bool IsNetworkEnabled(Context context)
         {
             bool isOnline = false;
@@ -45,7 +56,49 @@ namespace CSU_PORTABLE.Droid.Utils
             toast.Show();
         }
 
+        /// <summary>
+        /// Common Dialog option
+        /// </summary>
+        /// <param name="context">Activiy context which invokes the Dialog </param>
+        /// <param name="message">Message to be showed in Dialog</param>
+        public static void ShowDialog(Context context, string message)
+        {
+            var builder = new AlertDialog.Builder(context);
+            builder.SetTitle("Energy Management");
+            builder.SetMessage(message);
+            builder.SetPositiveButton("OK", (sender, args) => { /* do stuff on OK */ });
+            //builder.SetNegativeButton("No", (sender, args) => { cmd = "cancel"; });
+            builder.SetCancelable(false);
+            builder.Show();
+        }
 
 
+        public static void RedirectToLogin(Context context)
+        {
+            PreferenceHandler.setLoggedIn(false);
+            PreferenceHandler.SetToken(string.Empty);
+            Intent intent = new Intent(Application.Context, typeof(LoginNewActivity));
+            intent.PutExtra(LoginNewActivity.KEY_SHOW_PAGE, (int)SignInType.SIGN_IN);
+            context.StartActivity(intent);
+            //context.Dispose();
+            //layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
+            //layoutProgress.Visibility = ViewStates.Gone;
+        }
+
+        public static async Task RefreshToken(Context context)
+        {
+            string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetAccessCode());
+            var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string strContent = await response.Content.ReadAsStringAsync();
+                var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+                PreferenceHandler.SetToken(tokenNew.id_token);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                RedirectToLogin(context);
+            }
+        }
     }
 }

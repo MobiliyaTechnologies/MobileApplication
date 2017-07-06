@@ -32,14 +32,25 @@ namespace CSU_PORTABLE.Droid.UI
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            if (!Utils.Utils.IsNetworkEnabled(this))
+            {
+                RunOnUiThread(() =>
+                {
+                    Utils.Utils.ShowDialog(this, "Internet not available.");
+                });
+                StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
+                Finish();
+            }
+            else
+            {
+                string strLogin = string.Format(B2CConfig.ChangePasswordURL, B2CConfig.Tenant, B2CPolicy.ChangePasswordPolicyId, B2CConfig.ClientId, B2CConfig.Redirect_Uri);
+                SetContentView(Resource.Layout.LoginNew);
+                localWebView = FindViewById<WebView>(Resource.Id.LocalWebView);
 
-            string strLogin = string.Format(B2CConfig.ChangePasswordURL, B2CConfig.Tenant, B2CPolicy.ChangePasswordPolicyId, B2CConfig.ClientId, B2CConfig.Redirect_Uri);
-            SetContentView(Resource.Layout.LoginNew);
-            localWebView = FindViewById<WebView>(Resource.Id.LocalWebView);
-
-            localWebView.SetWebViewClient(new ChangePasswordView()); // stops request going to Web Browser
-            localWebView.Settings.JavaScriptEnabled = true;
-            localWebView.LoadUrl(strLogin);
+                localWebView.SetWebViewClient(new ChangePasswordView()); // stops request going to Web Browser
+                localWebView.Settings.JavaScriptEnabled = true;
+                localWebView.LoadUrl(strLogin);
+            }
         }
 
     }
@@ -49,11 +60,11 @@ namespace CSU_PORTABLE.Droid.UI
         public override void OnPageFinished(WebView view, string url)
         {
             base.OnPageFinished(view, url);
-            var preferenceHandler = new PreferenceHandler();
+            //var preferenceHandler = new PreferenceHandler();
             if (url.Contains("id_token="))
             {
                 string token = Common.FunGetValuefromQueryString(url, "id_token");
-                preferenceHandler.SetToken(token);
+                PreferenceHandler.SetToken(token);
                 //view.Context.StartActivity(new Intent(Application.Context, typeof(MainActivity)));
                 Intent intent = new Intent(Application.Context, typeof(MainActivity));
                 intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
@@ -61,10 +72,11 @@ namespace CSU_PORTABLE.Droid.UI
             }
             if (url.Contains("error="))
             {
-                Utils.Utils.ShowToast(view.Context, "Failed to change password.Please try again later.");
-                Intent intent = new Intent(Application.Context, typeof(MainActivity));
-                intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
+                //Utils.Utils.ShowToast(view.Context, "Failed to change password.Please try again later.");
+                Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
+                //intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
                 view.Context.StartActivity(intent);
+                view.Dispose();
             }
         }
 

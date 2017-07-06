@@ -22,11 +22,11 @@ namespace CSU_PORTABLE.Droid
                 Log.Debug(TAG, "From: " + message.From);
                 Log.Debug(TAG, "Notification Message Body: " + message.GetNotification().Body);
 
-                var preferenceHandler = new PreferenceHandler();
-                bool isLoggedIn = preferenceHandler.IsLoggedIn();
+                //var preferenceHandler = new PreferenceHandler();
+                bool isLoggedIn = PreferenceHandler.IsLoggedIn();
                 if(isLoggedIn)
                 {
-                    int roleId = preferenceHandler.GetUserDetails().RoleId;
+                    int roleId = PreferenceHandler.GetUserDetails().RoleId;
                     if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
                     {
                         SendNotification(message.GetNotification().Body);
@@ -59,9 +59,9 @@ namespace CSU_PORTABLE.Droid
 
         private void IncrementNotificationCount()
         {
-            PreferenceHandler prefs = new PreferenceHandler();
-            int count = prefs.getUnreadNotificationCount();
-            prefs.setUnreadNotificationCount(count + 1);
+            //PreferenceHandler prefs = new PreferenceHandler();
+            int count = PreferenceHandler.getUnreadNotificationCount();
+            PreferenceHandler.setUnreadNotificationCount(count + 1);
 
             Intent message = new Intent(Utils.Utils.ALERT_BROADCAST);
             //Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).SendBroadcast(message);

@@ -17,6 +17,8 @@ using Android.Util;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -44,7 +46,7 @@ namespace CSU_PORTABLE.Droid.UI
         TextView textViewCold;
         TextView textViewTooCold;
         //Toast toast;
-        List<ClassRoomModel> classList = null;
+        List<RoomModel> classList = null;
         List<QuestionModel> questionList = null;
         RecyclerView mRecyclerView;
 
@@ -52,9 +54,10 @@ namespace CSU_PORTABLE.Droid.UI
         string selectedAnswer;
 
         int selectedQuestionId = -1;
-        int selectedClassId = -1;
+        int selectedRoomId = -1;
         int selectedAnswerId = -1;
         int userId;
+
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -70,7 +73,6 @@ namespace CSU_PORTABLE.Droid.UI
             textViewQuestionDescription = view.FindViewById<TextView>(Resource.Id.textViewQuestionDescription);
             textViewProgressMessage = view.FindViewById<TextView>(Resource.Id.textView_progressMessage);
             textViewSelectedClass = view.FindViewById<TextView>(Resource.Id.textView_selectedClass);
-
             textViewTooHot = view.FindViewById<TextView>(Resource.Id.textView_tooHot);
             textViewHot = view.FindViewById<TextView>(Resource.Id.textView_hot);
             textViewNormal = view.FindViewById<TextView>(Resource.Id.textView_feelingNormal);
@@ -81,19 +83,14 @@ namespace CSU_PORTABLE.Droid.UI
             buttonSubmit = view.FindViewById<ImageView>(Resource.Id.buttonSubmit);
             buttonDone = view.FindViewById<Button>(Resource.Id.buttonDone);
 
-            /*
-            textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
-            textViewCold.SetTextColor(Android.Graphics.Color.Gray);
-            textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
-            textViewHot.SetTextColor(Android.Graphics.Color.Gray);
-            textViewTooCold.SetTextColor(Android.Graphics.Color.Gray);
-            */
-
             textViewTooHot.Alpha = 0.5f;
             textViewHot.Alpha = 0.5f;
             textViewNormal.Alpha = 0.5f;
             textViewCold.Alpha = 0.5f;
             textViewTooCold.Alpha = 0.5f;
+
+
+
 
             textViewTooHot.Click += delegate
             {
@@ -108,21 +105,7 @@ namespace CSU_PORTABLE.Droid.UI
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(214, 69, 66));
 
-                /*
-                textViewTooHot.SetTextColor(Android.Graphics.Color.White);
-                textViewHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
-                textViewCold.SetTextColor(Android.Graphics.Color.Gray);
-                textViewTooCold.SetTextColor(Android.Graphics.Color.Gray);
-
-                textViewTooHot.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Bold);
-                textViewHot.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewTooCold.SetTypeface(textViewTooCold.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                */
             };
-
             textViewHot.Click += delegate
             {
                 selectedAnswer = "Hot";
@@ -136,21 +119,8 @@ namespace CSU_PORTABLE.Droid.UI
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(204, 84, 48));
 
-                /*
-                textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewHot.SetTextColor(Android.Graphics.Color.White);
-                textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
-                textViewCold.SetTextColor(Android.Graphics.Color.Gray);
-                textViewTooCold.SetTextColor(Android.Graphics.Color.Gray);
 
-                textViewTooHot.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewHot.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Bold);
-                textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewTooCold.SetTypeface(textViewTooCold.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                */
             };
-
             textViewNormal.Click += delegate
             {
                 selectedAnswer = "Feeling Normal";
@@ -162,21 +132,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(33, 77, 43));
+                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
 
-                /*
-                textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewNormal.SetTextColor(Android.Graphics.Color.White);
-                textViewCold.SetTextColor(Android.Graphics.Color.Gray);
-                textViewTooCold.SetTextColor(Android.Graphics.Color.Gray);
-
-                textViewTooHot.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewHot.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Bold);
-                textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewTooCold.SetTypeface(textViewTooCold.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                */
             };
             textViewCold.Click += delegate
             {
@@ -190,19 +147,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewTooCold.Alpha = 0.5f;
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(16, 84, 86));
-                /*
-                textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
-                textViewCold.SetTextColor(Android.Graphics.Color.White);
-                textViewTooCold.SetTextColor(Android.Graphics.Color.Gray);
 
-                textViewTooHot.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewHot.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Bold);
-                textViewTooCold.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                */
             };
             textViewTooCold.Click += delegate
             {
@@ -215,23 +160,9 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 1f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(36, 116, 169));
+                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(11, 125, 206));
 
-                /*
-                textViewTooHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewHot.SetTextColor(Android.Graphics.Color.Gray);
-                textViewNormal.SetTextColor(Android.Graphics.Color.Gray);
-                textViewCold.SetTextColor(Android.Graphics.Color.Gray);
-                textViewTooCold.SetTextColor(Android.Graphics.Color.White);
-
-                textViewTooHot.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewHot.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewNormal.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewCold.SetTypeface(textViewNormal.Typeface, Android.Graphics.TypefaceStyle.Normal);
-                textViewTooCold.SetTypeface(textViewTooHot.Typeface, Android.Graphics.TypefaceStyle.Bold);
-                */
             };
-
             buttonNext.Click += delegate
             {
                 Log.Debug(TAG, "Next button click");
@@ -242,7 +173,7 @@ namespace CSU_PORTABLE.Droid.UI
                 }
                 else
                 {
-                    Utils.Utils.ShowToast(this.Context, "Please select a Classroom");
+                    Utils.Utils.ShowToast(this.Context, "Please select a Room");
                     //ShowToast("Please select a Classroom");
                 }
             };
@@ -250,7 +181,7 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 Log.Debug(TAG, "Back button click");
                 selectedClass = null;
-                selectedClassId = -1;
+                selectedRoomId = -1;
                 textViewSelectedClass.Text = "";
                 showLayoutSelectClass();
             };
@@ -272,7 +203,7 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 Log.Debug(TAG, "Done button click");
                 selectedClass = null;
-                selectedClassId = -1;
+                selectedRoomId = -1;
                 textViewSelectedClass.Text = "";
                 selectedAnswer = null;
                 showLayoutSelectClass();
@@ -281,15 +212,15 @@ namespace CSU_PORTABLE.Droid.UI
             showLayoutProgress("Loading...");
             mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
 
-            var preferenceHandler = new PreferenceHandler();
-            userId = preferenceHandler.GetUserDetails().UserId;
+            //var preferenceHandler = new PreferenceHandler();
+            userId = PreferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this.Activity);
                 if (isNetworkEnabled)
                 {
-                    getClassList(userId);
-                    getQuestionList(userId);
+                    getRoomList();
+
                 }
                 else
                 {
@@ -312,13 +243,13 @@ namespace CSU_PORTABLE.Droid.UI
         {
             FeedbackModel feedbackModel = new FeedbackModel();
             feedbackModel.QuestionId = selectedQuestionId;
-            feedbackModel.ClassId = selectedClassId;
+            feedbackModel.RoomId = selectedRoomId;
             feedbackModel.AnswerId = selectedAnswerId;
             feedbackModel.FeedbackDesc = selectedAnswer;
 
             Log.Debug(TAG, "Login() " + feedbackModel.ToString());
             showLayoutSubmittingFeedback("Submitting feedback...");
-            var response = await InvokeApi.Invoke(Constants.API_GIVE_FEEDBACK, JsonConvert.SerializeObject(feedbackModel), HttpMethod.Post);
+            var response = await InvokeApi.Invoke(Constants.API_GIVE_FEEDBACK, JsonConvert.SerializeObject(feedbackModel), HttpMethod.Post, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());
@@ -338,12 +269,12 @@ namespace CSU_PORTABLE.Droid.UI
                 GeneralResponseModel response = JsonConvert.DeserializeObject<GeneralResponseModel>(strContent);
                 if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
                 {
-                    Log.Debug(TAG, "Feedback Successful");
+                    Log.Debug(TAG, "Submit Feedback Successful");
                     showLayoutSubmit();
                 }
                 else
                 {
-                    Log.Debug(TAG, "Feedback Failed");
+                    Log.Debug(TAG, "Submit Feedback Failed");
                     showLayoutSelectTemperature();
                     Utils.Utils.ShowToast(this.Context, "Failed to submit feedback, please try again!");
                 }
@@ -450,43 +381,47 @@ namespace CSU_PORTABLE.Droid.UI
             layoutSubmit.Visibility = ViewStates.Gone;
         }
 
-        private async void getClassList(int userId)
+        private async Task getRoomList()
         {
-            Log.Debug(TAG, "getAlertList()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_CLASS_ROOMS + "/" + userId, string.Empty, HttpMethod.Get);
+            Log.Debug(TAG, "getRoomList()");
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ROOMS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());
                 this.Activity.RunOnUiThread(() =>
                 {
-                    getClassListResponse(response);
+                    getRoomListResponse(response);
                 });
             }
         }
 
-        private async void getClassListResponse(HttpResponseMessage restResponse)
+        private async void getRoomListResponse(HttpResponseMessage restResponse)
         {
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 JArray array = JArray.Parse(strContent);
-                classList = array.ToObject<List<ClassRoomModel>>();
-
-                showClasses();
+                classList = array.ToObject<List<RoomModel>>();
+                getQuestionList();
+                //showClasses();
+            }
+            else if (restResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                await Utils.Utils.RefreshToken(this.Context);
             }
             else
             {
-                Log.Debug(TAG, "getAlertListResponse() Failed");
-                Utils.Utils.ShowToast(this.Context, "getAlertListResponse() Failed");
+                Log.Debug(TAG, "getRoomListResponse() Failed");
+                Utils.Utils.ShowToast(this.Context, "getRoomListResponse() Failed");
                 showLayoutInfo();
             }
         }
 
-        private async void getQuestionList(int userId)
+        private async void getQuestionList()
         {
-            Log.Debug(TAG, "getAlertList()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_QUESTION_ANSWERS + "/" + userId, string.Empty, HttpMethod.Get);
+            Log.Debug(TAG, "getQuestionList()");
+            var response = await InvokeApi.Invoke(Constants.API_GET_QUESTION_ANSWERS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());
@@ -499,19 +434,56 @@ namespace CSU_PORTABLE.Droid.UI
 
         private async void getQuestionListResponse(HttpResponseMessage restResponse)
         {
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+            if (restResponse != null && restResponse.StatusCode == HttpStatusCode.OK && restResponse.Content != null)
             {
                 Log.Debug(TAG, restResponse.Content.ToString());
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 JArray array = JArray.Parse(strContent);
                 questionList = array.ToObject<List<QuestionModel>>();
-
+                //questionList.Add(new Models.QuestionModel()
+                //{
+                //    QuestionId = 1,
+                //    QuestionDesc = "How do you feel?",
+                //    Answers = new List<AnswerModel>()
+                //    {
+                //        new AnswerModel()
+                //        {
+                //            AnswerId = 1,
+                //            AnswerDesc = "Very Cold"
+                //        },
+                //        new AnswerModel()
+                //        {
+                //            AnswerId = 2,
+                //            AnswerDesc = "Cold"
+                //        },
+                //        new AnswerModel()
+                //        {
+                //            AnswerId = 3,
+                //            AnswerDesc = "Normal"
+                //        },
+                //        new AnswerModel()
+                //        {
+                //            AnswerId = 4,
+                //            AnswerDesc = "Hot"
+                //        },
+                //         new AnswerModel()
+                //        {
+                //            AnswerId = 5,
+                //            AnswerDesc = "Very Hot"
+                //        }
+                //    }
+                //});
                 showClasses();
+            }
+            else if (restResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                await Utils.Utils.RefreshToken(this.Context);
+                getQuestionList();
             }
             else
             {
-                Log.Debug(TAG, "getAlertListResponse() Failed");
-                Utils.Utils.ShowToast(this.Context, "getAlertListResponse() Failed");
+                Log.Debug(TAG, "getQuestionListResponse() Failed");
+                Utils.Utils.ShowToast(this.Context, "getQuestionListResponse() Failed");
                 showLayoutInfo();
             }
         }
@@ -540,12 +512,9 @@ namespace CSU_PORTABLE.Droid.UI
         void OnItemClick(object sender, int position)
         {
             int num = position + 1;
-            selectedClass = classList[position].ClassDescription;
+            selectedClass = classList[position].RoomName;
             textViewSelectedClass.Text = selectedClass;
-            selectedClassId = classList[position].ClassId;
-            //ShowToast("You are in " + selectedClass);
+            selectedRoomId = classList[position].RoomId;
         }
-
-       
     }
 }

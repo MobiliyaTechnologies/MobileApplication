@@ -68,8 +68,8 @@ namespace CSU_PORTABLE.Droid.UI
                 vh.textViewAck.Click += delegate
                 {
 
-                    var preferenceHandler = new PreferenceHandler();
-                    UserDetails userDetails = preferenceHandler.GetUserDetails();
+                    //var preferenceHandler = new PreferenceHandler();
+                    UserDetails userDetails = PreferenceHandler.GetUserDetails();
                     int userId = userDetails.UserId;
 
                     AlertAcknowledgeModel ackModel = new AlertAcknowledgeModel();

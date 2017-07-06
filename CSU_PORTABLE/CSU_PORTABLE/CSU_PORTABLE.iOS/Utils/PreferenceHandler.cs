@@ -22,7 +22,37 @@ namespace CSU_PORTABLE.iOS.Utils
         string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
         string preferenceToken = "CSUPREF_token";
         string preferenceAccessCode = "CSUPREF_accesscode";
+        string preferenceConfig = "CSUPREF_config";
+        string preferenceDomainKey = "CSUPREF_domainkey";
 
+
+        public void SetDomainKey(string domainKey)
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            plist.SetString(domainKey, preferenceDomainKey);
+            plist.Synchronize();
+        }
+
+
+        public string GetDomainKey()
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            return plist.StringForKey(preferenceDomainKey);
+        }
+
+        public void SetConfig(string Config)
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            plist.SetString(Config, preferenceConfig);
+            plist.Synchronize();
+        }
+
+
+        public string GetConfig()
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            return plist.StringForKey(preferenceConfig);
+        }
 
         public void SetAccessCode(string AccessCode)
         {

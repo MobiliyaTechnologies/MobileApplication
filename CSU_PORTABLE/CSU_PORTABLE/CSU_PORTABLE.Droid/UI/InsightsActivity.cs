@@ -30,7 +30,7 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutProgress;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
         LinearLayout LayoutInsightData;
         TextView textViewConsumed;
         TextView textViewExpected;
@@ -39,7 +39,7 @@ namespace CSU_PORTABLE.Droid.UI
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            preferenceHandler = new PreferenceHandler();
+            //preferenceHandler = new PreferenceHandler();
             SetContentView(Resource.Layout.insights);
 
             textViewLoading = FindViewById<TextView>(Resource.Id.textViewLoading);
@@ -51,8 +51,8 @@ namespace CSU_PORTABLE.Droid.UI
             textViewConsumed = FindViewById<TextView>(Resource.Id.tv_top_consumed);
             textViewExpected = FindViewById<TextView>(Resource.Id.tv_top_expected);
             textViewOverused = FindViewById<TextView>(Resource.Id.tv_top_overused);
-           
-            int userId = preferenceHandler.GetUserDetails().UserId;
+
+            int userId = PreferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
                 bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(this);
@@ -82,7 +82,7 @@ namespace CSU_PORTABLE.Droid.UI
         private async void GetRecommendationsList(int userId)
         {
             Log.Debug(TAG, "getAlertList()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
@@ -107,7 +107,7 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-                Log.Debug(TAG, "getAlertListResponse() Failed");
+                Log.Debug(TAG, "GetRecommendationsListResponse() Failed");
                 Utils.Utils.ShowToast(this, "Please try again later !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
@@ -141,7 +141,7 @@ namespace CSU_PORTABLE.Droid.UI
         private async void GetInsights(int userId)
         {
             Log.Debug(TAG, "GetInsights()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());
@@ -176,26 +176,13 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-
                 LayoutInsightData.Visibility = ViewStates.Visible;
-
-                textViewConsumed.Text = "" + response.ConsumptionValue;
-                textViewExpected.Text = "" + response.PredictedValue;
-                float ovr = response.ConsumptionValue - response.PredictedValue;
-                //textViewOverused.Text = "" + ((ovr < 0 ? 0 : ovr));
-                textViewOverused.Text = ovr + "";
+                textViewConsumed.Text = Convert.ToString(Math.Round((response.ConsumptionValue / 1000), 2)) + " K";
+                textViewExpected.Text = Convert.ToString(Math.Round((response.PredictedValue / 1000), 2)) + " K";
+                textViewOverused.Text = Convert.ToString(Math.Round((response.ConsumptionValue - response.PredictedValue) / 1000, 2));
             }
         }
 
-        //private void ShowToast(string message)
-        //{
-        //    if (toast != null)
-        //    {
-        //        toast.Cancel();
-        //    }
-        //    toast = Toast.MakeText(this, message, ToastLength.Short);
-        //    toast.Show();
-        //}
 
     }
 }

@@ -60,24 +60,24 @@ namespace CSU_PORTABLE.iOS
 
             //GenerateInsightsHeader();
 
-            double mapHeight = NavigationController.NavigationBar.Bounds.Bottom + 160;
-            //map = new MKMapView(UIScreen.MainScreen.Bounds);
-            map = new MKMapView(new CGRect(0, mapHeight, View.Bounds.Width, View.Bounds.Height - mapHeight));
-            map.MapType = MKMapType.Standard; //road map    
-            map.ZoomEnabled = true;
-            map.ScrollEnabled = true;
+            //double mapHeight = NavigationController.NavigationBar.Bounds.Bottom + 160;
+            ////map = new MKMapView(UIScreen.MainScreen.Bounds);
+            //map = new MKMapView(new CGRect(0, mapHeight, View.Bounds.Width, View.Bounds.Height - mapHeight));
+            //map.MapType = MKMapType.Standard; //road map    
+            //map.ZoomEnabled = true;
+            //map.ScrollEnabled = true;
 
 
-            CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(userdetail.UserCampus[0].Latitude, userdetail.UserCampus[0].Longitude);
+            //CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(userdetail.UserCampus[0].Latitude, userdetail.UserCampus[0].Longitude);
 
-            MKCoordinateSpan span = new MKCoordinateSpan(0.008, 0.008);
-            map.Region = new MKCoordinateRegion(coordinate, span);
+            //MKCoordinateSpan span = new MKCoordinateSpan(0.008, 0.008);
+            //map.Region = new MKCoordinateRegion(coordinate, span);
 
-            var mapViewDelegate = new MyMapDelegate();
-            mapViewDelegate.AnnotationTapped += TheMapView_OnAnnotationTapped;
-            map.Delegate = mapViewDelegate;
+            //var mapViewDelegate = new MyMapDelegate();
+            //mapViewDelegate.AnnotationTapped += TheMapView_OnAnnotationTapped;
+            //map.Delegate = mapViewDelegate;
 
-            View.AddSubviews(map);
+            //View.AddSubviews(map);
 
 
             //var preferenceHandler = new PreferenceHandler();

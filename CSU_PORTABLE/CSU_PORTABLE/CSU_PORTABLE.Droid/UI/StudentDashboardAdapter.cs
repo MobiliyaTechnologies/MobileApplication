@@ -12,12 +12,12 @@ namespace CSU_PORTABLE.Droid.UI
     class StudentDashboardAdapter : RecyclerView.Adapter
     {
         const string TAG = "StudentDashboardAdapter";
-        public List<ClassRoomModel> mClassModels;
+        public List<RoomModel> mRoomModels;
         public event EventHandler<int> ItemClick;
 
-        public StudentDashboardAdapter(List<ClassRoomModel> classModels)
+        public StudentDashboardAdapter(List<RoomModel> roomModels)
         {
-            mClassModels = classModels;
+            mRoomModels = roomModels;
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -31,14 +31,14 @@ namespace CSU_PORTABLE.Droid.UI
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             ClassViewHolder vh = holder as ClassViewHolder;
-            vh.textViewClass.Text = mClassModels[position].ClassDescription;
+            vh.textViewClass.Text = mRoomModels[position].RoomName;
             //vh.textViewBuilding.Text = mClassModels[position].Building;
             //vh.textViewBrackerDetail.Text = mClassModels[position].Breaker_details;
         }
 
         public override int ItemCount
         {
-            get { return mClassModels.Count(); }
+            get { return mRoomModels.Count(); }
         }
 
         void OnClick(int position)

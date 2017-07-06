@@ -13,6 +13,7 @@ using System.Net.Http;
 using Android.Webkit;
 using static CSU_PORTABLE.Utils.Constants;
 using Android.Content.PM;
+using Android.Net;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -26,16 +27,15 @@ namespace CSU_PORTABLE.Droid.UI
         private Button buttonSignUp;
         private ProgressBar progressBar;
         private TextView tvForgotPassword;
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.Login_view);
-            //etUsername = FindViewById<EditText>(Resource.Id.editTextUsername);
-            //etPassword = FindViewById<EditText>(Resource.Id.editTextPassword);
-            preferenceHandler = new Utils.PreferenceHandler();
-            if (string.IsNullOrEmpty(preferenceHandler.GetConfig()))
+
+            //preferenceHandler = new Utils.PreferenceHandler();
+            if (string.IsNullOrEmpty(PreferenceHandler.GetConfig()))
             {
                 StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
                 Finish();
@@ -45,33 +45,60 @@ namespace CSU_PORTABLE.Droid.UI
             buttonSignUp = FindViewById<Button>(Resource.Id.SignUpButton);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
             tvForgotPassword = FindViewById<TextView>(Resource.Id.textViewForgotPassword);
-
             progressBar.Visibility = ViewStates.Gone;
-
-            // Delete Existing User Details from cache
-            CookieManager.Instance.RemoveAllCookie();
             tvForgotPassword.Click += delegate
             {
                 Log.Debug(TAG, "ForgotPassword()");
-                StartActivity(new Intent(Application.Context, typeof(ForgotPasswordActivity)));
+                if (!Utils.Utils.IsNetworkEnabled(this))
+                {
+                    RunOnUiThread(() =>
+                    {
+                        Utils.Utils.ShowDialog(this, "Internet not available.");
+                    });
+                }
+                else
+                {
+                    StartActivity(new Intent(Application.Context, typeof(ForgotPasswordActivity)));
+                }
             };
             buttonSignIn.Click += delegate
             {
                 Log.Debug(TAG, "Login()");
-                Intent intent = new Intent(Application.Context, typeof(LoginNewActivity));
-                intent.PutExtra(LoginNewActivity.KEY_SHOW_PAGE, (int)SignInType.SIGN_IN);
-                StartActivity(intent);
-                Finish();
+                if (!Utils.Utils.IsNetworkEnabled(this))
+                {
+                    RunOnUiThread(() =>
+                    {
+                        Utils.Utils.ShowDialog(this, "Internet not available.");
+                    });
+                }
+                else
+                {
+                    Intent intent = new Intent(Application.Context, typeof(LoginNewActivity));
+                    intent.PutExtra(LoginNewActivity.KEY_SHOW_PAGE, (int)SignInType.SIGN_IN);
+                    StartActivity(intent);
+                    Finish();
+                }
             };
             buttonSignUp.Click += ButtonSignUp_Click;
         }
 
         private void ButtonSignUp_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent(Application.Context, typeof(LoginNewActivity));
-            intent.PutExtra(LoginNewActivity.KEY_SHOW_PAGE, (int)SignInType.SIGN_UP);
-            StartActivity(intent);
-            Finish();
+            if (!Utils.Utils.IsNetworkEnabled(this))
+            {
+                RunOnUiThread(() =>
+                {
+                    Utils.Utils.ShowDialog(this, "Internet not available.");
+                });
+
+            }
+            else
+            {
+                Intent intent = new Intent(Application.Context, typeof(LoginNewActivity));
+                intent.PutExtra(LoginNewActivity.KEY_SHOW_PAGE, (int)SignInType.SIGN_UP);
+                StartActivity(intent);
+                Finish();
+            }
         }
 
         #region "Old Text"

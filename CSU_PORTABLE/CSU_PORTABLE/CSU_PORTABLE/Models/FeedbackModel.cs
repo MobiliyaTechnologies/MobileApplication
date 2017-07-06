@@ -9,7 +9,7 @@ namespace CSU_PORTABLE.Models
     public class FeedbackModel
     {
 
-        public int ClassId { get; set; }
+        public int RoomId { get; set; }
         public int QuestionId { get; set; }
         public int AnswerId { get; set; }
         public string FeedbackDesc { get; set; }
