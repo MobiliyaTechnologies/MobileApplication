@@ -87,9 +87,9 @@ namespace CSU_PORTABLE.Droid.UI
                 view.Context.StartActivity(intent);
 
                 string code = Common.FunGetValuefromQueryString(url, "code");
-                var preferenceHandler = new PreferenceHandler();
-                preferenceHandler.SetAccessCode(code);
-                preferenceHandler.setLoggedIn(true);
+                //var preferenceHandler = new PreferenceHandler();
+                PreferenceHandler.SetAccessCode(code);
+                PreferenceHandler.setLoggedIn(true);
             }
         }
     }

@@ -12,8 +12,9 @@ namespace CSU_PORTABLE.iOS
     public partial class ViewController : BaseController
     {
         LoadingOverlay loadingOverlay;
-        UITextField TextFieldUsername, TextFieldPassword;
+        //UITextField TextFieldUsername, TextFieldPassword;
         UIButton ButtonLogin;
+        private UIButton ButtonSignUp;
 
         // the sidebar controller for the app
         //public SidebarNavigation.SidebarController SidebarController { get; private set; }
@@ -27,7 +28,6 @@ namespace CSU_PORTABLE.iOS
         public override void ViewWillAppear(bool animated)
         {
             base.ViewWillAppear(animated);
-            NavigationController.NavigationBarHidden = true;
         }
 
         public override void ViewDidLoad()
@@ -35,11 +35,6 @@ namespace CSU_PORTABLE.iOS
             base.ViewDidLoad();
             this.View.BackgroundColor = UIColor.FromRGB(30, 77, 43);
             this.NavigationController.NavigationBarHidden = true;
-            //UIApplication.SharedApplication.SetStatusBarStyle(UIStatusBarStyle.LightContent, true);
-            //this.NavigationController.NavigationBar.TintColor = UIColor.Clear;
-            //this.NavigationController.NavigationBar.BarTintColor = UIColor.Clear;
-            //this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackOpaque;
-
             this.Title = string.Empty;
 
             NavigationItem.SetRightBarButtonItem(
@@ -76,91 +71,19 @@ namespace CSU_PORTABLE.iOS
             UIImageView imgLogo = new UIImageView()
             {
                 Frame = new CGRect((View.Bounds.Width / 2) - 50, 120, 100, 100),
-                Image = UIImage.FromBundle("CSU_logo.png")
+                Image = UIImage.FromBundle("logo.png")
             };
 
-            UIImageView imgEmail = new UIImageView()
-            {
-                Frame = new CGRect((View.Bounds.Width / 2) - 120, 255, 20, 20),
-                Image = UIImage.FromBundle("Mail_Icon_Green.png")
-            };
-
-            UIImageView imgPassword = new UIImageView()
-            {
-                Frame = new CGRect((View.Bounds.Width / 2) - 120, 305, 20, 20),
-                Image = UIImage.FromBundle("Lock_Icon_Green.png")
-            };
-
-
-
-            UIView paddingView = new UIView(new CGRect(5, 5, 5, 20));
-            TextFieldUsername = new UITextField()
-            {
-                Font = UIFont.FromName("Helvetica", 15f),
-                TextColor = UIColor.FromRGB(30, 77, 43),
-                BackgroundColor = UIColor.Clear,
-                Frame = new CGRect((View.Bounds.Width / 2) - 80, 250, 200, 30),
-                Placeholder = "Enter Email Address",
-                TextAlignment = UITextAlignment.Left,
-                AutocorrectionType = UITextAutocorrectionType.No,
-                LeftView = paddingView,
-                LeftViewMode = UITextFieldViewMode.Always,
-                BorderStyle = UITextBorderStyle.None,
-                TintColor = UIColor.FromRGB(30, 77, 43)
-            };
-
-            UIView bottomLineEmail = new UIView(new CGRect((View.Bounds.Width / 2) - 120, 285, 240, 1));
-            bottomLineEmail.BackgroundColor = UIColor.FromRGB(30, 77, 43);
-
-            UIView paddingViewPassword = new UIView(new CGRect(5, 5, 5, 20));
-            UIView bottomLinePwd = new UIView(new CGRect((View.Bounds.Width / 2) - 120, 335, 240, 1));
-            bottomLinePwd.BackgroundColor = UIColor.FromRGB(30, 77, 43);
-
-            TextFieldPassword = new UITextField()
-            {
-                Font = UIFont.FromName("Helvetica", 15f),
-                TextColor = UIColor.FromRGB(30, 77, 43),
-                BackgroundColor = UIColor.Clear,
-                Frame = new CGRect((View.Bounds.Width / 2) - 80, 300, 200, 30),
-                Placeholder = "Enter Password",
-                TextAlignment = UITextAlignment.Left,
-                SecureTextEntry = true,
-                AutocorrectionType = UITextAutocorrectionType.No,
-                LeftView = paddingViewPassword,
-                LeftViewMode = UITextFieldViewMode.Always,
-                BorderStyle = UITextBorderStyle.None,
-                TintColor = UIColor.FromRGB(30, 77, 43)
-            };
-
-
-            //TextFieldUsername.Text = "sss@123.com";
-            //TextFieldPassword.Text = "sss@123";
-
-            TextFieldUsername.Text = "krunal@gmail.com";
-            TextFieldPassword.Text = "1111@111";
-
-            TextFieldUsername.BecomeFirstResponder();
-
-            TextFieldUsername.ShouldReturn = delegate
-            {
-                // Changed this slightly to move the text entry to the next field.
-                TextFieldPassword.BecomeFirstResponder();
-                return true;
-            };
-
-            TextFieldPassword.ShouldReturn = delegate
-            {
-                TextFieldPassword.ResignFirstResponder();
-                return true;
-            };
+            UIView topLine = new UIView(new CGRect(25, 170, View.Bounds.Width - 50, 10));
+            topLine.BackgroundColor = UIColor.FromRGB(0, 114, 198);
 
             ButtonLogin = new UIButton(UIButtonType.Custom);
-            ButtonLogin.SetTitle("LOGIN", UIControlState.Normal);
+            ButtonLogin.SetTitle("SIGN IN", UIControlState.Normal);
             ButtonLogin.Font = UIFont.FromName("Futura-Medium", 15f);
             ButtonLogin.SetTitleColor(UIColor.White, UIControlState.Normal);
             ButtonLogin.SetTitleColor(UIColor.White, UIControlState.Focused);
-            ButtonLogin.Frame = new CGRect((View.Bounds.Width / 2) - 120, 350, 240, 30);
-            ButtonLogin.BackgroundColor = UIColor.FromRGB(30, 77, 43);
+            ButtonLogin.Frame = new CGRect((View.Bounds.Width / 2) - 120, 250, 240, 50);
+            ButtonLogin.BackgroundColor = UIColor.FromRGB(0, 114, 198);
             ButtonLogin.TouchUpInside += delegate
              {
                  // Added for showing loading screen
@@ -168,33 +91,34 @@ namespace CSU_PORTABLE.iOS
                  // show the loading overlay on the UI thread using the correct orientation sizing
                  loadingOverlay = new LoadingOverlay(bounds);
                  View.Add(loadingOverlay);
-                 string username = TextFieldUsername.Text;
-                 string password = TextFieldPassword.Text;
-
-                 if (username != null && username.Length > 1 && password != null && password.Length > 1)
-                 {
-                     //buttonLogin.Visibility = ViewStates.Gone;
-                     //progressBar.Visibility = ViewStates.Visible;
-                     //MessageLabel.Text = "Logging in...";
-                     ShowLogin();
-                     //Login(new LoginModel(username, password));
-                 }
-                 else
-                 {
-                     IOSUtil.ShowMessage("Enter valid email and password", loadingOverlay, this);
-                 }
+                 ShowLogin();
              };
+
+            ButtonSignUp = new UIButton(UIButtonType.Custom);
+            ButtonSignUp.SetTitle("SIGN UP", UIControlState.Normal);
+            ButtonSignUp.Font = UIFont.FromName("Futura-Medium", 15f);
+            ButtonSignUp.SetTitleColor(UIColor.White, UIControlState.Normal);
+            ButtonSignUp.SetTitleColor(UIColor.White, UIControlState.Focused);
+            ButtonSignUp.Frame = new CGRect((View.Bounds.Width / 2) - 120, 330, 240, 50);
+            ButtonSignUp.BackgroundColor = UIColor.FromRGB(0, 114, 198);
+            ButtonSignUp.TouchUpInside += ButtonSignUp_TouchUpInside;
+
             UIButton btnForgotPassword = new UIButton(UIButtonType.Custom);
             btnForgotPassword.SetTitle("Forgot password", UIControlState.Normal);
             btnForgotPassword.Font = UIFont.FromName("Futura-Medium", 13f);
             btnForgotPassword.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
             btnForgotPassword.SetTitleColor(UIColor.White, UIControlState.Selected);
-            btnForgotPassword.Frame = new CGRect((View.Bounds.Width / 2) - 120, 400, 240, 20);
+            btnForgotPassword.Frame = new CGRect((View.Bounds.Width / 2) - 120, 410, 240, 50);
             btnForgotPassword.BackgroundColor = UIColor.LightTextColor;
             btnForgotPassword.TouchUpInside += BtnForgotPassword_TouchUpInside;
-            View.AddSubviews(imgLogin, viewWhiteBG, imgLogo, TextFieldUsername, TextFieldPassword, bottomLinePwd, bottomLineEmail, ButtonLogin, btnForgotPassword, imgEmail, imgPassword);
+            View.AddSubviews(imgLogin, viewWhiteBG, topLine, imgLogo, ButtonLogin, ButtonSignUp, btnForgotPassword);
 
 
+        }
+
+        private void ButtonSignUp_TouchUpInside(object sender, EventArgs e)
+        {
+            ShowLogin();
         }
 
         private void BtnForgotPassword_TouchUpInside(object sender, EventArgs e)

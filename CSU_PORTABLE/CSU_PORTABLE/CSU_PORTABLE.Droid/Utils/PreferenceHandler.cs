@@ -4,22 +4,22 @@ using CSU_PORTABLE.Utils;
 
 namespace CSU_PORTABLE.Droid.Utils
 {
-    class PreferenceHandler
+    public static class PreferenceHandler
     {
-        string preferenceName = "CSUPREF";
-        string preferenceIsLoggedIn = "CSUPREF_isLoggedIn";
-        string preferenceEmail = "CSUPREF_email";
-        string preferenceFirstName = "CSUPREF_first_name";
-        string preferenceLastName = "CSUPREF_last_name";
-        string preferenceUserId = "CSUPREF_user_id";
-        string preferenceRoleId = "CSUPREF_role_id";
-        string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
-        string preferenceToken = "CSUPREF_token";
-        string preferenceAccessCode = "CSUPREF_accesscode";
-        string preferenceConfig = "CSUPREF_config";
-        string preferenceDomainKey = "CSUPREF_domainkey";
+        static string preferenceName = "CSUPREF";
+        static string preferenceIsLoggedIn = "CSUPREF_isLoggedIn";
+        static string preferenceEmail = "CSUPREF_email";
+        static string preferenceFirstName = "CSUPREF_first_name";
+        static string preferenceLastName = "CSUPREF_last_name";
+        static string preferenceUserId = "CSUPREF_user_id";
+        static string preferenceRoleId = "CSUPREF_role_id";
+        static string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
+        static string preferenceToken = "CSUPREF_token";
+        static string preferenceAccessCode = "CSUPREF_accesscode";
+        static string preferenceConfig = "CSUPREF_config";
+        static string preferenceDomainKey = "CSUPREF_domainkey";
 
-        public bool SetDomainKey(string domainKey)
+        public static bool SetDomainKey(string domainKey)
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             var contextEdit = contextPref.Edit();
@@ -28,14 +28,14 @@ namespace CSU_PORTABLE.Droid.Utils
         }
 
 
-        public string GetDomainKey()
+        public static string GetDomainKey()
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetString(preferenceDomainKey, string.Empty);
         }
 
 
-        public bool SetConfig(string Config)
+        public static bool SetConfig(string Config)
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             var contextEdit = contextPref.Edit();
@@ -44,13 +44,13 @@ namespace CSU_PORTABLE.Droid.Utils
         }
 
 
-        public string GetConfig()
+        public static string GetConfig()
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetString(preferenceConfig, string.Empty);
         }
 
-        public bool SetAccessCode(string AccessCode)
+        public static bool SetAccessCode(string AccessCode)
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             var contextEdit = contextPref.Edit();
@@ -59,13 +59,13 @@ namespace CSU_PORTABLE.Droid.Utils
         }
 
 
-        public string GetAccessCode()
+        public static string GetAccessCode()
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetString(preferenceAccessCode, string.Empty);
         }
 
-        public bool SetToken(string Token)
+        public static bool SetToken(string Token)
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             var contextEdit = contextPref.Edit();
@@ -74,13 +74,13 @@ namespace CSU_PORTABLE.Droid.Utils
         }
 
 
-        public string GetToken()
+        public static string GetToken()
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetString(preferenceToken, string.Empty);
         }
 
-        public bool setLoggedIn(bool value)
+        public static bool setLoggedIn(bool value)
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             var contextEdit = contextPref.Edit();
@@ -88,13 +88,13 @@ namespace CSU_PORTABLE.Droid.Utils
             return contextEdit.Commit();
         }
 
-        public bool IsLoggedIn()
+        public static bool IsLoggedIn()
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetBoolean(preferenceIsLoggedIn, false);
         }
 
-        public bool setUnreadNotificationCount(int value)
+        public static bool setUnreadNotificationCount(int value)
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             var contextEdit = contextPref.Edit();
@@ -102,13 +102,13 @@ namespace CSU_PORTABLE.Droid.Utils
             return contextEdit.Commit();
         }
 
-        public int getUnreadNotificationCount()
+        public static int getUnreadNotificationCount()
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetInt(PreferenceUnreadNotificationCount, 0);
         }
 
-        public bool SaveUserDetails(UserDetails loginResponse)
+        public static bool SaveUserDetails(UserDetails loginResponse)
         {
             bool resp = false;
             if (loginResponse != null)
@@ -126,7 +126,7 @@ namespace CSU_PORTABLE.Droid.Utils
             return resp;
         }
 
-        public UserDetails GetUserDetails()
+        public static UserDetails GetUserDetails()
         {
             UserDetails userDetails = new UserDetails();
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);

@@ -6,6 +6,8 @@ using UIKit;
 using Foundation;
 using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
+using CSU_PORTABLE.Utils;
+using Newtonsoft.Json;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -16,7 +18,7 @@ namespace CSU_PORTABLE.iOS
     {
         // the sidebar controller for the app
         public SidebarNavigation.SidebarController SidebarController { get; private set; }
-
+        PreferenceHandler preferenceHandler;
         // the navigation controller
         public NavController NavController { get; private set; }
 
@@ -49,36 +51,57 @@ namespace CSU_PORTABLE.iOS
 
             base.ViewDidLoad();
 
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
+            preferenceHandler = new PreferenceHandler();
             var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
 
             // create a slideout navigation controller with the top navigation controller and the menu view controller
             NavController = new NavController();
             Boolean IsLogged = preferenceHandler.IsLoggedIn();
             UserDetails userDetail = preferenceHandler.GetUserDetails();
-            if (IsLogged)
-            {
-                if (userDetail.RoleId == 2)
-                {
-                    //var ClassRoomController = (ClassRoomController)Storyboard.InstantiateViewController("ClassRoomController");
-                    //NavController.PushViewController(ClassRoomController, false);
 
-                    var FeedbackViewController = Storyboard.InstantiateViewController("FeedbackViewController") as FeedbackViewController;
-                    NavController.PushViewController(FeedbackViewController, false);
-                }
-                else
-                {
-                    var MapViewController = (MapViewController)Storyboard.InstantiateViewController("MapViewController");
-                    NavController.PushViewController(MapViewController, false);
-                }
+            if (string.IsNullOrEmpty(preferenceHandler.GetDomainKey()))
+            {
+                var ConfigurationController = Storyboard.InstantiateViewController("ConfigurationController") as ConfigurationController;
+                NavController.PushViewController(ConfigurationController, true);
             }
             else
             {
-                var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
-                NavController.PushViewController(ViewController, false);
+                InvokeApi.SetDomainUrl(preferenceHandler.GetDomainKey());
+                if (string.IsNullOrEmpty(preferenceHandler.GetConfig()))
+                {
+                    var ConfigurationController = Storyboard.InstantiateViewController("ConfigurationController") as ConfigurationController;
+                    NavController.PushViewController(ConfigurationController, true);
+                }
+                else
+                {
+                    var config = JsonConvert.DeserializeObject<B2CConfiguration>(preferenceHandler.GetConfig());
+                    B2CConfigManager.GetInstance().Initialize(config);
+                    if (IsLogged)
+                    {
+                        if (userDetail.RoleId == 2)
+                        {
+                            //var ClassRoomController = (ClassRoomController)Storyboard.InstantiateViewController("ClassRoomController");
+                            //NavController.PushViewController(ClassRoomController, false);
 
+                            var FeedbackViewController = Storyboard.InstantiateViewController("FeedbackViewController") as FeedbackViewController;
+                            NavController.PushViewController(FeedbackViewController, false);
+                        }
+                        else
+                        {
+                            var MapViewController = (MapViewController)Storyboard.InstantiateViewController("MapViewController");
+                            NavController.PushViewController(MapViewController, false);
+                        }
+                    }
+                    else
+                    {
+                        var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
+                        NavController.PushViewController(ViewController, false);
+
+                    }
+
+
+                }
             }
-
             SidebarController = new SidebarNavigation.SidebarController(this, NavController, menuController);
             SidebarController.MenuWidth = (IsLogged ? 250 : 0);
             SidebarController.ReopenOnRotate = false;

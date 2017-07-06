@@ -27,15 +27,15 @@ namespace CSU_PORTABLE.Droid.UI
         private Button buttonSignUp;
         private ProgressBar progressBar;
         private TextView tvForgotPassword;
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.Login_view);
 
-            preferenceHandler = new Utils.PreferenceHandler();
-            if (string.IsNullOrEmpty(preferenceHandler.GetConfig()))
+            //preferenceHandler = new Utils.PreferenceHandler();
+            if (string.IsNullOrEmpty(PreferenceHandler.GetConfig()))
             {
                 StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
                 Finish();

@@ -23,7 +23,7 @@ namespace CSU_PORTABLE.Droid.UI
     {
         private EditText textConfigURL;
         public Button SubmitButton { get; private set; }
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -32,7 +32,7 @@ namespace CSU_PORTABLE.Droid.UI
             textConfigURL = FindViewById<EditText>(Resource.Id.textConfigURL);
             SubmitButton = FindViewById<Button>(Resource.Id.SubmitButton);
 
-            preferenceHandler = new PreferenceHandler();
+            //preferenceHandler = new PreferenceHandler();
             SubmitButton.Click += SubmitButton_Click;
             // Create your application here
         }
@@ -46,7 +46,7 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 string domain = textConfigURL.Text;
-                preferenceHandler.SetDomainKey(domain);
+                PreferenceHandler.SetDomainKey(domain);
                 InvokeApi.SetDomainUrl(domain);
                 ProgressDialog dialog = new ProgressDialog(this);
                 dialog.SetTitle("Loading...");
@@ -67,7 +67,7 @@ namespace CSU_PORTABLE.Droid.UI
                     else
                     {
                         B2CConfigManager.GetInstance().Initialize(config);
-                        preferenceHandler.SetConfig(strContent);
+                        PreferenceHandler.SetConfig(strContent);
                         Intent intent = new Intent(Application.Context, typeof(LoginActivity));
                         StartActivity(intent);
                         Finish();

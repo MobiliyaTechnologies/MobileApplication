@@ -83,6 +83,11 @@ namespace CSU_PORTABLE.Models
             return tokenUrl;
         }
 
+        public string GetChangePasswordURL()
+        {
+            return string.Format(configuration.B2cChangePasswordURL, configuration.B2cTenant, configuration.B2cChangePasswordPolicy, configuration.B2cClientId, configuration.B2cRedirectUrl);
+        }
+
 
     }
 

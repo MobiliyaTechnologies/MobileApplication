@@ -23,12 +23,12 @@ namespace CSU_PORTABLE.Droid.UI
     class SplashActivity : Activity
     {
         static readonly string TAG = "X:" + typeof(SplashActivity).Name;
-
+        //PreferenceHandler prefHandler;
         public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
         {
             base.OnCreate(savedInstanceState, persistentState);
             Log.Debug(TAG, "SplashActivity.OnCreate");
-
+            //prefHandler = new PreferenceHandler();
         }
 
         protected override void OnResume()
@@ -45,28 +45,27 @@ namespace CSU_PORTABLE.Droid.UI
             startupWork.ContinueWith(t =>
             {
                 Log.Debug(TAG, "Work is finished.");
-
-                PreferenceHandler prefHandler = new PreferenceHandler();
-                prefHandler = new Utils.PreferenceHandler();
-                if (string.IsNullOrEmpty(prefHandler.GetDomainKey()))
+               
+                if (string.IsNullOrEmpty(PreferenceHandler.GetDomainKey()))
                 {
                     StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
                     Finish();
                 }
                 else
                 {
-                    InvokeApi.SetDomainUrl(prefHandler.GetDomainKey());
-                    if (string.IsNullOrEmpty(prefHandler.GetConfig()))
+                    InvokeApi.SetDomainUrl(PreferenceHandler.GetDomainKey());
+                    if (string.IsNullOrEmpty(PreferenceHandler.GetConfig()))
                     {
                         StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
                         Finish();
                     }
                     else
                     {
-                        var config = JsonConvert.DeserializeObject<B2CConfiguration>(prefHandler.GetConfig());
+                        var config = JsonConvert.DeserializeObject<B2CConfiguration>(PreferenceHandler.GetConfig());
                         B2CConfigManager.GetInstance().Initialize(config);
-                        if (prefHandler.IsLoggedIn())
+                        if (PreferenceHandler.IsLoggedIn())
                         {
+                            Utils.Utils.RefreshToken(null);
                             Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
                             intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
                             StartActivity(intent);

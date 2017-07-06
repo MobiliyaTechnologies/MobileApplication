@@ -3,256 +3,256 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1a5111">
-    <LinearLayout
-        android:id="@+id/layout_progress"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_trans_dark"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:gravity="center">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/textView_progressMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loading..."
-            android:textColor="#ffffff"
-            android:textSize="30sp"
-            android:gravity="center" />
-    </LinearLayout>
+    >
+  <LinearLayout
+      android:id="@+id/layout_progress"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/black_trans_dark"
+      android:orientation="vertical"
+      android:visibility="gone"
+      android:gravity="center">
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <TextView
-        android:id="@+id/textViewInfo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="No records available !"
-        android:textSize="30sp"
+        android:id="@+id/textView_progressMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading..."
         android:textColor="#ffffff"
-        android:visibility="gone"
+        android:textSize="30sp"
         android:gravity="center" />
-    <LinearLayout
-        android:id="@+id/layout_select_classroom"
-        android:orientation="vertical"
+  </LinearLayout>
+  <TextView
+      android:id="@+id/textViewInfo"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:text="No records available !"
+      android:textSize="30sp"
+      android:textColor="#dfdfdf"
+      android:visibility="gone"
+      android:gravity="center" />
+  <LinearLayout
+      android:id="@+id/layout_select_classroom"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:padding="20dp"
+      android:visibility="gone"
+      android:background="#006699">
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Where are you right now?"
+        android:textSize="18sp"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:gravity="center" />
+    <TextView
+        android:id="@+id/textViewSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Let us know your exact location within the Premise to locate."
+        android:textSize="18sp"
+        android:textColor="#ffffff"
+        android:textStyle="normal"
+        android:layout_margin="20dp"
+        android:gravity="center" />
+    <TextView
+        android:id="@+id/textView_selectedClass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="13sp"
+        android:textColor="#ffffff"
+        android:textStyle="normal"
+        android:gravity="center" />
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp"
-        android:visibility="gone"
-        android:background="#1a5111">
-        <TextView
-            android:id="@+id/textViewTitle"
-            android:layout_width="match_parent"
+        android:layout_marginTop="20dp">
+      <ImageView
+          android:id="@+id/buttonNext"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          android:layout_margin="25dp"
+          android:background="@drawable/next_button_white" />
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/recyclerView"
+          android:scrollbars="vertical"
+          android:visibility="visible"
+          android:layout_centerHorizontal="true"
+          android:layout_above="@id/buttonNext"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent" />
+    </RelativeLayout>
+  </LinearLayout>
+  <LinearLayout
+      android:id="@+id/layout_select_temperature"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:padding="20dp"
+      android:visibility="gone"
+      android:background="#006699">
+    <TextView
+        android:id="@+id/textViewQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How\'s the temperature right now?"
+        android:textSize="18sp"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:layout_margin="20dp"
+        android:gravity="center" />
+    <TextView
+        android:id="@+id/textViewQuestionDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Let us know how do you feel about the temperature where you are now."
+        android:textSize="18sp"
+        android:textColor="#ffffff"
+        android:textStyle="normal"
+        android:layout_margin="20dp"
+        android:gravity="center" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+      <LinearLayout
+          android:id="@+id/layout_buttonSubmit"
+          android:orientation="horizontal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true">
+        <ImageView
+            android:id="@+id/buttonBack"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Where are you right now?"
-            android:textSize="18sp"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:gravity="center" />
-        <TextView
-            android:id="@+id/textViewSubtitle"
-            android:layout_width="match_parent"
+            android:layout_margin="25dp"
+            android:background="@drawable/back_button_white" />
+        <ImageView
+            android:id="@+id/buttonSubmit"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Let us know your exact location within the university campus to locate."
-            android:textSize="18sp"
-            android:textColor="#ffffff"
-            android:textStyle="normal"
-            android:layout_margin="20dp"
-            android:gravity="center" />
+            android:layout_margin="25dp"
+            android:background="@drawable/submit_button" />
+      </LinearLayout>
+      <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_above="@id/layout_buttonSubmit"
+          android:gravity="center_vertical"
+          android:weightSum="5">
         <TextView
-            android:id="@+id/textView_selectedClass"
-            android:layout_width="match_parent"
+            android:id="@+id/textView_tooCold"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text=""
+            android:layout_margin="5dp"
             android:textSize="13sp"
-            android:textColor="#77cdf6"
-            android:textStyle="normal"
-            android:gravity="center" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp">
-            <ImageView
-                android:id="@+id/buttonNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="25dp"
-                android:background="@drawable/next_button_white" />
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:scrollbars="vertical"
-                android:visibility="visible"
-                android:layout_centerHorizontal="true"
-                android:layout_above="@id/buttonNext"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
-        </RelativeLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/layout_select_temperature"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="20dp"
-        android:visibility="gone"
-        android:background="#1a5111">
-        <TextView
-            android:id="@+id/textViewQuestion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="How\'s the temperature right now?"
-            android:textSize="18sp"
+            android:gravity="center_horizontal"
             android:textColor="#ffffff"
             android:textStyle="bold"
-            android:layout_margin="20dp"
-            android:gravity="center" />
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:drawableTop="@drawable/very_cold_icon"
+            android:text="Too Cold" />
         <TextView
-            android:id="@+id/textViewQuestionDescription"
-            android:layout_width="match_parent"
+            android:id="@+id/textView_cold"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Let us know how do you feel about the temperature where you are now."
-            android:textSize="18sp"
+            android:textSize="13sp"
+            android:gravity="center_horizontal"
+            android:layout_margin="5dp"
             android:textColor="#ffffff"
-            android:textStyle="normal"
-            android:layout_margin="20dp"
-            android:gravity="center" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:id="@+id/layout_buttonSubmit"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true">
-                <ImageView
-                    android:id="@+id/buttonBack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="25dp"
-                    android:background="@drawable/back_button_white" />
-                <ImageView
-                    android:id="@+id/buttonSubmit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="25dp"
-                    android:background="@drawable/submit_button" />
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/layout_buttonSubmit"
-                android:gravity="center_vertical"
-                android:weightSum="5">
-                <TextView
-                    android:id="@+id/textView_tooCold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:textSize="13sp"
-                    android:gravity="center_horizontal"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:drawableTop="@drawable/very_cold_icon"
-                    android:text="Too Cold" />
-                <TextView
-                    android:id="@+id/textView_cold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:gravity="center_horizontal"
-                    android:layout_margin="5dp"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:drawableTop="@drawable/cold_icon"
-                    android:text="Cold" />
-                <TextView
-                    android:id="@+id/textView_feelingNormal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:textSize="13sp"
-                    android:gravity="center_horizontal"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:drawableTop="@drawable/normal_icon"
-                    android:text="Feeling Normal" />
-                <TextView
-                    android:id="@+id/textView_hot"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:gravity="center_horizontal"
-                    android:layout_margin="5dp"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:drawableTop="@drawable/hot_icon"
-                    android:text="Hot" />
-                <TextView
-                    android:id="@+id/textView_tooHot"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:textSize="13sp"
-                    android:gravity="center_horizontal"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:drawableTop="@drawable/very_hot_icon"
-                    android:text="Too Hot" />
-            </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/layout_submit"
-        android:orientation="vertical"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:drawableTop="@drawable/cold_icon"
+            android:text="Cold" />
+        <TextView
+            android:id="@+id/textView_feelingNormal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textSize="13sp"
+            android:gravity="center_horizontal"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:drawableTop="@drawable/normal_icon"
+            android:text="Feeling Normal" />
+        <TextView
+            android:id="@+id/textView_hot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:drawableTop="@drawable/hot_icon"
+            android:text="Hot" />
+        <TextView
+            android:id="@+id/textView_tooHot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textSize="13sp"
+            android:gravity="center_horizontal"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:drawableTop="@drawable/very_hot_icon"
+            android:text="Too Hot" />
+      </LinearLayout>
+    </RelativeLayout>
+  </LinearLayout>
+  <LinearLayout
+      android:id="@+id/layout_submit"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:padding="20dp"
+      android:visibility="gone"
+      android:background="#006699">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="20dp"
-        android:visibility="gone"
-        android:background="#1a5111">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <Button
-                android:id="@+id/buttonDone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="25dp"
-                android:background="#ffffff"
-                android:textColor="#000000"
-                android:text="Done" />
-            <TextView
-                android:id="@+id/textView_feedbackSuccess"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Thank you so much for your valuable feedback."
-                android:textSize="18sp"
-                android:textColor="#ffffff"
-                android:layout_centerVertical="true"
-                android:textStyle="bold"
-                android:layout_margin="20dp"
-                android:drawableTop="@drawable/thank_you"
-                android:drawablePadding="30dp"
-                android:layout_above="@id/buttonNext"
-                android:gravity="center" />
-        </RelativeLayout>
-    </LinearLayout>
+        android:layout_height="match_parent">
+      <Button
+          android:id="@+id/buttonDone"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          android:layout_margin="25dp"
+          android:background="#ffffff"
+          android:textColor="#000000"
+          android:text="Done" />
+      <TextView
+          android:id="@+id/textView_feedbackSuccess"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Thank you so much for your valuable feedback."
+          android:textSize="18sp"
+          android:textColor="#ffffff"
+          android:layout_centerVertical="true"
+          android:textStyle="bold"
+          android:layout_margin="20dp"
+          android:drawableTop="@drawable/thank_you"
+          android:drawablePadding="30dp"
+          android:layout_above="@id/buttonNext"
+          android:gravity="center" />
+    </RelativeLayout>
+  </LinearLayout>
 </LinearLayout>
