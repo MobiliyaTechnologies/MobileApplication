@@ -12,15 +12,15 @@ namespace CSU_PORTABLE.iOS
 {
     public partial class AlertsViewController : UIViewController
     {
-        PreferenceHandler prefHandler = null;
+        //PreferenceHandler prefHandler = null;
         UserDetails User = null;
         LoadingOverlay loadingOverlay;
         private AlertsSource alertsSource;
 
         public AlertsViewController(IntPtr handle) : base(handle)
         {
-            this.prefHandler = new PreferenceHandler();
-            User = prefHandler.GetUserDetails();
+            //this.prefHandler = new PreferenceHandler();
+            User = PreferenceHandler.GetUserDetails();
         }
 
         public override void ViewDidLoad()
@@ -41,7 +41,7 @@ namespace CSU_PORTABLE.iOS
 
         public async void GetAlerts()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>

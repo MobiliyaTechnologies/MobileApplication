@@ -18,7 +18,7 @@ namespace CSU_PORTABLE.iOS
     {
         // the sidebar controller for the app
         public SidebarNavigation.SidebarController SidebarController { get; private set; }
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
         // the navigation controller
         public NavController NavController { get; private set; }
 
@@ -51,30 +51,30 @@ namespace CSU_PORTABLE.iOS
 
             base.ViewDidLoad();
 
-            preferenceHandler = new PreferenceHandler();
+            //preferenceHandler = new PreferenceHandler();
             var menuController = (MyMenuController)Storyboard.InstantiateViewController("MyMenuController");
 
             // create a slideout navigation controller with the top navigation controller and the menu view controller
             NavController = new NavController();
-            Boolean IsLogged = preferenceHandler.IsLoggedIn();
-            UserDetails userDetail = preferenceHandler.GetUserDetails();
+            Boolean IsLogged = PreferenceHandler.IsLoggedIn();
+            UserDetails userDetail = PreferenceHandler.GetUserDetails();
 
-            if (string.IsNullOrEmpty(preferenceHandler.GetDomainKey()))
+            if (string.IsNullOrEmpty(PreferenceHandler.GetDomainKey()))
             {
                 var ConfigurationController = Storyboard.InstantiateViewController("ConfigurationController") as ConfigurationController;
                 NavController.PushViewController(ConfigurationController, true);
             }
             else
             {
-                InvokeApi.SetDomainUrl(preferenceHandler.GetDomainKey());
-                if (string.IsNullOrEmpty(preferenceHandler.GetConfig()))
+                InvokeApi.SetDomainUrl(PreferenceHandler.GetDomainKey());
+                if (string.IsNullOrEmpty(PreferenceHandler.GetConfig()))
                 {
                     var ConfigurationController = Storyboard.InstantiateViewController("ConfigurationController") as ConfigurationController;
                     NavController.PushViewController(ConfigurationController, true);
                 }
                 else
                 {
-                    var config = JsonConvert.DeserializeObject<B2CConfiguration>(preferenceHandler.GetConfig());
+                    var config = JsonConvert.DeserializeObject<B2CConfiguration>(PreferenceHandler.GetConfig());
                     B2CConfigManager.GetInstance().Initialize(config);
                     if (IsLogged)
                     {

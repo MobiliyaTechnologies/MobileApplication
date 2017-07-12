@@ -20,7 +20,7 @@ namespace CSU_PORTABLE.iOS
         MKMapView map;
         List<MeterDetails> meterList = null;
         List<MonthlyConsumptionDetails> monthlyConsumptionList = null;
-        private PreferenceHandler prefHandler;
+        //private PreferenceHandler prefHandler;
         private UserDetails userdetail;
         private LoadingOverlay loadingOverlay;
         private string localToken = string.Empty;
@@ -53,9 +53,9 @@ namespace CSU_PORTABLE.iOS
 
 
 
-            prefHandler = new PreferenceHandler();
-            userdetail = prefHandler.GetUserDetails();
-            this.localToken = prefHandler.GetToken();
+            //prefHandler = new PreferenceHandler();
+            userdetail = PreferenceHandler.GetUserDetails();
+            this.localToken = PreferenceHandler.GetToken();
             GetInsights(userdetail.UserId);
 
             //GenerateInsightsHeader();

@@ -138,6 +138,120 @@ namespace CSU_PORTABLE.Droid.UI
             GetCurrentConsumption(Convert.ToInt32(e.Bar.ValueCaption));
         }
 
+        private void SetConsumptionBarChart(List<ConsumptionModel> consumpModels)
+        {
+            if (consumpModels.Count > 0)
+            {
+                //Also you can add bar chart manually, if you want
+                chart = new BarChartView(this);
+#pragma warning disable CS0618 // Type or member is obsolete
+                var layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
+#pragma warning restore CS0618 // Type or member is obsolete
+                layoutParams.SetMargins(5, 5, 5, 5);
+                chart.LayoutParameters = layoutParams;
+                //chart.MinimumValue = -1;
+                //chart.MaximumValue = 2;
+                chart.BarCaptionInnerColor = Color.Rgb(187, 187, 187);
+                chart.BarCaptionOuterColor = Color.Rgb(187, 187, 187);
+                chart.SetBackgroundColor(Color.Rgb(187, 187, 187));
+                chart.BarClick += HandleBarClick;
+                chart.BarWidth = 200;
+                chart.BarOffset = 100;
+                var chartData = new List<BarModel>();
+                bool ShowChart = false;
+                foreach (var item in consumpModels)
+                {
+
+                    BarModel chartItem = new BarModel();
+                    try
+                    {
+                        chartItem.Legend = item.Name.Split('-').LastOrDefault();
+                    }
+                    catch (Exception)
+                    {
+                        chartItem.Legend = item.Name;
+                    }
+
+                    chartItem.ValueCaption = item.Id.ToString();
+                    chartItem.ValueCaptionHidden = true;
+                    chartItem.Value = float.Parse(item.Consumed.Replace('K', ' ').Trim());
+                    if (float.Parse(item.Consumed.Replace('K', ' ').Trim()) > 0)
+                    {
+                        ShowChart = true;
+                    }
+                    //chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
+                    chartItem.Color = Color.DarkSlateBlue;
+                    chartData.Add(chartItem);
+
+                    #region " Chart with multiple Bars"
+                    //for (int i = 0; i < 3; i++)
+                    //{
+                    //    BarModel chartItem = new BarModel();
+                    //    chartItem.Legend = item.Name;
+                    //    chartItem.ValueCaption = item.Id.ToString();
+                    //    chartItem.ValueCaptionHidden = true;
+                    //    switch (i)
+                    //    {
+                    //        case 0:
+                    //            chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
+                    //            chartItem.Color = Color.DarkSlateBlue;
+                    //            //chartItem.ValueCaption = "Consumed";
+                    //            break;
+                    //        case 1:
+                    //            chartItem.Value = (float.Parse(item.Expected.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Expected.Replace('K', ' ').Trim()));
+                    //            chartItem.Color = Color.Green;
+                    //            //chartItem.ValueCaption = "Expected";
+                    //            break;
+                    //        case 2:
+                    //            //chartItem.Value = (float.Parse(item.Overused.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Overused.Replace('K', ' ').Trim()));
+                    //            chartItem.Value = float.Parse(item.Overused.Replace('K', ' ').Trim());
+                    //            chartItem.Color = Color.Red;
+                    //            //chartItem.ValueCaption = "Overused";
+                    //            break;
+                    //        default:
+                    //            break;
+                    //    }
+                    //chartData.Add(chartItem);
+
+                    //}
+                    #endregion
+                }
+                chart.AutoLevelsEnabled = true;
+                chart.BarCaptionFontSize = 20;
+                if (ShowChart)
+                {
+                    chart.ItemsSource = chartData;
+                    chart.TextAlignment = TextAlignment.TextEnd;
+                    chart.TextDirection = TextDirection.Rtl;
+                    //remark.Visibility = ViewStates.Invisible;
+                    FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
+                    FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(chart);
+                }
+                else
+                {
+                    var remarks = new TextView(this);
+                    remarks.Text = "No Records Found!";
+                    var remarksLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
+
+                    layoutParams.SetMargins(5, 5, 5, 5);
+                    remarks.LayoutParameters = remarksLayoutParams;
+                    remarks.TextDirection = TextDirection.FirstStrongRtl;
+                    remarks.TextAlignment = TextAlignment.Center;
+                    remarks.SetTextColor(Color.LightGray);
+                    remarks.Gravity = GravityFlags.Center;
+                    remarks.TextSize = 20;
+                    //remark.Text = "No records found!";
+                    //remark.Visibility = ViewStates.Visible;
+                    FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
+                    FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(remarks);
+                }
+            }
+            else
+            {
+                Utils.Utils.ShowToast(this, "No records found!");
+            }
+        }
+
         #endregion
 
 
@@ -203,91 +317,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         }
 
-        private void SetConsumptionBarChart(List<ConsumptionModel> consumpModels)
-        {
-            if (consumpModels.Count > 0)
-            {
-                //Also you can add bar chart manually, if you want
-                chart = new BarChartView(this);
-#pragma warning disable CS0618 // Type or member is obsolete
-                var layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-#pragma warning restore CS0618 // Type or member is obsolete
-                layoutParams.SetMargins(5, 5, 5, 5);
-                chart.LayoutParameters = layoutParams;
-                //chart.MinimumValue = -1;
-                //chart.MaximumValue = 2;
-                chart.BarCaptionInnerColor = Color.Rgb(187, 187, 187);
-                chart.BarCaptionOuterColor = Color.Rgb(187, 187, 187);
-                chart.SetBackgroundColor(Color.Rgb(187, 187, 187));
-                chart.BarClick += HandleBarClick;
-                var chartData = new List<BarModel>();
-                bool ShowChart = false;
-                foreach (var item in consumpModels)
-                {
 
-                    BarModel chartItem = new BarModel();
-                    chartItem.Legend = item.Name;
-                    chartItem.ValueCaption = item.Id.ToString();
-                    chartItem.ValueCaptionHidden = true;
-                    chartItem.Value = float.Parse(item.Consumed.Replace('K', ' ').Trim());
-                    if (float.Parse(item.Consumed.Replace('K', ' ').Trim()) > 0)
-                    {
-                        ShowChart = true;
-                    }
-                    //chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
-                    chartItem.Color = Color.DarkSlateBlue;
-                    chartData.Add(chartItem);
-
-                    #region " Chart with multiple Bars"
-                    //for (int i = 0; i < 3; i++)
-                    //{
-                    //    BarModel chartItem = new BarModel();
-                    //    chartItem.Legend = item.Name;
-                    //    chartItem.ValueCaption = item.Id.ToString();
-                    //    chartItem.ValueCaptionHidden = true;
-                    //    switch (i)
-                    //    {
-                    //        case 0:
-                    //            chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
-                    //            chartItem.Color = Color.DarkSlateBlue;
-                    //            //chartItem.ValueCaption = "Consumed";
-                    //            break;
-                    //        case 1:
-                    //            chartItem.Value = (float.Parse(item.Expected.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Expected.Replace('K', ' ').Trim()));
-                    //            chartItem.Color = Color.Green;
-                    //            //chartItem.ValueCaption = "Expected";
-                    //            break;
-                    //        case 2:
-                    //            //chartItem.Value = (float.Parse(item.Overused.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Overused.Replace('K', ' ').Trim()));
-                    //            chartItem.Value = float.Parse(item.Overused.Replace('K', ' ').Trim());
-                    //            chartItem.Color = Color.Red;
-                    //            //chartItem.ValueCaption = "Overused";
-                    //            break;
-                    //        default:
-                    //            break;
-                    //    }
-                    //chartData.Add(chartItem);
-
-                    //}
-                    #endregion
-                }
-
-                var remark = FindViewById<TextView>(Resource.Id.DashboardText);
-                remark.Text = "No records found!";
-                if (ShowChart)
-                {
-                    chart.ItemsSource = chartData;
-                    chart.TextAlignment = TextAlignment.Center;
-                    chart.TextDirection = TextDirection.FirstStrongLtr;
-                    FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
-                    FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(chart);
-                }
-            }
-            else
-            {
-                Utils.Utils.ShowToast(this, "No records found!");
-            }
-        }
 
         private async void GetConsumptionDetails(ConsumptionFor currentConsumption, int Id)
         {
@@ -510,7 +540,7 @@ namespace CSU_PORTABLE.Droid.UI
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.main_menu, menu);
-            /*if (userRole == (int)Constants.USER_ROLE.STUDENT)
+            if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
             {
                 menu.GetItem(0).SetVisible(false);
             }
@@ -525,7 +555,7 @@ namespace CSU_PORTABLE.Droid.UI
                 notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
                 setNotificationCount();
 
-            }*/
+            }
             return base.OnPrepareOptionsMenu(menu);
         }
 

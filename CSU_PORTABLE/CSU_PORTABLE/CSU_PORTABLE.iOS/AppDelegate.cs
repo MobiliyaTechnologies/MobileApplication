@@ -177,10 +177,10 @@ namespace CSU_PORTABLE.iOS
             // Do your magic to handle the notification data
             Console.WriteLine("WillPresentNotification gaurav 1 val");
 
-            PreferenceHandler prefsHandler = new PreferenceHandler();
-            if (prefsHandler.IsLoggedIn())
+            //PreferenceHandler prefsHandler = new PreferenceHandler();
+            if (PreferenceHandler.IsLoggedIn())
             {
-                int roleId = prefsHandler.GetUserDetails().RoleId;
+                int roleId = PreferenceHandler.GetUserDetails().RoleId;
                 if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
                 {
                     BTProgressHUD.ForceiOS6LookAndFeel = true;

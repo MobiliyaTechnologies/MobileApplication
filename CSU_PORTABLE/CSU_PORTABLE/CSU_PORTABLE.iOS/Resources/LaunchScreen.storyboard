@@ -16,16 +16,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" image="splash.png" translatesAutoresizingMaskIntoConstraints="NO" id="23">
-                                <rect key="frame" x="152" y="250" width="296" height="103"/>
-                                <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="0.0"/>
-                                <color key="backgroundColor" colorSpace="calibratedRGB" red="0.97254901960784312" green="0.97254901960784312" blue="0.97254901960784312" alpha="1"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="45" translatesAutoresizingMaskIntoConstraints="NO" image="logo.png">
+                                <rect key="frame" x="61" y="176" width="240" height="188"/>
+                                <constraints>
+                                    <constraint id="66" firstAttribute="width" constant="240"/>
+                                    <constraint id="67" firstAttribute="height" constant="188"/>
+                                </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="46" translatesAutoresizingMaskIntoConstraints="NO" text="ENERGY MANAGEMENT">
+                                <rect key="frame" x="28" y="93" width="335" height="42"/>
+                                <nil key="highlightedColor"/>
+                                <constraints>
+                                    <constraint id="70" firstAttribute="width" constant="335"/>
+                                    <constraint id="71" firstAttribute="height" constant="42"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="16" weight="semibold"/>
+                                <color key="textColor" colorSpace="calibratedRGB" red="0.031372549019607843" green="0.67450980392156867" blue="1" alpha="1"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" colorSpace="calibratedRGB" red="0.996078431372549" green="0.996078431372549" blue="0.996078431372549" alpha="1"/>
                         <constraints>
-                            <constraint firstItem="23" firstAttribute="centerY" secondItem="yd7-JS-zBw" secondAttribute="centerY" priority="1" id="39"/>
-                            <constraint firstItem="23" firstAttribute="centerX" secondItem="yd7-JS-zBw" secondAttribute="centerX" priority="1" id="41"/>
+                            <constraint id="64" firstItem="45" firstAttribute="leading" secondItem="yd7-JS-zBw" secondAttribute="leading" constant="61"/>
+                            <constraint id="65" firstItem="45" firstAttribute="top" secondItem="yd7-JS-zBw" secondAttribute="top" constant="176"/>
+                            <constraint id="68" firstItem="46" firstAttribute="leading" secondItem="yd7-JS-zBw" secondAttribute="leading" constant="28"/>
+                            <constraint id="69" firstItem="46" firstAttribute="top" secondItem="yd7-JS-zBw" secondAttribute="top" constant="93"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -35,7 +49,54 @@
         </scene>
     </scenes>
     <resources>
-        <image name="splash.png" width="300" height="100"/>
+        <image name="logo.png" width="89" height="99"/>
         <image name="threelines.png" width="30" height="30"/>
+        <image name="Arrow_Blue.png" width="9" height="19"/>
+        <image name="Arrow_Green.png" width="9" height="19"/>
+        <image name="Arrow_Red.png" width="9" height="19"/>
+        <image name="Back_BTN_White.png" width="86" height="86"/>
+        <image name="Back_Icon.png" width="23" height="23"/>
+        <image name="Cold_Icon.png" width="130" height="130"/>
+        <image name="Cold_Icon_Opacity.png" width="97" height="97"/>
+        <image name="CSU_logo.png" width="102" height="103"/>
+        <image name="CSU_Logo.png" width="102" height="102.333336"/>
+        <image name="Down_Arrow_Icon.png" width="36" height="36"/>
+        <image name="Electricity_Icon.png" width="11" height="11"/>
+        <image name="Graph_Icon_Selected-15.png" width="26" height="26"/>
+        <image name="Graph_Icon_Selected.png" width="26" height="26"/>
+        <image name="Hot_Icon.png" width="130" height="130"/>
+        <image name="Hot_Icon_Opacity.png" width="97" height="97"/>
+        <image name="Insights_BG.png" width="376" height="77"/>
+        <image name="Lock_Icon.png" width="17" height="17"/>
+        <image name="Lock_Icon_Green.png" width="34" height="34"/>
+        <image name="Lock_Icon_White.png" width="34" height="34"/>
+        <image name="Login_BG.jpg" width="640" height="1136"/>
+        <image name="Logo_01.png" width="269" height="269"/>
+        <image name="Logo_02.png" width="204" height="204"/>
+        <image name="Logo_03.png" width="189" height="189"/>
+        <image name="Mail_Icon.png" width="17" height="18"/>
+        <image name="Mail_Icon_Green.png" width="34" height="34"/>
+        <image name="Mail_Icon_White.png" width="34" height="34"/>
+        <image name="Map_Icon_Selected-14.png" width="27" height="26"/>
+        <image name="Map_Icon_Selected.png" width="27" height="26"/>
+        <image name="Next_BTN_White.png" width="86" height="86"/>
+        <image name="Normal_Icon.png" width="130" height="130"/>
+        <image name="Normal_Icon_Opacity.png" width="97" height="97"/>
+        <image name="Notification_Icon.png" width="24" height="23"/>
+        <image name="Retype_Icon_White.png" width="34" height="34"/>
+        <image name="Smiley_Angry_Icon.png" width="22" height="22"/>
+        <image name="Smiley_Happy_Icon.png" width="22" height="22"/>
+        <image name="Smiley_Sad_Icon.png" width="22" height="22"/>
+        <image name="Smiley_Very_Happy_Icon.png" width="22" height="22"/>
+        <image name="splash.png" width="300" height="100"/>
+        <image name="Thank_You_Icon.png" width="244" height="162"/>
+        <image name="Tick_BTN_White.png" width="86" height="86"/>
+        <image name="Up_Arrow_Icon.png" width="36" height="36"/>
+        <image name="User_Icon_Selected-13.png" width="26" height="26"/>
+        <image name="User_Icon_Selected.png" width="26" height="26"/>
+        <image name="Very_Cold_Icon.png" width="130" height="130"/>
+        <image name="Very_Cold_Icon_Opacity.png" width="97" height="97"/>
+        <image name="Very_Hot_Icon.png" width="130" height="130"/>
+        <image name="Very_Hot_Icon_Opacity.png" width="97" height="97"/>
     </resources>
 </document>

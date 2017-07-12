@@ -38,8 +38,8 @@ namespace CSU_PORTABLE.iOS
 
         public async void GetClassRooms()
         {
-            PreferenceHandler prefHandler = new PreferenceHandler();
-            UserDetails userDetail = prefHandler.GetUserDetails();
+            //PreferenceHandler prefHandler = new PreferenceHandler();
+            UserDetails userDetail = PreferenceHandler.GetUserDetails();
             var response = await InvokeApi.Invoke(Constants.API_GET_CLASS_ROOMS + "/" + userDetail.UserId, string.Empty, HttpMethod.Get);
             if (response.StatusCode != 0)
             {

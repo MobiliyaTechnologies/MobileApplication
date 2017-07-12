@@ -28,7 +28,7 @@ namespace CSU_PORTABLE.iOS
             base.ViewDidLoad();
             this.NavigationController.NavigationBarHidden = false;
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
-            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
             classRoomId = 0;
 
@@ -45,7 +45,7 @@ namespace CSU_PORTABLE.iOS
             // show the loading overlay on the UI thread using the correct orientation sizing
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
-            GetClassRooms();
+            GetRooms();
             CreateFeedbackDashboard();
         }
 
@@ -73,7 +73,7 @@ namespace CSU_PORTABLE.iOS
         private void CreateFeedbackDashboard()
         {
 
-            this.View.BackgroundColor = UIColor.FromRGB(30, 77, 43);
+            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
             FeedbackHomeHeader = new UILabel()
             {
                 Font = UIFont.FromName("Helvetica-Bold", 20f),
@@ -109,11 +109,11 @@ namespace CSU_PORTABLE.iOS
             View.AddSubviews(FeedbackHomeHeader, FeedbackHomeSubHeader, btnNext);
         }
 
-        public async void GetClassRooms()
+        public async void GetRooms()
         {
-            PreferenceHandler prefHandler = new PreferenceHandler();
-            UserDetails userDetail = prefHandler.GetUserDetails();
-            var response = await InvokeApi.Invoke(Constants.API_GET_CLASS_ROOMS + "/" + userDetail.UserId, string.Empty, HttpMethod.Get);
+            //PreferenceHandler prefHandler = new PreferenceHandler();
+            UserDetails userDetail = PreferenceHandler.GetUserDetails();
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ROOMS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -129,8 +129,8 @@ namespace CSU_PORTABLE.iOS
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 string strContent = await restResponse.Content.ReadAsStringAsync();
-                List<ClassRoomModel> classRoomsList = JsonConvert.DeserializeObject<List<ClassRoomModel>>(strContent);
-                BindClassRooms(classRoomsList);
+                List<RoomModel> roomsList = JsonConvert.DeserializeObject<List<RoomModel>>(strContent);
+                BindClassRooms(roomsList);
             }
             else
             {
@@ -139,9 +139,9 @@ namespace CSU_PORTABLE.iOS
         }
 
 
-        private void BindClassRooms(List<ClassRoomModel> classRoomsList)
+        private void BindClassRooms(List<RoomModel> roomsList)
         {
-            UIPickerViewModel modelClassRooms = new ClassRoomPickerViewModel(classRoomsList);
+            UIPickerViewModel modelClassRooms = new ClassRoomPickerViewModel(roomsList);
             UIPickerView classRoomPicker = new UIPickerView()
             {
                 Frame = new CGRect(50, 220, View.Bounds.Width - 100, 200),
@@ -186,14 +186,14 @@ namespace CSU_PORTABLE.iOS
 
         public class ClassRoomPickerViewModel : UIPickerViewModel
         {
-            List<ClassRoomModel> classRoooms;
+            List<RoomModel> classRoooms;
             public int selectedClassRoom;
             public ClassRoomPickerViewModel()
             {
 
             }
 
-            public ClassRoomPickerViewModel(List<ClassRoomModel> component)
+            public ClassRoomPickerViewModel(List<RoomModel> component)
             {
 
                 this.classRoooms = component;
@@ -207,7 +207,7 @@ namespace CSU_PORTABLE.iOS
 
             public override string GetTitle(UIPickerView pickerView, nint row, nint component)
             {
-                return classRoooms[(int)row].ClassDescription;
+                return classRoooms[(int)row].RoomName;
             }
 
             public override nint GetComponentCount(UIPickerView pickerView)
@@ -224,7 +224,7 @@ namespace CSU_PORTABLE.iOS
                     Font = UIFont.FromName("Futura-CondensedMedium", 25f),
                     TextColor = UIColor.White,
                     BackgroundColor = UIColor.Clear,
-                    Text = classRoooms[(int)row].ClassDescription,
+                    Text = classRoooms[(int)row].RoomName,
                     TextAlignment = UITextAlignment.Center,
                 };
 

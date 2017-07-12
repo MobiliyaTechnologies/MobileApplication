@@ -16,14 +16,14 @@ namespace CSU_PORTABLE.iOS
     {
         private List<AlertModel> lstRecommendations;
         private LoadingOverlay loadingOverlay;
-        PreferenceHandler prefHandler;
+        //PreferenceHandler prefHandler;
         UserDetails userdetail;
         nfloat yAxisRecomendation = 70;
 
         public InsightsViewController(IntPtr handle) : base(handle)
         {
-            prefHandler = new PreferenceHandler();
-            userdetail = prefHandler.GetUserDetails();
+            //prefHandler = new PreferenceHandler();
+            userdetail = PreferenceHandler.GetUserDetails();
         }
 
 
@@ -195,7 +195,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void getRecommendationsList()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -223,7 +223,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void GetInsights()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>

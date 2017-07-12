@@ -14,14 +14,14 @@ namespace CSU_PORTABLE.iOS
     public partial class LoginViewController : BaseController
     {
         private UIWebView webView;
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
         UserDetails userDetails;
         private LoadingOverlay loadingOverlay;
 
         public LoginViewController(IntPtr handle) : base(handle)
         {
-            preferenceHandler = new PreferenceHandler();
-            userDetails = preferenceHandler.GetUserDetails();
+           // preferenceHandler = new PreferenceHandler();
+            userDetails = PreferenceHandler.GetUserDetails();
         }
 
 
@@ -64,7 +64,7 @@ namespace CSU_PORTABLE.iOS
                 {
                     string strContent = await response.Content.ReadAsStringAsync();
                     var token = JsonConvert.DeserializeObject<AccessToken>(strContent);
-                    preferenceHandler.SetToken(token.id_token);
+                    PreferenceHandler.SetToken(token.id_token);
 
                 }
             }
@@ -72,10 +72,10 @@ namespace CSU_PORTABLE.iOS
             if (req.Contains("id_token="))
             {
                 string token = Common.FunGetValuefromQueryString(req, "id_token");
-                preferenceHandler.SetToken(token);
+                PreferenceHandler.SetToken(token);
             }
 
-            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, preferenceHandler.GetToken());
+            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (responseUser.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -119,7 +119,7 @@ namespace CSU_PORTABLE.iOS
             {
                 string strContent = await responseUser.Content.ReadAsStringAsync();
                 UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
-                preferenceHandler.SaveUserDetails(user);
+                PreferenceHandler.SaveUserDetails(user);
                 ShowDashboard(user);
             }
             else

@@ -14,16 +14,8 @@ namespace CSU_PORTABLE.iOS
     [Register ("InsightsViewController")]
     partial class InsightsViewController
     {
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        CSU_PORTABLE.iOS.InsightsCell InsightsCell { get; set; }
-
         void ReleaseDesignerOutlets ()
         {
-            if (InsightsCell != null) {
-                InsightsCell.Dispose ();
-                InsightsCell = null;
-            }
         }
     }
 }

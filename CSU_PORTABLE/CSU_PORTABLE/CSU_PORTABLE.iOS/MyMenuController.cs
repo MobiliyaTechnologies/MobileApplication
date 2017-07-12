@@ -15,7 +15,7 @@ namespace CSU_PORTABLE.iOS
         #region " Variables "
 
         LoadingOverlay loadingOverlay;
-        PreferenceHandler prefHandler;
+        //PreferenceHandler prefHandler;
         UserDetails userdetail;
 
         #endregion
@@ -67,8 +67,8 @@ namespace CSU_PORTABLE.iOS
             View.Add(loadingOverlay);
 
 
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
-            preferenceHandler.setLoggedIn(false);
+            //PreferenceHandler preferenceHandler = new PreferenceHandler();
+            PreferenceHandler.setLoggedIn(false);
 
             Action ResetSession = () =>
            {
@@ -81,7 +81,7 @@ namespace CSU_PORTABLE.iOS
             SidebarController.MenuWidth = 0;
             SidebarController.CloseMenu();
             loadingOverlay.Hide();
-            Logout(new LogoutModel(preferenceHandler.GetUserDetails().Email));
+            Logout(new LogoutModel(PreferenceHandler.GetUserDetails().Email));
 
         }
 
@@ -100,19 +100,19 @@ namespace CSU_PORTABLE.iOS
         public void GenerateMenu()
         {
 
-            prefHandler = new PreferenceHandler();
-            userdetail = prefHandler.GetUserDetails();
+            //prefHandler = new PreferenceHandler();
+            userdetail = PreferenceHandler.GetUserDetails();
 
             double profileRadius = 100;
             double profileViewHeight = 230;
 
             UIView viewProfile = new UIView(new CGRect(0, 0, View.Bounds.Width, profileViewHeight));
-            viewProfile.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+            viewProfile.BackgroundColor = UIColor.FromRGB(0, 102, 153);
 
             UIImageView imgProfile = new UIImageView()
             {
                 Frame = new CGRect(125 - (profileRadius / 2), 40, profileRadius, profileRadius),
-                Image = UIImage.FromBundle("Logo_01.png"),
+                Image = UIImage.FromBundle("logo.png"),
 
             };
             imgProfile.ClipsToBounds = true;

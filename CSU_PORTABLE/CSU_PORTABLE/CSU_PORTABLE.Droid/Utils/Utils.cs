@@ -21,7 +21,7 @@ namespace CSU_PORTABLE.Droid.Utils
 {
     public class Utils
     {
-        public const string ALERT_BROADCAST = "com.mobiliya.csu.Alerts";
+        public const string ALERT_BROADCAST = "com.mobiliya.em.Alerts";
         private static Toast toast;
 
         /// <summary>

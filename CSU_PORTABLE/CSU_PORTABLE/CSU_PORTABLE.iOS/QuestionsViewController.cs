@@ -16,7 +16,7 @@ namespace CSU_PORTABLE.iOS
         UILabel QuestionHeader, QuestionSubHeader;
         public static int SelectedAnswer { get; set; }
         LoadingOverlay loadingOverlay;
-        PreferenceHandler prefHandler;
+        //PreferenceHandler prefHandler;
         UserDetails userdetail;
         public int selectedClassRoom;
 
@@ -58,8 +58,8 @@ namespace CSU_PORTABLE.iOS
                     }), true);
 
             SelectedAnswer = -1;
-            prefHandler = new Utils.PreferenceHandler();
-            userdetail = prefHandler.GetUserDetails();
+            //prefHandler = new Utils.PreferenceHandler();
+            userdetail = PreferenceHandler.GetUserDetails();
             GetQuestionView();
         }
 
@@ -99,7 +99,7 @@ namespace CSU_PORTABLE.iOS
 
         private void GetQuestionView()
         {
-            this.View.BackgroundColor = UIColor.FromRGB(30, 77, 43);
+            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
             QuestionHeader = new UILabel()
             {
                 Font = UIFont.FromName("Helvetica-Bold", 20f),
@@ -216,9 +216,9 @@ namespace CSU_PORTABLE.iOS
                         break;
                     case 2:
                         segAnswers.SetImage(UIImage.FromBundle("Normal_Icon.png"), SelectedAnswer);
-                        View.BackgroundColor = UIColor.FromRGB(33, 77, 43);
-                        btnBack.BackgroundColor = UIColor.FromRGB(33, 77, 43);
-                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+                        View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
+                        btnBack.BackgroundColor = UIColor.FromRGB(0, 102, 153);
+                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
                         break;
                     case 3:
                         segAnswers.SetImage(UIImage.FromBundle("Hot_Icon.png"), SelectedAnswer);
@@ -275,7 +275,7 @@ namespace CSU_PORTABLE.iOS
         {
             FeedbackModel feedbackModel = new FeedbackModel();
             feedbackModel.QuestionId = 1;
-            feedbackModel.ClassId = selectedClassRoom + 1;
+            feedbackModel.RoomId = selectedClassRoom + 1;
             feedbackModel.AnswerId = SelectedAnswer + 1;
             feedbackModel.FeedbackDesc = "";
 
