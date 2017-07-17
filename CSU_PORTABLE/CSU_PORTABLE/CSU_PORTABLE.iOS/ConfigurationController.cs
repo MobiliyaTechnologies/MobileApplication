@@ -14,7 +14,7 @@ namespace CSU_PORTABLE.iOS
     {
         private UIButton ButtonSubmit;
         private UITextField TextFieldConfig;
-        PreferenceHandler preferenceHandler;
+        //PreferenceHandler preferenceHandler;
         LoadingOverlay loadingOverlay;
         private UIButton ButtonCancel;
 
@@ -37,7 +37,7 @@ namespace CSU_PORTABLE.iOS
             this.NavigationController.NavigationBarHidden = true;
             this.NavigationItem.SetHidesBackButton(false, false);
             this.Title = "EM Configuration";
-            preferenceHandler = new PreferenceHandler();
+            //preferenceHandler = new PreferenceHandler();
             UIView paddingView = new UIView(new CGRect(5, 5, 5, 20));
             TextFieldConfig = new UITextField()
             {
@@ -89,7 +89,7 @@ namespace CSU_PORTABLE.iOS
             else
             {
                 string domain = TextFieldConfig.Text;
-                preferenceHandler.SetDomainKey(domain);
+                PreferenceHandler.SetDomainKey(domain);
                 InvokeApi.SetDomainUrl(domain);
                 var response = await InvokeApi.Invoke(Constants.API_GET_MOBILE_CONFIGURATION, string.Empty, HttpMethod.Get);
 
@@ -102,12 +102,12 @@ namespace CSU_PORTABLE.iOS
                         || string.IsNullOrEmpty(config.B2cTenant) || string.IsNullOrEmpty(config.B2cTokenURL) || string.IsNullOrEmpty(config.B2cTokenURLIOS))
                     {
                         IOSUtil.ShowMessage("Invalid Configuration details", null, this);
-                        preferenceHandler.SetDomainKey(string.Empty);
+                        PreferenceHandler.SetDomainKey(string.Empty);
                     }
                     else
                     {
                         B2CConfigManager.GetInstance().Initialize(config);
-                        preferenceHandler.SetConfig(strContent);
+                        PreferenceHandler.SetConfig(strContent);
                         var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
                         NavController.PushViewController(ViewController, false);
                     }
@@ -116,7 +116,7 @@ namespace CSU_PORTABLE.iOS
                 else
                 {
                     IOSUtil.ShowMessage(response.ReasonPhrase, null, this);
-                    preferenceHandler.SetDomainKey(string.Empty);
+                    PreferenceHandler.SetDomainKey(string.Empty);
                 }
             }
         }

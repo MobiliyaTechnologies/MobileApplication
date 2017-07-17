@@ -43,6 +43,8 @@
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchFloat32>False</MtouchFloat32>
+    <IOSDebugOverWiFi>False</IOSDebugOverWiFi>
+    <IOSDebuggerPort>10000</IOSDebuggerPort>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>
@@ -79,13 +81,12 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>false</MtouchProfiling>
-    <CodesignKey>iPhone Developer: AgreeYa Folsom (9F77KT24M9)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
+    <CodesignProvision>
+    </CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BTProgressHUD">
-      <HintPath>..\..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.14.0.8, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.14.0\lib\Xamarin.iOS10\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
       <Private>True</Private>
@@ -98,10 +99,6 @@
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RestSharp.105.2.3\lib\Xamarin.iOS10\RestSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
@@ -109,6 +106,10 @@
     <Reference Include="Xamarin-Sidebar-Unified, Version=1.0.6186.35166, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SidebarNavigation.1.9.3\lib\Xamarin.iOS10\Xamarin-Sidebar-Unified.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Xamarin.Controls.BarChart.iOS, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Software\Xamarin\barchart-1.1.2.1\lib\ios-unified\Xamarin.Controls.BarChart.iOS.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.iOS" />
     <Reference Include="Firebase.Core">
@@ -126,12 +127,6 @@
     <Reference Include="BTProgressHUD">
       <HintPath>..\..\Components\btprogresshud-1.20\lib\ios-unified\BTProgressHUD.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CSU_PORTABLE\CSU_PORTABLE.csproj">
-      <Name>CSU_PORTABLE</Name>
-      <Project>{2B27BCC5-E18A-4FDF-A398-3BC318ABF9F1}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json">
@@ -237,6 +232,10 @@
       <DependentUpon>ConfigurationController.cs</DependentUpon>
     </Compile>
     <Compile Include="ConsumptionCell.cs" />
+    <Compile Include="ConsumptionController.cs" />
+    <Compile Include="ConsumptionController.designer.cs">
+      <DependentUpon>ConsumptionController.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConsumptionSource.cs" />
     <Compile Include="ContentController.cs" />
     <Compile Include="ContentController.designer.cs">
@@ -595,6 +594,12 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\logo%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSU_PORTABLE\CSU_PORTABLE.csproj">
+      <Project>{2b27bcc5-e18a-4fdf-a398-3bc318abf9f1}</Project>
+      <Name>CSU_PORTABLE</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />

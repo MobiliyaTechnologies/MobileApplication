@@ -1,6 +1,6 @@
 ﻿// WARNING
 //
-// This file has been generated automatically by Xamarin Studio from the outlets and
+// This file has been generated automatically by Visual Studio from the outlets and
 // actions declared in your storyboard file.
 // Manual changes to this file will not be maintained.
 //
@@ -14,16 +14,8 @@ namespace CSU_PORTABLE.iOS
     [Register ("InsightsViewController")]
     partial class InsightsViewController
     {
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        CSU_PORTABLE.iOS.InsightsCell InsightsCell { get; set; }
-
         void ReleaseDesignerOutlets ()
         {
-            if (InsightsCell != null) {
-                InsightsCell.Dispose ();
-                InsightsCell = null;
-            }
         }
     }
 }

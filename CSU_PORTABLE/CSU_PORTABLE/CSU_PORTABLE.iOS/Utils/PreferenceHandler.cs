@@ -9,24 +9,24 @@ using System.Text;
 
 namespace CSU_PORTABLE.iOS.Utils
 {
-    class PreferenceHandler
+    public static class PreferenceHandler
     {
-        string preferenceName = "CSUPREF";
-        string preferenceIsLoggedIn = "CSUPREF_isLoggedIn";
-        string preferenceEmail = "CSUPREF_email";
-        string preferenceFirstName = "CSUPREF_first_name";
-        string preferenceLastName = "CSUPREF_last_name";
-        string preferenceUserId = "CSUPREF_user_id";
-        string preferenceRoleId = "CSUPREF_role_id";
-        string preferenceUserCampus = "CSUPREF_user_campus";
-        string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
-        string preferenceToken = "CSUPREF_token";
-        string preferenceAccessCode = "CSUPREF_accesscode";
-        string preferenceConfig = "CSUPREF_config";
-        string preferenceDomainKey = "CSUPREF_domainkey";
+        static string preferenceName = "CSUPREF";
+        static string preferenceIsLoggedIn = "CSUPREF_isLoggedIn";
+        static string preferenceEmail = "CSUPREF_email";
+        static string preferenceFirstName = "CSUPREF_first_name";
+        static string preferenceLastName = "CSUPREF_last_name";
+        static string preferenceUserId = "CSUPREF_user_id";
+        static string preferenceRoleId = "CSUPREF_role_id";
+        static string preferenceUserCampus = "CSUPREF_user_campus";
+        static string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
+        static string preferenceToken = "CSUPREF_token";
+        static string preferenceAccessCode = "CSUPREF_accesscode";
+        static string preferenceConfig = "CSUPREF_config";
+        static string preferenceDomainKey = "CSUPREF_domainkey";
 
 
-        public void SetDomainKey(string domainKey)
+        public static void SetDomainKey(string domainKey)
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             plist.SetString(domainKey, preferenceDomainKey);
@@ -34,13 +34,13 @@ namespace CSU_PORTABLE.iOS.Utils
         }
 
 
-        public string GetDomainKey()
+        public static string GetDomainKey()
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             return plist.StringForKey(preferenceDomainKey);
         }
 
-        public void SetConfig(string Config)
+        public static void SetConfig(string Config)
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             plist.SetString(Config, preferenceConfig);
@@ -48,13 +48,13 @@ namespace CSU_PORTABLE.iOS.Utils
         }
 
 
-        public string GetConfig()
+        public static string GetConfig()
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             return plist.StringForKey(preferenceConfig);
         }
 
-        public void SetAccessCode(string AccessCode)
+        public static void SetAccessCode(string AccessCode)
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             plist.SetString(AccessCode, preferenceAccessCode);
@@ -62,13 +62,13 @@ namespace CSU_PORTABLE.iOS.Utils
         }
 
 
-        public string GetAccessCode()
+        public static string GetAccessCode()
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             return plist.StringForKey(preferenceAccessCode);
         }
 
-        public void SetToken(string Token)
+        public static void SetToken(string Token)
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             plist.SetString(Token, preferenceToken);
@@ -76,27 +76,27 @@ namespace CSU_PORTABLE.iOS.Utils
         }
 
 
-        public string GetToken()
+        public static string GetToken()
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             return plist.StringForKey(preferenceToken);
         }
 
 
-        public bool IsLoggedIn()
+        public static bool IsLoggedIn()
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             return plist.BoolForKey(preferenceIsLoggedIn);
         }
 
-        public bool setLoggedIn(bool value)
+        public static bool setLoggedIn(bool value)
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             plist.SetBool(value, preferenceIsLoggedIn);
             return plist.Synchronize();
         }
 
-        public bool SaveUserDetails(UserDetails loginResponse)
+        public static bool SaveUserDetails(UserDetails loginResponse)
         {
             var plist = NSUserDefaults.StandardUserDefaults;
             plist.SetString(loginResponse.Email, preferenceEmail);
@@ -109,7 +109,7 @@ namespace CSU_PORTABLE.iOS.Utils
             return plist.Synchronize();
         }
 
-        public UserDetails GetUserDetails()
+        public static UserDetails GetUserDetails()
         {
             UserDetails userDetails = new UserDetails();
             var plist = NSUserDefaults.StandardUserDefaults;

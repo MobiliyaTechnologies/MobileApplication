@@ -12,15 +12,15 @@ namespace CSU_PORTABLE.iOS
 {
     public partial class ReportController : UIViewController
     {
-        PreferenceHandler prefHandler = null;
+        //PreferenceHandler prefHandler = null;
         UserDetails User = null;
         private UIWebView webView;
         private GlobalReportsModel reports;
 
         public ReportController(IntPtr handle) : base(handle)
         {
-            this.prefHandler = new PreferenceHandler();
-            this.User = prefHandler.GetUserDetails();
+            //this.prefHandler = new PreferenceHandler();
+            this.User = PreferenceHandler.GetUserDetails();
         }
 
         public override void ViewDidLoad()
@@ -34,8 +34,8 @@ namespace CSU_PORTABLE.iOS
             View.AddSubview(webView);
             showContentOnWebView(body);
 
-            var preferenceHandler = new PreferenceHandler();
-            int userId = preferenceHandler.GetUserDetails().UserId;
+            //var preferenceHandler = new PreferenceHandler();
+            int userId = PreferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
                 getReports();
@@ -49,7 +49,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void getReports()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_GLOBAL_REPORTS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_GLOBAL_REPORTS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
 
             if (response.StatusCode != 0)
             {
@@ -94,7 +94,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void GetAccessToken()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_TOKEN, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_TOKEN, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 Console.WriteLine("async Response : " + response.ToString());

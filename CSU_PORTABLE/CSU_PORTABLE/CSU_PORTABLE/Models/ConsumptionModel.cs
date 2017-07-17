@@ -22,8 +22,8 @@ namespace CSU_PORTABLE.Models
         public string PremiseName { get; set; }
         public string PremiseDesc { get; set; }
         public int OrganizationID { get; set; }
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public double MonthlyConsumption { get; set; }
         public double MonthlyPrediction { get; set; }
     }
@@ -36,8 +36,8 @@ namespace CSU_PORTABLE.Models
         public int PremiseID { get; set; }
         public double MonthlyConsumption { get; set; }
         public double MonthlyPrediction { get; set; }
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
     }
 
     public class Meter

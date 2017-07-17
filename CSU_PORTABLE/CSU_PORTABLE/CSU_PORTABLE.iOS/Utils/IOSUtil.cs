@@ -1,8 +1,13 @@
 ﻿using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
+using CSU_PORTABLE.Utils;
+using Foundation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS.Utils
@@ -23,19 +28,33 @@ namespace CSU_PORTABLE.iOS.Utils
 
         public static void ShowAlert(string message)
         {
-            var alert = new UIAlertView(message, "", null, "OK");
+            var alert = new UIAlertView("Energy Management", message, null, null, "OK");
             alert.Show();
         }
 
-        public static void RefreshToken(UIViewController viewController, LoadingOverlay loadingOverlay)
+
+        public async static Task RefreshToken(UIViewController viewController, LoadingOverlay loadingOverlay)
         {
-            if (loadingOverlay != null)
+            string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetAccessCode());
+            var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                loadingOverlay.Hide();
+                string strContent = await response.Content.ReadAsStringAsync();
+                var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+                PreferenceHandler.SetToken(tokenNew.id_token);
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                RedirectToLogin(viewController, loadingOverlay);
+            }
+        }
+
+        public static void RedirectToLogin(UIViewController viewController, LoadingOverlay loadingOverlay)
+        {
+            PreferenceHandler.setLoggedIn(false);
+            PreferenceHandler.SetToken(string.Empty);
             var LoginViewController = (LoginViewController)viewController.Storyboard.InstantiateViewController("LoginViewController");
             viewController.NavigationController.PushViewController(LoginViewController, false);
-
         }
 
         public static MapPoints ConvertBuildingToPoints(BuildingModel model)

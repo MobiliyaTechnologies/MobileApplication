@@ -109,8 +109,8 @@ namespace CSU_PORTABLE.iOS
             var selectedRow = Acknowledge.Tag;
             var subView = (UILabel)ContentView.Subviews[0];
             var superView = Acknowledge.Superview;
-            var preferenceHandler = new PreferenceHandler();
-            UserDetails userDetails = preferenceHandler.GetUserDetails();
+            //var preferenceHandler = new PreferenceHandler();
+            UserDetails userDetails = PreferenceHandler.GetUserDetails();
             int userId = userDetails.UserId;
             AlertAcknowledgeModel ackModel = new AlertAcknowledgeModel();
             ackModel.Alert_Id = Convert.ToInt32(subView.Text);

@@ -33,7 +33,7 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            this.View.BackgroundColor = UIColor.FromRGB(30, 77, 43);
+            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
             this.NavigationController.NavigationBarHidden = true;
             this.Title = string.Empty;
 
@@ -174,8 +174,8 @@ namespace CSU_PORTABLE.iOS
         {
             //store data in preferences
 
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
-            preferenceHandler.SaveUserDetails(userDetails);
+            //PreferenceHandler preferenceHandler = new PreferenceHandler();
+            PreferenceHandler.SaveUserDetails(userDetails);
             if (userDetails.RoleId == 2)
             {
                 ShowClassRooms();

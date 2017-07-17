@@ -15,7 +15,7 @@ namespace CSU_PORTABLE.iOS
         #region " Variables "
 
         LoadingOverlay loadingOverlay;
-        PreferenceHandler prefHandler;
+        //PreferenceHandler prefHandler;
         UserDetails userdetail;
 
         #endregion
@@ -40,14 +40,23 @@ namespace CSU_PORTABLE.iOS
         private void AlertsButton_TouchUpInside(object sender, EventArgs e)
         {
             var AlertsViewController = (AlertsViewController)Storyboard.InstantiateViewController("AlertsViewController");
-            NavController.PushViewController(AlertsViewController, false);
+            NavController.PushViewController(AlertsViewController, true);
             SidebarController.CloseMenu();
         }
 
-        private void ReportsButton_TouchUpInside(object sender, EventArgs e)
+        private void DashboardButton_TouchUpInside(object sender, EventArgs e)
         {
-            var ReportController = (ReportController)Storyboard.InstantiateViewController("ReportController");
-            NavController.PushViewController(ReportController, false);
+            if (PreferenceHandler.GetUserDetails().RoleId == 1)
+            {
+                var MapViewController = (MapViewController)Storyboard.InstantiateViewController("MapViewController");
+                NavController.PushViewController(MapViewController, true);
+            }
+            else
+            {
+                FeedbackViewController FeedbackView = this.Storyboard.InstantiateViewController("FeedbackViewController") as FeedbackViewController;
+                FeedbackView.NavigationItem.SetHidesBackButton(true, false);
+                this.NavController.PushViewController(FeedbackView, true);
+            }
             SidebarController.CloseMenu();
         }
 
@@ -65,10 +74,7 @@ namespace CSU_PORTABLE.iOS
             // show the loading overlay on the UI thread using the correct orientation sizing
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
-
-
-            PreferenceHandler preferenceHandler = new PreferenceHandler();
-            preferenceHandler.setLoggedIn(false);
+            PreferenceHandler.setLoggedIn(false);
 
             Action ResetSession = () =>
            {
@@ -77,18 +83,18 @@ namespace CSU_PORTABLE.iOS
             NSUrlSession.SharedSession.Reset(ResetSession);
             var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
             ViewController.NavigationItem.SetHidesBackButton(true, false);
-            NavController.PushViewController(ViewController, false);
+            NavController.PushViewController(ViewController, true);
             SidebarController.MenuWidth = 0;
             SidebarController.CloseMenu();
             loadingOverlay.Hide();
-            Logout(new LogoutModel(preferenceHandler.GetUserDetails().Email));
+            Logout(new LogoutModel(PreferenceHandler.GetUserDetails().Email));
 
         }
 
         private void InsightsButton_TouchUpInside(object sender, EventArgs e)
         {
             var InsightsViewController = (InsightsViewController)Storyboard.InstantiateViewController("InsightsViewController");
-            NavController.PushViewController(InsightsViewController, false);
+            NavController.PushViewController(InsightsViewController, true);
             SidebarController.CloseMenu();
         }
 
@@ -100,24 +106,24 @@ namespace CSU_PORTABLE.iOS
         public void GenerateMenu()
         {
 
-            prefHandler = new PreferenceHandler();
-            userdetail = prefHandler.GetUserDetails();
+            //prefHandler = new PreferenceHandler();
+            userdetail = PreferenceHandler.GetUserDetails();
 
             double profileRadius = 100;
             double profileViewHeight = 230;
 
             UIView viewProfile = new UIView(new CGRect(0, 0, View.Bounds.Width, profileViewHeight));
-            viewProfile.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+            viewProfile.BackgroundColor = UIColor.FromRGB(0, 102, 153);
 
             UIImageView imgProfile = new UIImageView()
             {
                 Frame = new CGRect(125 - (profileRadius / 2), 40, profileRadius, profileRadius),
-                Image = UIImage.FromBundle("Logo_01.png"),
+                Image = UIImage.FromBundle("logo.png"),
 
             };
             imgProfile.ClipsToBounds = true;
             imgProfile.Layer.CornerRadius = (float)profileRadius / 2;
-            imgProfile.Layer.BorderColor = UIColor.White.CGColor;
+            imgProfile.Layer.BorderColor = UIColor.Clear.CGColor;
             imgProfile.Layer.BorderWidth = 2;
 
 
@@ -150,28 +156,18 @@ namespace CSU_PORTABLE.iOS
             viewProfile.AddSubviews(lblProfileName, imgProfile, LogOutButton);
 
 
-            //UIView seperator = new UIView()
-            //{
-            //    Frame = new CGRect(0, 41, viewProfile.Bounds.Width, 1),
-            //    BackgroundColor = UIColor.DarkTextColor
-            //};
 
-            UIButton ReportsButton = new UIButton()
+            UIButton DashboardButton = new UIButton()
             {
                 Frame = new CGRect(0, profileViewHeight, 250, 40),
                 Font = UIFont.FromName("Futura-Medium", 14f),
                 BackgroundColor = UIColor.Clear,
-                //HorizontalAlignment = UIControlContentHorizontalAlignment.Left
             };
-            ReportsButton.SetTitle("REPORTS", UIControlState.Normal);
-            ReportsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
-            ReportsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
-            ReportsButton.BackgroundColor = UIColor.LightTextColor;
-            ReportsButton.VerticalAlignment = UIControlContentVerticalAlignment.Center;
-            //ReportsButton.Layer.BorderColor = UIColor.DarkGray.CGColor;
-            //ReportsButton.Layer.BorderWidth = 1f;
-
-            //View.InsertSubviewBelow(ReportsButton, seperator);
+            DashboardButton.SetTitle("DASHBOARD", UIControlState.Normal);
+            DashboardButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
+            DashboardButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+            DashboardButton.BackgroundColor = UIColor.LightTextColor;
+            DashboardButton.VerticalAlignment = UIControlContentVerticalAlignment.Center;
 
             UIButton AlertsButton = new UIButton()
             {
@@ -206,7 +202,7 @@ namespace CSU_PORTABLE.iOS
             InsightsButton.TouchUpInside += InsightsButton_TouchUpInside;
             ChangePasswordButton.TouchUpInside += ChangePasswordButton_TouchUpInside;
             LogOutButton.TouchUpInside += LogOutButton_TouchUpInside;
-            ReportsButton.TouchUpInside += ReportsButton_TouchUpInside;
+            DashboardButton.TouchUpInside += DashboardButton_TouchUpInside;
             AlertsButton.TouchUpInside += AlertsButton_TouchUpInside;
 
 
@@ -231,7 +227,7 @@ namespace CSU_PORTABLE.iOS
                 BackgroundColor = UIColor.LightGray
             };
 
-            ReportsButton.InsertSubview(seperator, 1);
+            DashboardButton.InsertSubview(seperator, 1);
             ChangePasswordButton.InsertSubview(seperatorPassword, 1);
             AlertsButton.InsertSubview(seperatorAlerts, 1);
             InsightsButton.InsertSubview(seperatorInsights, 1);
@@ -239,14 +235,14 @@ namespace CSU_PORTABLE.iOS
             if (userdetail.RoleId == 2)
             {
                 ChangePasswordButton.Frame = new CGRect(0, profileViewHeight + 40, 250, 40);
-                View.AddSubviews(viewProfile, ChangePasswordButton, LogOutButton);
+                View.AddSubviews(viewProfile, DashboardButton, ChangePasswordButton, LogOutButton);
             }
             else
             {
                 AlertsButton.Frame = new CGRect(0, profileViewHeight + 40, 250, 40);
                 InsightsButton.Frame = new CGRect(0, profileViewHeight + 80, 250, 40);
                 ChangePasswordButton.Frame = new CGRect(0, profileViewHeight + 120, 250, 40);
-                View.AddSubviews(viewProfile, ChangePasswordButton, ReportsButton, AlertsButton, InsightsButton);
+                View.AddSubviews(viewProfile, DashboardButton, ChangePasswordButton, AlertsButton, InsightsButton);
             }
         }
 
@@ -255,30 +251,9 @@ namespace CSU_PORTABLE.iOS
         private async void Logout(LogoutModel logoutModel)
         {
             var response = await InvokeApi.Invoke(Constants.API_SIGN_OUT, JsonConvert.SerializeObject(logoutModel), HttpMethod.Post);
-            //if (response.StatusCode != 0)
-            //{
-            //    InvokeOnMainThread(() =>
-            //    {
-            //        LogoutResponse(response);
-            //    });
-            //}
+
         }
 
-        //private void LogoutResponse(HttpResponseMessage restResponse)
-        //{
-        //    if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-        //    {
-        //    }
-
-        //}
-
-        //private void ShowMessage(string v)
-        //{
-        //    loadingOverlay.Hide();
-        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-        //    PresentViewController(alertController, true, null);
-        //}
 
         #endregion
     }

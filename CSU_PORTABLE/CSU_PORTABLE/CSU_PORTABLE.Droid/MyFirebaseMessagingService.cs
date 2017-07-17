@@ -24,7 +24,7 @@ namespace CSU_PORTABLE.Droid
 
                 //var preferenceHandler = new PreferenceHandler();
                 bool isLoggedIn = PreferenceHandler.IsLoggedIn();
-                if(isLoggedIn)
+                if (isLoggedIn)
                 {
                     int roleId = PreferenceHandler.GetUserDetails().RoleId;
                     if (roleId == (int)CSU_PORTABLE.Utils.Constants.USER_ROLE.ADMIN)
@@ -33,7 +33,8 @@ namespace CSU_PORTABLE.Droid
                         IncrementNotificationCount();
                     }
                 }
-            } catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 Log.Debug(TAG, e.Message);
             }
@@ -41,7 +42,7 @@ namespace CSU_PORTABLE.Droid
 
         void SendNotification(string messageBody)
         {
-            var intent = new Intent(this, typeof(MainActivity));
+            var intent = new Intent(this, typeof(AdminDashboardActivity));
             intent.AddFlags(ActivityFlags.ClearTop);
             var pendingIntent = PendingIntent.GetActivity(this, 0, intent, PendingIntentFlags.OneShot);
 
@@ -65,7 +66,7 @@ namespace CSU_PORTABLE.Droid
 
             Intent message = new Intent(Utils.Utils.ALERT_BROADCAST);
             //Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).SendBroadcast(message);
-            
+
             SendBroadcast(message);
         }
     }

@@ -12,22 +12,28 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    public partial class InsightsViewController : UIViewController
+    public partial class InsightsViewController : BaseController
     {
         private List<AlertModel> lstRecommendations;
         private LoadingOverlay loadingOverlay;
-        PreferenceHandler prefHandler;
+        //PreferenceHandler prefHandler;
         UserDetails userdetail;
         nfloat yAxisRecomendation = 70;
 
         public InsightsViewController(IntPtr handle) : base(handle)
         {
-            prefHandler = new PreferenceHandler();
-            userdetail = prefHandler.GetUserDetails();
+            //prefHandler = new PreferenceHandler();
+            userdetail = PreferenceHandler.GetUserDetails();
         }
 
 
         #region " Events "
+
+        public override void ViewDidAppear(bool animated)
+        {
+            base.ViewDidAppear(animated);
+
+        }
 
         public override void ViewDidLoad()
         {
@@ -195,7 +201,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void getRecommendationsList()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -212,7 +218,27 @@ namespace CSU_PORTABLE.iOS
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 JArray array = JArray.Parse(strContent);
                 lstRecommendations = array.ToObject<List<AlertModel>>();
-                GetRecommendations(lstRecommendations);
+                if (lstRecommendations.Count > 0)
+                {
+                    GetRecommendations(lstRecommendations);
+                }
+                else
+                {
+                    UILabel lblRemark = new UILabel()
+                    {
+                        Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 70, View.Bounds.Width, 40),
+                        Text = "No recommendations found!",
+                        Font = UIFont.FromName("Futura-Medium", 15f),
+                        TextColor = UIColor.White,
+                        BackgroundColor = UIColor.FromRGB(0, 102, 153),
+                        LineBreakMode = UILineBreakMode.WordWrap,
+                        Lines = 1,
+                        TextAlignment = UITextAlignment.Center
+                    };
+                    View.AddSubviews(lblRemark);
+                    loadingOverlay.Hide();
+                }
+
             }
             else
             {
@@ -223,7 +249,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void GetInsights()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>

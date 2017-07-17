@@ -60,8 +60,8 @@ namespace CSU_PORTABLE.iOS
                     }), true);
 
 
-            PreferenceHandler prefHandler = new PreferenceHandler();
-            UserDetails userDetail = prefHandler.GetUserDetails();
+            //PreferenceHandler prefHandler = new PreferenceHandler();
+            UserDetails userDetail = PreferenceHandler.GetUserDetails();
 
             //if (userDetail.Role_Id == 2)
             //{

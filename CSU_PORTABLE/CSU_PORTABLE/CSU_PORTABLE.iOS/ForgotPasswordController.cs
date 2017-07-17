@@ -13,12 +13,12 @@ namespace CSU_PORTABLE.iOS
     {
         LoadingOverlay loadingOverlay;
         private UIWebView webView;
-        PreferenceHandler prefHandler = null;
+        //PreferenceHandler prefHandler = null;
         UserDetails User = null;
         public ForgotPasswordController(IntPtr handle) : base(handle)
         {
-            this.prefHandler = new PreferenceHandler();
-            User = prefHandler.GetUserDetails();
+            //this.prefHandler = new PreferenceHandler();
+            User = PreferenceHandler.GetUserDetails();
         }
 
         public override void ViewDidLoad()
@@ -51,7 +51,7 @@ namespace CSU_PORTABLE.iOS
             if (req.Contains("id_token="))
             {
                 string token = Common.FunGetValuefromQueryString(req, "id_token");
-                prefHandler.SetToken(token);
+                PreferenceHandler.SetToken(token);
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using CSU_PORTABLE.iOS.Utils;
+﻿using CoreGraphics;
+using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
@@ -10,17 +11,17 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    public partial class AlertsViewController : UIViewController
+    public partial class AlertsViewController : BaseController
     {
-        PreferenceHandler prefHandler = null;
+        //PreferenceHandler prefHandler = null;
         UserDetails User = null;
         LoadingOverlay loadingOverlay;
         private AlertsSource alertsSource;
 
         public AlertsViewController(IntPtr handle) : base(handle)
         {
-            this.prefHandler = new PreferenceHandler();
-            User = prefHandler.GetUserDetails();
+            //this.prefHandler = new PreferenceHandler();
+            User = PreferenceHandler.GetUserDetails();
         }
 
         public override void ViewDidLoad()
@@ -41,7 +42,7 @@ namespace CSU_PORTABLE.iOS
 
         public async void GetAlerts()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, prefHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -72,7 +73,25 @@ namespace CSU_PORTABLE.iOS
             {
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 List<AlertModel> alertsList = JsonConvert.DeserializeObject<List<AlertModel>>(strContent);
-                BindAlerts(alertsList);
+                if (alertsList.Count > 0)
+                {
+                    BindAlerts(alertsList);
+                }
+                else
+                {
+                    UILabel lblRemark = new UILabel()
+                    {
+                        Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 20, View.Bounds.Width, 40),
+                        Text = "No alerts found!",
+                        Font = UIFont.FromName("Futura-Medium", 15f),
+                        TextColor = UIColor.White,
+                        BackgroundColor = UIColor.FromRGB(0, 102, 153),
+                        LineBreakMode = UILineBreakMode.WordWrap,
+                        Lines = 1,
+                        TextAlignment = UITextAlignment.Center
+                    };
+                    View.AddSubviews(lblRemark);
+                }
             }
             else
             {
@@ -94,14 +113,7 @@ namespace CSU_PORTABLE.iOS
             View.AddSubview(_table);
         }
 
-        //private void ShowMessage(string v)
-        //{
-        //    loadingOverlay.Hide();
-        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-        //    PresentViewController(alertController, true, null);
-
-        //}
+       
     }
 
 

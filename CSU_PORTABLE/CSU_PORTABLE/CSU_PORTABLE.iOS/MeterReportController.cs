@@ -38,8 +38,8 @@ namespace CSU_PORTABLE.iOS
                 View.AddSubview(webView);
                 showContentOnWebView(body);
 
-                var preferenceHandler = new PreferenceHandler();
-                int userId = preferenceHandler.GetUserDetails().UserId;
+                //var preferenceHandler = new PreferenceHandler();
+                int userId = PreferenceHandler.GetUserDetails().UserId;
                 if (userId != -1)
                 {
                     getMeterReports(userId, meterSerialNumber);
