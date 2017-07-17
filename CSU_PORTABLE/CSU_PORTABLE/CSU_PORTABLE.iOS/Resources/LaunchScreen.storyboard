@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="X5k-f2-b5h">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="X5k-f2-b5h">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -16,30 +17,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="45" translatesAutoresizingMaskIntoConstraints="NO" image="logo.png">
-                                <rect key="frame" x="61" y="176" width="240" height="188"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="45">
+                                <rect key="frame" x="61" y="176" width="240" height="225"/>
                                 <constraints>
-                                    <constraint id="66" firstAttribute="width" constant="240"/>
-                                    <constraint id="67" firstAttribute="height" constant="188"/>
+                                    <constraint id="77" firstAttribute="width" constant="240"/>
+                                    <constraint id="78" firstAttribute="height" constant="225"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="46" translatesAutoresizingMaskIntoConstraints="NO" text="ENERGY MANAGEMENT">
-                                <rect key="frame" x="28" y="93" width="335" height="42"/>
-                                <nil key="highlightedColor"/>
-                                <constraints>
-                                    <constraint id="70" firstAttribute="width" constant="335"/>
-                                    <constraint id="71" firstAttribute="height" constant="42"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="16" weight="semibold"/>
-                                <color key="textColor" colorSpace="calibratedRGB" red="0.031372549019607843" green="0.67450980392156867" blue="1" alpha="1"/>
-                            </label>
                         </subviews>
-                        <color key="backgroundColor" colorSpace="calibratedRGB" red="0.996078431372549" green="0.996078431372549" blue="0.996078431372549" alpha="1"/>
+                        <color key="backgroundColor" red="0.99607843137254903" green="0.99607843137254903" blue="0.99607843137254903" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint id="64" firstItem="45" firstAttribute="leading" secondItem="yd7-JS-zBw" secondAttribute="leading" constant="61"/>
-                            <constraint id="65" firstItem="45" firstAttribute="top" secondItem="yd7-JS-zBw" secondAttribute="top" constant="176"/>
-                            <constraint id="68" firstItem="46" firstAttribute="leading" secondItem="yd7-JS-zBw" secondAttribute="leading" constant="28"/>
-                            <constraint id="69" firstItem="46" firstAttribute="top" secondItem="yd7-JS-zBw" secondAttribute="top" constant="93"/>
+                            <constraint id="75" firstItem="45" firstAttribute="leading" secondItem="yd7-JS-zBw" secondAttribute="leading" constant="61"/>
+                            <constraint id="76" firstItem="45" firstAttribute="top" secondItem="yd7-JS-zBw" secondAttribute="top" constant="176"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -50,7 +39,6 @@
     </scenes>
     <resources>
         <image name="logo.png" width="89" height="99"/>
-        <image name="threelines.png" width="30" height="30"/>
         <image name="Arrow_Blue.png" width="9" height="19"/>
         <image name="Arrow_Green.png" width="9" height="19"/>
         <image name="Arrow_Red.png" width="9" height="19"/>
@@ -90,6 +78,7 @@
         <image name="Smiley_Very_Happy_Icon.png" width="22" height="22"/>
         <image name="splash.png" width="300" height="100"/>
         <image name="Thank_You_Icon.png" width="244" height="162"/>
+        <image name="threelines.png" width="30" height="30"/>
         <image name="Tick_BTN_White.png" width="86" height="86"/>
         <image name="Up_Arrow_Icon.png" width="36" height="36"/>
         <image name="User_Icon_Selected-13.png" width="26" height="26"/>

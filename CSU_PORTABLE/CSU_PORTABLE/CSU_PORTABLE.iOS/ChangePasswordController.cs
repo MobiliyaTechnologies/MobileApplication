@@ -12,7 +12,7 @@ namespace CSU_PORTABLE.iOS
 {
     public partial class ChangePasswordController : BaseController
     {
-       // PreferenceHandler prefHandler = null;
+        // PreferenceHandler prefHandler = null;
         UserDetails User = null;
         LoadingOverlay loadingOverlay;
         private UIWebView webView;
@@ -43,18 +43,19 @@ namespace CSU_PORTABLE.iOS
             {
                 string token = Common.FunGetValuefromQueryString(req, "id_token");
                 PreferenceHandler.SetToken(token);
+                var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
+                ViewController.NavigationItem.SetHidesBackButton(true, false);
+                NavController.PushViewController(ViewController, false);
+                SidebarController.MenuWidth = 0;
+                SidebarController.CloseMenu();
             }
             else
             {
-                IOSUtil.ShowAlert("Failed to change password.Please try again later.");
-
+                //IOSUtil.ShowAlert("Failed to change password.Please try again later.");
+                NavController.PopViewController(true);
             }
-            var ViewController = (ViewController)Storyboard.InstantiateViewController("ViewController");
-            ViewController.NavigationItem.SetHidesBackButton(true, false);
-            NavController.PushViewController(ViewController, false);
-            SidebarController.MenuWidth = 0;
-            SidebarController.CloseMenu();
+
         }
-        
+
     }
 }

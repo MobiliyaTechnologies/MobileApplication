@@ -12,7 +12,7 @@ using UIKit;
 
 namespace CSU_PORTABLE.iOS
 {
-    public partial class InsightsViewController : UIViewController
+    public partial class InsightsViewController : BaseController
     {
         private List<AlertModel> lstRecommendations;
         private LoadingOverlay loadingOverlay;
@@ -28,6 +28,12 @@ namespace CSU_PORTABLE.iOS
 
 
         #region " Events "
+
+        public override void ViewDidAppear(bool animated)
+        {
+            base.ViewDidAppear(animated);
+
+        }
 
         public override void ViewDidLoad()
         {
@@ -212,7 +218,27 @@ namespace CSU_PORTABLE.iOS
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 JArray array = JArray.Parse(strContent);
                 lstRecommendations = array.ToObject<List<AlertModel>>();
-                GetRecommendations(lstRecommendations);
+                if (lstRecommendations.Count > 0)
+                {
+                    GetRecommendations(lstRecommendations);
+                }
+                else
+                {
+                    UILabel lblRemark = new UILabel()
+                    {
+                        Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 70, View.Bounds.Width, 40),
+                        Text = "No recommendations found!",
+                        Font = UIFont.FromName("Futura-Medium", 15f),
+                        TextColor = UIColor.White,
+                        BackgroundColor = UIColor.FromRGB(0, 102, 153),
+                        LineBreakMode = UILineBreakMode.WordWrap,
+                        Lines = 1,
+                        TextAlignment = UITextAlignment.Center
+                    };
+                    View.AddSubviews(lblRemark);
+                    loadingOverlay.Hide();
+                }
+
             }
             else
             {

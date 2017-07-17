@@ -1,4 +1,5 @@
-﻿using CoreGraphics;
+﻿using BarChart;
+using CoreGraphics;
 using CoreLocation;
 using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
@@ -24,74 +25,95 @@ namespace CSU_PORTABLE.iOS
         private UserDetails userdetail;
         private LoadingOverlay loadingOverlay;
         private string localToken = string.Empty;
+        public ConsumptionFor CurrentConsumption = ConsumptionFor.Premises;
+        public int CurrentPremisesId = 0;
+        private BarChartView chart;
+        public UILabel lblHeader;
+        public UIButton btnBack;
 
         public MapViewController(IntPtr handle) : base(handle)
         {
         }
 
-        public override void ViewDidAppear(bool animated)
-        {
-            base.ViewDidAppear(animated);
-            //addPinAndCircle();
-            //GetMeterDetails(1);
-            MapCampus();
-        }
-
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            //this.SidebarController.MenuWidth = 250;
-
-
-
-            // GenerateInsightsHeader();
             this.NavigationController.NavigationBarHidden = false;
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
-            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
 
 
-
+            //IOSUtil.RedirectToLogin(this, loadingOverlay);
 
             //prefHandler = new PreferenceHandler();
+
+            //await IOSUtil.RefreshToken(this, loadingOverlay);
             userdetail = PreferenceHandler.GetUserDetails();
-            this.localToken = PreferenceHandler.GetToken();
-            GetInsights(userdetail.UserId);
+            //this.localToken = PreferenceHandler.GetToken();
+            //GetInsights(userdetail.UserId);
+            lblHeader = new UILabel()
+            {
+                Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 20, View.Bounds.Width, 40),
+                Text = "Premises",
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                TextColor = UIColor.White,
+                BackgroundColor = UIColor.FromRGB(0, 102, 153),
+                LineBreakMode = UILineBreakMode.WordWrap,
+                Lines = 1,
+                TextAlignment = UITextAlignment.Center
+            };
 
-            //GenerateInsightsHeader();
-
-            //double mapHeight = NavigationController.NavigationBar.Bounds.Bottom + 160;
-            ////map = new MKMapView(UIScreen.MainScreen.Bounds);
-            //map = new MKMapView(new CGRect(0, mapHeight, View.Bounds.Width, View.Bounds.Height - mapHeight));
-            //map.MapType = MKMapType.Standard; //road map    
-            //map.ZoomEnabled = true;
-            //map.ScrollEnabled = true;
-
-
-            //CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(userdetail.UserCampus[0].Latitude, userdetail.UserCampus[0].Longitude);
-
-            //MKCoordinateSpan span = new MKCoordinateSpan(0.008, 0.008);
-            //map.Region = new MKCoordinateRegion(coordinate, span);
-
-            //var mapViewDelegate = new MyMapDelegate();
-            //mapViewDelegate.AnnotationTapped += TheMapView_OnAnnotationTapped;
-            //map.Delegate = mapViewDelegate;
-
-            //View.AddSubviews(map);
-
-
-            //var preferenceHandler = new PreferenceHandler();
-            //int userId = preferenceHandler.GetUserDetails().UserId;
-            //if (userId != -1)
+            btnBack = new UIButton()
+            {
+                Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 20, 80, 40),
+                Font = UIFont.FromName("Futura-Medium", 15f),
+                BackgroundColor = UIColor.FromRGB(0, 102, 153),
+            };
+            btnBack.SetTitle("< BACK", UIControlState.Normal);
+            btnBack.SetTitleColor(UIColor.White, UIControlState.Normal);
+            btnBack.SetTitleShadowColor(UIColor.FromRGB(0, 102, 180), UIControlState.Normal);
+            btnBack.TouchUpInside += BtnBack_TouchUpInside;
+            btnBack.Hidden = true;
+            View.AddSubviews(lblHeader, btnBack);
+            GetConsumptionDetails(CurrentConsumption, 0);
+            //InvokeOnMainThread(() =>
             //{
-            //    GetMeterDetails(userId);
-            //    GetMonthlyConsumptionDetails(userId);
-            //}
-            //else
-            //{
-            //    ShowMessage("Invalid Email. Please Login Again !");
-            //}
+            //    // Added for showing loading screen
+            //    var bounds = UIScreen.MainScreen.Bounds;
+            //    // show the loading overlay on the UI thread using the correct orientation sizing
+            //    loadingOverlay = new LoadingOverlay(bounds);
+            //    View.Add(loadingOverlay);
+            //});
+        }
 
+        private void BtnBack_TouchUpInside(object sender, EventArgs e)
+        {
+            btnBack.Hidden = false;
+            switch (CurrentConsumption)
+            {
+                case ConsumptionFor.Buildings:
+                    CurrentConsumption = ConsumptionFor.Premises;
+                    GetConsumptionDetails(CurrentConsumption, 0);
+                    CurrentPremisesId = 0;
+                    btnBack.Hidden = true;
+                    break;
+                case ConsumptionFor.Meters:
+                    CurrentConsumption = ConsumptionFor.Buildings;
+                    GetConsumptionDetails(CurrentConsumption, CurrentPremisesId);
+
+                    break;
+                case ConsumptionFor.Premises:
+                    btnBack.Hidden = true;
+                    break;
+            }
+            lblHeader.Text = CurrentConsumption.ToString();
+        }
+
+        #region " Consumption "
+
+        public async void GetConsumptionDetails(ConsumptionFor currentConsumption, int Id)
+        {
             InvokeOnMainThread(() =>
             {
                 // Added for showing loading screen
@@ -99,10 +121,225 @@ namespace CSU_PORTABLE.iOS
                 // show the loading overlay on the UI thread using the correct orientation sizing
                 loadingOverlay = new LoadingOverlay(bounds);
                 View.Add(loadingOverlay);
-
-                //GetMeterDetails(1);
             });
+
+            string url = GetConsumptionURL(currentConsumption);
+            if (Id != 0)
+            {
+                url = url + "/" + Convert.ToString(Id);
+            }
+            var responseConsumption = await InvokeApi.Invoke(url, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            if (responseConsumption.StatusCode == HttpStatusCode.OK)
+            {
+                GetConsumptionResponse(responseConsumption);
+
+            }
+            else if (responseConsumption.StatusCode == HttpStatusCode.BadRequest || responseConsumption.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await IOSUtil.RefreshToken(this, loadingOverlay);
+            }
         }
+
+        private string GetConsumptionURL(ConsumptionFor currentConsumption)
+        {
+            switch (currentConsumption)
+            {
+                case ConsumptionFor.Premises:
+                    return Constants.API_GET_ALLPREMISES;
+                case ConsumptionFor.Buildings:
+                    return Constants.API_GET_ALLBUILDINGS_BY_PREMISEID;
+                case ConsumptionFor.Meters:
+                    return Constants.API_GET_ALLMETERS_BY_BUILDINGID;
+                default:
+                    return Constants.API_GET_ALLPREMISES;
+            }
+        }
+
+
+        private List<ConsumptionModel> GetConsumptionModels(string consumptionContent)
+        {
+            List<ConsumptionModel> conModels = new List<ConsumptionModel>();
+            switch (CurrentConsumption)
+            {
+                case ConsumptionFor.Premises:
+                    var modelPremise = JsonConvert.DeserializeObject<List<Premise>>(consumptionContent);
+                    conModels = modelPremise.ConvertAll(x => new ConsumptionModel()
+                    {
+                        Id = x.PremiseID,
+                        Name = CurrentConsumption.ToString() + " - " + x.PremiseName,
+                        Consumed = Convert.ToString(Math.Round((x.MonthlyConsumption / 1000), 2)) + " K",
+                        Expected = Convert.ToString(Math.Round((x.MonthlyPrediction / 1000), 2)) + " K",
+                        Overused = Convert.ToString(Math.Round((x.MonthlyPrediction - x.MonthlyConsumption) / 1000, 2)) + " K"
+                    });
+                    break;
+                case ConsumptionFor.Buildings:
+                    var modelBuilding = JsonConvert.DeserializeObject<List<Building>>(consumptionContent);
+                    return modelBuilding.ConvertAll(x => new ConsumptionModel()
+                    {
+                        Id = x.BuildingID,
+                        Name = CurrentConsumption.ToString() + " - " + x.BuildingName,
+                        Consumed = Convert.ToString(Math.Round((x.MonthlyConsumption / 1000), 2)) + " K",
+                        Expected = Convert.ToString(Math.Round((x.MonthlyPrediction / 1000), 2)) + " K",
+                        Overused = Convert.ToString(Math.Round((x.MonthlyPrediction - x.MonthlyConsumption) / 1000, 2)) + " K"
+                    });
+                case ConsumptionFor.Meters:
+                    var modelMeter = JsonConvert.DeserializeObject<List<Meter>>(consumptionContent);
+                    return modelMeter.ConvertAll(x => new ConsumptionModel()
+                    {
+                        Id = x.Id,
+                        Name = CurrentConsumption.ToString() + " - " + x.PowerScout,
+                        Consumed = Convert.ToString(Math.Round((x.MonthlyConsumption / 1000), 2)) + " K",
+                        Expected = Convert.ToString(Math.Round((x.MonthlyPrediction / 1000), 2)) + " K",
+                        Overused = Convert.ToString(Math.Round((x.MonthlyPrediction - x.MonthlyConsumption) / 1000, 2)) + " K"
+                    });
+            }
+            return conModels;
+        }
+
+
+        private async void GetConsumptionResponse(HttpResponseMessage responseConsumption)
+        {
+            if (responseConsumption != null && responseConsumption.StatusCode == System.Net.HttpStatusCode.OK && responseConsumption.Content != null)
+            {
+                string strContent = await responseConsumption.Content.ReadAsStringAsync();
+                List<ConsumptionModel> consumptions = GetConsumptionModels(strContent);
+                SetConsumptions(consumptions);
+            }
+            else
+            {
+                await IOSUtil.RefreshToken(this, loadingOverlay);
+            }
+        }
+
+        private void SetConsumptions(List<ConsumptionModel> consumpModels)
+        {
+            SetConsumptionBarChart(consumpModels);
+            UITableView _table = new UITableView();
+
+            _table = new UITableView
+            {
+                Frame = new CoreGraphics.CGRect(0, 340, View.Bounds.Width, View.Bounds.Height - 340),
+                RowHeight = 100,
+                BackgroundColor = UIColor.FromRGBA(193, 214, 218, 0.3f),
+                Source = new ConsumptionSource(consumpModels, this)
+            };
+            _table.ReloadData();
+            _table.ClipsToBounds = true;
+            View.AddSubview(_table);
+            loadingOverlay.Hide();
+        }
+
+        private void SetConsumptionBarChart(List<ConsumptionModel> consumpModels)
+        {
+            if (consumpModels.Count > 0)
+            {
+                chart = new BarChartView()
+                {
+                    Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 60, View.Bounds.Width, 235),
+                    BarCaptionInnerColor = UIColor.White,
+                    BarCaptionOuterColor = UIColor.White,
+                    BarWidth = 80,
+                    BarOffset = 40,
+                    BackgroundColor = UIColor.LightGray,
+                    LayoutMargins = new UIEdgeInsets(5, 5, 5, 5),
+                    MinimumValue = 0
+                };
+                //#pragma warning disable CS0618 // Type or member is obsolete
+                //var layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
+                //#pragma warning restore CS0618 // Type or member is obsolete
+                //layoutParams.SetMargins(5, 5, 5, 5);
+                //chart.LayoutParameters = layoutParams;
+                //chart.MinimumValue = -1;
+                //chart.MaximumValue = 2;
+                //chart.BarCaptionInnerColor = UIColor.Blue.CGColor;
+                //chart.BarCaptionOuterColor = UIColor.Blue;
+                //chart.SetBackgroundColor(UIColor.Blue);
+                chart.BarClick += Chart_BarClick; ;
+
+                var chartData = new List<BarModel>();
+                bool ShowChart = false;
+                foreach (var item in consumpModels)
+                {
+
+                    BarModel chartItem = new BarModel();
+                    try
+                    {
+                        chartItem.Legend = item.Name.Split('-')[1];
+                    }
+                    catch (Exception)
+                    {
+                        chartItem.Legend = item.Name;
+                    }
+
+                    chartItem.ValueCaption = item.Id.ToString();
+                    chartItem.ValueCaptionHidden = true;
+                    chartItem.Value = float.Parse(item.Consumed.Replace('K', ' ').Trim());
+                    if (float.Parse(item.Consumed.Replace('K', ' ').Trim()) > 0)
+                    {
+                        ShowChart = true;
+                    }
+                    //chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
+                    chartItem.Color = UIColor.Blue;
+                    chartData.Add(chartItem);
+                }
+                chart.AutoLevelsEnabled = true;
+                //chart.BarCaptionFontSize = 20;
+                if (ShowChart)
+                {
+                    chart.ItemsSource = chartData;
+                    View.AddSubview(chart);
+                    //chart.TextAlignment = TextAlignment.TextEnd;
+                    //chart.TextDirection = TextDirection.Rtl;
+                    //remark.Visibility = ViewStates.Invisible;
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(chart);
+                }
+                else
+                {
+                    //var remarks = new TextView(this);
+                    //remarks.Text = "No Records Found!";
+                    //var remarksLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
+
+                    //layoutParams.SetMargins(5, 5, 5, 5);
+                    //remarks.LayoutParameters = remarksLayoutParams;
+                    //remarks.TextDirection = TextDirection.FirstStrongRtl;
+                    //remarks.TextAlignment = TextAlignment.Center;
+                    //remarks.SetTextColor(Color.LightGray);
+                    //remarks.Gravity = GravityFlags.Center;
+                    //remarks.TextSize = 20;
+                    //remark.Text = "No records found!";
+                    //remark.Visibility = ViewStates.Visible;
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(remarks);
+                }
+            }
+            else
+            {
+                //Utils.Utils.ShowToast(this, "No records found!");
+            }
+        }
+
+        private void Chart_BarClick(object sender, BarClickEventArgs e)
+        {
+            if (CurrentConsumption != ConsumptionFor.Meters)
+            {
+                switch (CurrentConsumption)
+                {
+                    case ConsumptionFor.Premises:
+                        CurrentPremisesId = Convert.ToInt32(e.Bar.ValueCaption);
+                        CurrentConsumption = ConsumptionFor.Buildings;
+                        lblHeader.Text = ConsumptionFor.Buildings.ToString();
+                        break;
+                    case ConsumptionFor.Buildings:
+                        CurrentConsumption = ConsumptionFor.Meters;
+                        lblHeader.Text = ConsumptionFor.Meters.ToString();
+                        break;
+                }
+                btnBack.Hidden = false;
+                GetConsumptionDetails(CurrentConsumption, Convert.ToInt32(e.Bar.ValueCaption));
+            }
+        }
+        #endregion
 
         private void GenerateInsightsHeader(InsightDataModel insightDM)
         {
@@ -263,22 +500,6 @@ namespace CSU_PORTABLE.iOS
             SidebarController.CloseMenu();
         }
 
-        private void TheMapView_OnAnnotationTapped(object sender, EventArgs args)
-        {
-            var annotView = sender as MKAnnotationView;
-            if (annotView != null) { }
-            var meterAnotation = annotView.Annotation as MKPointAnnotation;
-
-            if (meterAnotation != null)
-            {
-                string serial = meterAnotation.Subtitle;
-                if (serial != null && serial.Length > 0)
-                {
-                    ShowMeterReports(meterAnotation.Title, serial);
-                }
-            }
-        }
-
         private void ShowMessage(string v)
         {
             UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
@@ -324,417 +545,6 @@ namespace CSU_PORTABLE.iOS
 
         #endregion
 
-
-        #region " Maps "
-        //for api call
-
-        private void MapCampus()
-        {
-            if (userdetail.UserCampus != null)
-            {
-                List<MapPoints> campusPoints = userdetail.UserCampus.ConvertAll(new Converter<CampusModel, MapPoints>(IOSUtil.ConvertCampusToPoints));
-                addPinAndCircle(campusPoints);
-            }
-        }
-
-        private async void GetBuildingWiseConsumptionforCampus(int campusId)
-        {
-            var response = await InvokeApi.Invoke(Constants.API_GET_BUILDINGSBYCAMPUS + "/" + campusId, string.Empty, HttpMethod.Get, localToken);
-            Console.WriteLine(response);
-            if (response.StatusCode != 0)
-            {
-                InvokeOnMainThread(() =>
-                {
-                    GetBuildingWiseConsumptionforCampusResponse(response);
-                });
-            }
-        }
-
-        private async void GetBuildingWiseConsumptionforCampusResponse(HttpResponseMessage restResponse)
-        {
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-            {
-                string strContent = await restResponse.Content.ReadAsStringAsync();
-                JArray array = JArray.Parse(strContent);
-                var buildingModels = array.ToObject<List<BuildingModel>>();
-                List<MapPoints> points = buildingModels.ConvertAll(new Converter<BuildingModel, MapPoints>(IOSUtil.ConvertBuildingToPoints));
-                addPinAndCircle(points);
-            }
-            else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                IOSUtil.RefreshToken(this, loadingOverlay);
-            }
-            else
-            {
-                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
-            }
-        }
-
-        private async void GetMonthlyConsumptionDetails(int userId)
-        {
-            var response = await InvokeApi.Invoke(Constants.API_GET_MONTHLY_CONSUMPTION + "/2/2017", string.Empty, HttpMethod.Get, localToken);
-            Console.WriteLine(response);
-            if (response.StatusCode != 0)
-            {
-                InvokeOnMainThread(() =>
-                {
-                    GetMonthlyConsumptionResponse(response);
-                });
-            }
-        }
-
-        private async void GetMonthlyConsumptionResponse(HttpResponseMessage restResponse)
-        {
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-            {
-                string strContent = await restResponse.Content.ReadAsStringAsync();
-                JArray array = JArray.Parse(strContent);
-                monthlyConsumptionList = array.ToObject<List<MonthlyConsumptionDetails>>();
-
-                addPinAndCircle();
-            }
-            else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                IOSUtil.RefreshToken(this, loadingOverlay);
-            }
-            else
-            {
-                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
-            }
-        }
-
-        private async void GetMeterDetails(int userId)
-        {
-            var response = await InvokeApi.Invoke(Constants.API_GET_METER_LIST + "/2", string.Empty, HttpMethod.Get, localToken);
-            Console.WriteLine(response);
-            if (response.StatusCode != 0)
-            {
-
-                InvokeOnMainThread(() =>
-                {
-                    GetMeterDetailsResponse(response);
-                });
-            }
-        }
-
-        private async void GetMeterDetailsResponse(HttpResponseMessage restResponse)
-        {
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-            {
-                string strContent = await restResponse.Content.ReadAsStringAsync();
-                JArray array = JArray.Parse(strContent);
-                meterList = array.ToObject<List<MeterDetails>>();
-                var points = meterList.ConvertAll(new Converter<MeterDetails, MapPoints>(IOSUtil.ConvertMetersToPoints));
-                addPinAndCircle(points);
-            }
-            else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                IOSUtil.RefreshToken(this, loadingOverlay);
-            }
-            else
-            {
-                IOSUtil.ShowMessage("Failed to get details. Please try again later.", loadingOverlay, this);
-            }
-        }
-
-
-
-        private void ShowMeterReports(string meterName, string meterSerial)
-        {
-            // Launches a new instance of CallHistoryController
-            MeterReportController repotrView = this.Storyboard.InstantiateViewController("MeterReportController") as MeterReportController;
-            if (repotrView != null)
-            {
-                repotrView.meterName = meterName;
-                repotrView.meterSerialNumber = meterSerial;
-                this.NavigationController.PushViewController(repotrView, true);
-            }
-
-            /*ReportController reportView = this.Storyboard.InstantiateViewController("ReportController") as ReportController;
-            if (reportView != null)
-            {
-                this.NavigationController.PushViewController(reportView, true);
-            }*/
-        }
-
-        private void addPinAndCircle()
-        {
-            if (meterList != null && monthlyConsumptionList != null && map != null)
-            {
-                IMKAnnotation[] an = map.Annotations;
-                if (an != null)
-                {
-                    map.RemoveAnnotations(an);
-                }
-                IMKOverlay[] ov = map.Overlays;
-                if (ov != null)
-                {
-                    map.RemoveOverlays(map.Overlays);
-                }
-                for (int i = 0; i < meterList.Count; i++)
-                {
-                    var meter = meterList[i];
-
-                    CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(meter.Latitude, meter.Longitude);
-                    map.AddAnnotations(new MKPointAnnotation()
-                    {
-                        Title = meter.Name,
-                        Subtitle = meter.Serial,
-                        Coordinate = coordinate
-                    });
-
-                    var circleOverlay = MKCircle.Circle(coordinate, getRadius(meter));
-                    circleOverlay.Subtitle = meter.Serial;
-                    map.AddOverlay(circleOverlay);
-                }
-            }
-        }
-
-        private double getRadius(MeterDetails meter)
-        {
-            double Monthly_KWH_Consumption = 0;
-
-            for (int i = 0; i < monthlyConsumptionList.Count; i++)
-            {
-                if (monthlyConsumptionList[i].Powerscout.Equals(meter.Serial))
-                {
-                    Monthly_KWH_Consumption = monthlyConsumptionList[i].Monthly_KWH_Consumption;
-                    break;
-                }
-            }
-
-            double radius = 0;
-            if (Monthly_KWH_Consumption == 0)
-            {
-                radius = 2;
-            }
-            else if (Monthly_KWH_Consumption > 0 && Monthly_KWH_Consumption <= 1000)
-            {
-                if (Monthly_KWH_Consumption < 500)
-                {
-                    //Minimum radius for the circle
-                    radius = 10;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 50;
-                }
-            }
-            else if (Monthly_KWH_Consumption > 1000 && Monthly_KWH_Consumption <= 10000)
-            {
-                if (Monthly_KWH_Consumption < 5250)
-                {
-                    //Minimum radius for the circle
-                    radius = 21;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 250;
-                }
-            }
-            else if (Monthly_KWH_Consumption > 10000 && Monthly_KWH_Consumption <= 38000)
-            {
-                if (Monthly_KWH_Consumption < 25625)
-                {
-                    //Minimum radius for the circle
-                    radius = 41;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 625;
-                }
-            }
-            else
-            {
-                if (Monthly_KWH_Consumption < 61000)
-                {
-                    //Minimum radius for the circle
-                    radius = 61;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 1000;
-                }
-            }
-            return radius;
-        }
-
-        private void addPinAndCircle(List<MapPoints> points)
-        {
-            if (points != null && map != null)
-            {
-                IMKAnnotation[] an = map.Annotations;
-                if (an != null)
-                {
-                    map.RemoveAnnotations(an);
-                }
-                IMKOverlay[] ov = map.Overlays;
-                if (ov != null)
-                {
-                    map.RemoveOverlays(map.Overlays);
-                }
-
-                foreach (var item in points)
-                {
-                    CLLocationCoordinate2D coordinate = new CLLocationCoordinate2D(item.Latitude, item.Longitude);
-                    map.AddAnnotations(new MKPointAnnotation()
-                    {
-                        Title = item.Name,
-                        Subtitle = item.Description,
-                        Coordinate = coordinate
-                    });
-
-                    var circleOverlay = MKCircle.Circle(coordinate, getRadius(item.MonthlyConsumption));
-                    circleOverlay.Subtitle = item.Description;
-                    map.AddOverlay(circleOverlay);
-                }
-            }
-        }
-
-        private double getRadius(double Monthly_KWH_Consumption)
-        {
-            double radius = 0;
-            if (Monthly_KWH_Consumption == 0)
-            {
-                radius = 2;
-            }
-            else if (Monthly_KWH_Consumption > 0 && Monthly_KWH_Consumption <= 1000)
-            {
-                if (Monthly_KWH_Consumption < 500)
-                {
-                    //Minimum radius for the circle
-                    radius = 10;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 50;
-                }
-            }
-            else if (Monthly_KWH_Consumption > 1000 && Monthly_KWH_Consumption <= 10000)
-            {
-                if (Monthly_KWH_Consumption < 5250)
-                {
-                    //Minimum radius for the circle
-                    radius = 21;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 250;
-                }
-            }
-            else if (Monthly_KWH_Consumption > 10000 && Monthly_KWH_Consumption <= 38000)
-            {
-                if (Monthly_KWH_Consumption < 25625)
-                {
-                    //Minimum radius for the circle
-                    radius = 41;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 625;
-                }
-            }
-            else
-            {
-                if (Monthly_KWH_Consumption < 61000)
-                {
-                    //Minimum radius for the circle
-                    radius = 61;
-                }
-                else
-                {
-                    radius = Monthly_KWH_Consumption / 1000;
-                }
-            }
-            return radius;
-        }
-
-
-
-        //for overlay
-        public class SearchResultsUpdator : UISearchResultsUpdating
-        {
-            public event Action<string> UpdateSearchResults = delegate { };
-
-            public override void UpdateSearchResultsForSearchController(UISearchController searchController)
-            {
-                this.UpdateSearchResults(searchController.SearchBar.Text);
-            }
-        }
-
-        class MyMapDelegate : MKMapViewDelegate
-        {
-            public event EventHandler AnnotationTapped;
-            string pId = "PinAnnotation";
-
-            public override MKAnnotationView GetViewForAnnotation(MKMapView mapView, IMKAnnotation annotation)
-            {
-                if (annotation is MKUserLocation)
-                    return null;
-
-                // create pin annotation view
-                MKAnnotationView pinView = (MKPinAnnotationView)mapView.DequeueReusableAnnotation(pId);
-
-                if (pinView == null)
-                    pinView = new MKPinAnnotationView(annotation, pId);
-
-                ((MKPinAnnotationView)pinView).PinColor = MKPinAnnotationColor.Red;
-                pinView.CanShowCallout = true;
-                pinView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
-                return pinView;
-            }
-
-            public override void CalloutAccessoryControlTapped(MKMapView mapView, MKAnnotationView view, UIControl control)
-            {
-
-                if (AnnotationTapped != null)
-                {
-                    AnnotationTapped(view, new EventArgs());
-                }
-            }
-
-            public override MKOverlayView GetViewForOverlay(MKMapView mapView, IMKOverlay overlay)
-            {
-                var circleOverlay = overlay as MKCircle;
-                var circleView = new MKCircleView(circleOverlay);
-                var serial = circleOverlay.GetSubtitle();
-                circleView.FillColor = getColor(serial);
-                circleView.Alpha = 0.4f;
-                return circleView;
-            }
-
-            private UIColor getColor(string meterName)
-            {
-                UIColor fillColor = UIColor.Blue;
-                if (meterName.Equals("P371602077"))
-                {
-                    fillColor = UIColor.Cyan;
-                }
-                else if (meterName.Equals("P371602079"))
-                {
-                    fillColor = UIColor.Orange;
-                }
-                else if (meterName.Equals("P371602073"))
-                {
-                    fillColor = UIColor.Yellow;
-                }
-                else if (meterName.Equals("P371602072"))
-                {
-                    fillColor = UIColor.Red;
-                }
-                else if (meterName.Equals("P371602070"))
-                {
-                    fillColor = UIColor.Purple;
-                }
-                else if (meterName.Equals("P371602075"))
-                {
-                    fillColor = UIColor.DarkGray;
-                }
-                return fillColor;
-            }
-        }
-
-        #endregion
 
     }
 }

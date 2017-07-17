@@ -4,8 +4,10 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using UIKit;
 
@@ -15,10 +17,14 @@ namespace CSU_PORTABLE.iOS
     {
         UILabel QuestionHeader, QuestionSubHeader;
         public static int SelectedAnswer { get; set; }
+        public string SelectedAnswerDesc { get; set; }
+        public int SelectedSegment { get; set; }
+
         LoadingOverlay loadingOverlay;
         //PreferenceHandler prefHandler;
         UserDetails userdetail;
         public int selectedClassRoom;
+        public List<QuestionModel> questionList;
 
         public QuestionsViewController(IntPtr handle) : base(handle)
         {
@@ -45,10 +51,10 @@ namespace CSU_PORTABLE.iOS
 
         #region " Events "
 
-        public override void ViewDidLoad()
+        public override void ViewWillAppear(bool animated)
         {
-            base.ViewDidLoad();
-
+            base.ViewWillAppear(animated);
+            View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
             NavigationItem.SetRightBarButtonItem(
                 new UIBarButtonItem(UIImage.FromBundle("a")
                     , UIBarButtonItemStyle.Plain
@@ -63,6 +69,12 @@ namespace CSU_PORTABLE.iOS
             GetQuestionView();
         }
 
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
+        }
+
 
         private void BtnSubmit_TouchUpInside(object sender, EventArgs e)
         {
@@ -71,7 +83,7 @@ namespace CSU_PORTABLE.iOS
             // show the loading overlay on the UI thread using the correct orientation sizing
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
-            if (SelectedAnswer >= 0)
+            if (SelectedAnswer > 0)
             {
 
                 submitFeedback(userdetail.UserId);
@@ -87,7 +99,7 @@ namespace CSU_PORTABLE.iOS
 
         private void BtnBack_TouchUpInside(object sender, EventArgs e)
         {
-            //NavigationController.PopToRootViewController(true);
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
             NavigationController.PopViewController(true);
         }
 
@@ -128,21 +140,13 @@ namespace CSU_PORTABLE.iOS
 
 
             UIButton btnBack = new UIButton(UIButtonType.Custom);
-            //btnBack.SetTitle("Back", UIControlState.Normal);
-            //btnBack.Font = UIFont.FromName("Futura-Medium", 15f);
-            //btnBack.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
-            //btnBack.SetTitleColor(UIColor.Green, UIControlState.Focused);
             btnBack.SetImage(UIImage.FromBundle("Back_BTN_White.png"), UIControlState.Normal);
             btnBack.Layer.CornerRadius = 20;
             btnBack.TouchUpInside += BtnBack_TouchUpInside;
             btnBack.Frame = new CGRect((View.Bounds.Width / 2) - 60, 480, 40, 40);
-            btnBack.BackgroundColor = UIColor.FromRGB(33, 77, 43);
+            btnBack.BackgroundColor = UIColor.FromRGB(0, 102, 153);
 
             UIButton btnSubmit = new UIButton(UIButtonType.Custom);
-            //btnSubmit.SetTitle("Submit", UIControlState.Normal);
-            //btnSubmit.Font = UIFont.FromName("Futura-Medium", 15f);
-            //btnSubmit.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
-            //btnSubmit.SetTitleColor(UIColor.Green, UIControlState.Focused);
             btnSubmit.SetImage(UIImage.FromBundle("Tick_BTN_White.png"), UIControlState.Normal);
             btnSubmit.Layer.CornerRadius = 20;
             btnSubmit.TouchUpInside += BtnSubmit_TouchUpInside;
@@ -193,42 +197,44 @@ namespace CSU_PORTABLE.iOS
 
             segAnswers.ValueChanged += (sender, e) =>
             {
-                SelectedAnswer = (int)(sender as UISegmentedControl).SelectedSegment;
+                SelectedSegment = (int)(sender as UISegmentedControl).SelectedSegment;
+                SelectedAnswer = questionList[0].Answers[(int)(sender as UISegmentedControl).SelectedSegment].AnswerId;
+                SelectedAnswerDesc = questionList[0].Answers[(int)(sender as UISegmentedControl).SelectedSegment].AnswerDesc;
                 segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon_Opacity.png"), 0);
                 segAnswers.SetImage(UIImage.FromBundle("Cold_Icon_Opacity.png"), 1);
                 segAnswers.SetImage(UIImage.FromBundle("Normal_Icon_Opacity.png"), 2);
                 segAnswers.SetImage(UIImage.FromBundle("Hot_Icon_Opacity.png"), 3);
                 segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon_Opacity.png"), 4);
-                lblSelectedAnswer.Text = answers[SelectedAnswer];
-                switch (SelectedAnswer)
+                lblSelectedAnswer.Text = SelectedAnswerDesc;
+                switch (SelectedSegment)
                 {
                     case 0:
-                        segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon.png"), SelectedAnswer);
+                        segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon.png"), SelectedSegment);
                         View.BackgroundColor = UIColor.FromRGB(36, 116, 169);
                         btnBack.BackgroundColor = UIColor.FromRGB(36, 116, 169);
                         this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(36, 116, 169);
                         break;
                     case 1:
-                        segAnswers.SetImage(UIImage.FromBundle("Cold_Icon.png"), SelectedAnswer);
+                        segAnswers.SetImage(UIImage.FromBundle("Cold_Icon.png"), SelectedSegment);
                         btnBack.BackgroundColor = UIColor.FromRGB(16, 84, 86);
                         View.BackgroundColor = UIColor.FromRGB(16, 84, 86);
                         this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(16, 84, 86);
                         break;
                     case 2:
-                        segAnswers.SetImage(UIImage.FromBundle("Normal_Icon.png"), SelectedAnswer);
+                        segAnswers.SetImage(UIImage.FromBundle("Normal_Icon.png"), SelectedSegment);
                         View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
                         btnBack.BackgroundColor = UIColor.FromRGB(0, 102, 153);
                         this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
                         break;
                     case 3:
-                        segAnswers.SetImage(UIImage.FromBundle("Hot_Icon.png"), SelectedAnswer);
+                        segAnswers.SetImage(UIImage.FromBundle("Hot_Icon.png"), SelectedSegment);
 
                         View.BackgroundColor = UIColor.FromRGB(204, 84, 48);
                         btnBack.BackgroundColor = UIColor.FromRGB(204, 84, 48);
                         this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(204, 84, 48);
                         break;
                     case 4:
-                        segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon.png"), SelectedAnswer);
+                        segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon.png"), SelectedSegment);
                         btnBack.BackgroundColor = UIColor.FromRGB(214, 69, 66);
                         View.BackgroundColor = UIColor.FromRGB(214, 69, 66);
                         this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(214, 69, 66);
@@ -274,12 +280,12 @@ namespace CSU_PORTABLE.iOS
         private async void submitFeedback(int userId)
         {
             FeedbackModel feedbackModel = new FeedbackModel();
-            feedbackModel.QuestionId = 1;
-            feedbackModel.RoomId = selectedClassRoom + 1;
-            feedbackModel.AnswerId = SelectedAnswer + 1;
-            feedbackModel.FeedbackDesc = "";
+            feedbackModel.QuestionId = questionList[0].QuestionId;
+            feedbackModel.RoomId = selectedClassRoom;
+            feedbackModel.AnswerId = SelectedAnswer;
+            feedbackModel.FeedbackDesc = SelectedAnswerDesc;
 
-            var response = await InvokeApi.Invoke(Constants.API_GIVE_FEEDBACK + "/" + userId, JsonConvert.SerializeObject(feedbackModel), HttpMethod.Post);
+            var response = await InvokeApi.Invoke(Constants.API_GIVE_FEEDBACK, JsonConvert.SerializeObject(feedbackModel), HttpMethod.Post, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -314,6 +320,9 @@ namespace CSU_PORTABLE.iOS
                 ShowMessage("Failed to submit feedback, please try again!");
             }
         }
+
+
+
 
         private void ShowMessage(string v)
         {

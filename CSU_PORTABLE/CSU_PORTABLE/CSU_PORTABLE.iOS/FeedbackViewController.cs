@@ -5,10 +5,13 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using UIKit;
 
 namespace CSU_PORTABLE.iOS
@@ -18,14 +21,17 @@ namespace CSU_PORTABLE.iOS
         UILabel FeedbackHomeHeader, FeedbackHomeSubHeader;
         public static int classRoomId { get; set; }
         LoadingOverlay loadingOverlay;
-
+        private List<QuestionModel> questionList;
+        UIPickerViewModel modelClassRooms;
+        UIPickerView classRoomPicker;
+        public static List<RoomModel> roomsList;
         public FeedbackViewController(IntPtr handle) : base(handle)
         {
         }
 
-        public override void ViewDidLoad()
+        public async override void ViewWillAppear(bool animated)
         {
-            base.ViewDidLoad();
+            base.ViewWillAppear(animated);
             this.NavigationController.NavigationBarHidden = false;
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
             this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
@@ -41,34 +47,87 @@ namespace CSU_PORTABLE.iOS
                     }), true);
 
             // Added for showing loading screen
-            var bounds = UIScreen.MainScreen.Bounds;
-            // show the loading overlay on the UI thread using the correct orientation sizing
-            loadingOverlay = new LoadingOverlay(bounds);
-            View.Add(loadingOverlay);
-            GetRooms();
+
             CreateFeedbackDashboard();
+            if (roomsList == null)
+            {
+                await GetRooms();
+            }
+            else
+            {
+                BindClassRooms(roomsList);
+            }
+            if (questionList == null)
+            {
+                await GetQuestionList();
+            }
+        }
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+
         }
 
         #region " Events "
 
         private void BtnNext_TouchUpInside(object sender, EventArgs e)
         {
-            if (classRoomId >= 0)
+            if (classRoomId > 0)
             {
-                var QuestionsViewController = Storyboard.InstantiateViewController("QuestionsViewController") as QuestionsViewController;
-                QuestionsViewController.NavigationItem.SetHidesBackButton(true, false);
-                QuestionsViewController.selectedClassRoom = classRoomId;
-                NavController.PushViewController(QuestionsViewController, true);
+                if (questionList.Count > 0)
+                {
+                    var QuestionsViewController = Storyboard.InstantiateViewController("QuestionsViewController") as QuestionsViewController;
+                    QuestionsViewController.NavigationItem.SetHidesBackButton(true, false);
+                    QuestionsViewController.questionList = questionList;
+                    QuestionsViewController.selectedClassRoom = classRoomId;
+                    NavController.PushViewController(QuestionsViewController, true);
+                }
+                else
+                {
+                    IOSUtil.ShowAlert("No Questions defined.");
+                }
             }
             else
             {
-                IOSUtil.ShowMessage("Select class room.", loadingOverlay, this);
+                IOSUtil.ShowMessage("Select room.", loadingOverlay, this);
             }
+
         }
 
         #endregion
 
         #region " Custom Function "
+
+        private async Task GetQuestionList()
+        {
+            var response = await InvokeApi.Invoke(Constants.API_GET_QUESTION_ANSWERS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            if (response.StatusCode != 0)
+            {
+                getQuestionListResponse(response);
+            }
+        }
+
+        private async void getQuestionListResponse(HttpResponseMessage restResponse)
+        {
+            if (restResponse != null && restResponse.StatusCode == HttpStatusCode.OK && restResponse.Content != null)
+            {
+                string strContent = await restResponse.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(strContent);
+                questionList = array.ToObject<List<QuestionModel>>();
+
+
+            }
+            else if (restResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                await IOSUtil.RefreshToken(this, loadingOverlay);
+                //await GetQuestionList();
+            }
+            else
+            {
+                IOSUtil.ShowAlert("Error Occured");
+            }
+        }
 
         private void CreateFeedbackDashboard()
         {
@@ -109,9 +168,12 @@ namespace CSU_PORTABLE.iOS
             View.AddSubviews(FeedbackHomeHeader, FeedbackHomeSubHeader, btnNext);
         }
 
-        public async void GetRooms()
+        public async Task GetRooms()
         {
-            //PreferenceHandler prefHandler = new PreferenceHandler();
+            var bounds = UIScreen.MainScreen.Bounds;
+            // show the loading overlay on the UI thread using the correct orientation sizing
+            loadingOverlay = new LoadingOverlay(bounds);
+            View.Add(loadingOverlay);
             UserDetails userDetail = PreferenceHandler.GetUserDetails();
             var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ROOMS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             if (response.StatusCode != 0)
@@ -129,20 +191,40 @@ namespace CSU_PORTABLE.iOS
             if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
             {
                 string strContent = await restResponse.Content.ReadAsStringAsync();
-                List<RoomModel> roomsList = JsonConvert.DeserializeObject<List<RoomModel>>(strContent);
-                BindClassRooms(roomsList);
+                roomsList = JsonConvert.DeserializeObject<List<RoomModel>>(strContent);
+                if (roomsList.Count > 0)
+                {
+                    classRoomId = roomsList[0].RoomId;
+                    BindClassRooms(roomsList);
+                }
+                else
+                {
+                    UILabel lblRemark = new UILabel()
+                    {
+                        Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 250, View.Bounds.Width, 40),
+                        Text = "No rooms found!",
+                        Font = UIFont.FromName("Futura-Medium", 15f),
+                        TextColor = UIColor.White,
+                        BackgroundColor = UIColor.Clear,
+                        LineBreakMode = UILineBreakMode.WordWrap,
+                        Lines = 1,
+                        TextAlignment = UITextAlignment.Center
+                    };
+                    View.AddSubviews(lblRemark);
+                    loadingOverlay.Hide();
+                }
             }
             else
             {
-                IOSUtil.ShowMessage("No Class Rooms", loadingOverlay, this);
+                IOSUtil.ShowMessage("No rooms found!", loadingOverlay, this);
             }
         }
 
 
         private void BindClassRooms(List<RoomModel> roomsList)
         {
-            UIPickerViewModel modelClassRooms = new ClassRoomPickerViewModel(roomsList);
-            UIPickerView classRoomPicker = new UIPickerView()
+            modelClassRooms = new ClassRoomPickerViewModel(roomsList);
+            classRoomPicker = new UIPickerView()
             {
                 Frame = new CGRect(50, 220, View.Bounds.Width - 100, 200),
                 ShowSelectionIndicator = true,
@@ -159,7 +241,10 @@ namespace CSU_PORTABLE.iOS
             classRoomPicker.AddSubview(subViewBottom);
             View.AddSubviews(classRoomPicker);
             classRoomPicker.Select(0, 0, true);
-            loadingOverlay.Hide();
+            if (loadingOverlay != null)
+            {
+                loadingOverlay.Hide();
+            }
         }
 
         //private void ShowMessage(string v)
@@ -226,6 +311,7 @@ namespace CSU_PORTABLE.iOS
                     BackgroundColor = UIColor.Clear,
                     Text = classRoooms[(int)row].RoomName,
                     TextAlignment = UITextAlignment.Center,
+                    Tag = classRoooms[(int)row].RoomId
                 };
 
                 return view;
@@ -233,7 +319,7 @@ namespace CSU_PORTABLE.iOS
 
             public override void Selected(UIPickerView pickerView, nint row, nint component)
             {
-                classRoomId = (int)pickerView.SelectedRowInComponent(component);
+                classRoomId = roomsList[(int)row].RoomId;
 
             }
 
