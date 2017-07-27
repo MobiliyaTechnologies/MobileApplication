@@ -27,7 +27,7 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidLoad();
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
-            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(33, 77, 43);
+            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
 
             NavigationItem.SetRightBarButtonItem(
@@ -55,13 +55,13 @@ namespace CSU_PORTABLE.iOS
 
         private void GetThankYouView()
         {
-            this.View.BackgroundColor = UIColor.FromRGB(30, 77, 43);
+            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
             ThankYouHeader = new UILabel()
             {
                 Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.White,
                 BackgroundColor = UIColor.Clear,
-                Frame = new CGRect(50, 250, View.Bounds.Width - 120, 100),
+                Frame = new CGRect(50, 280, View.Bounds.Width - 120, 100),
                 Text = "Thank You so much for your Valueable feedback.",
                 TextAlignment = UITextAlignment.Center,
                 Lines = 3,
@@ -80,7 +80,7 @@ namespace CSU_PORTABLE.iOS
             UIButton btnDone = new UIButton(UIButtonType.Custom);
             btnDone.SetTitle("Done", UIControlState.Normal);
             btnDone.Font = UIFont.FromName("Futura-Medium", 15f);
-            btnDone.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Normal);
+            btnDone.SetTitleColor(UIColor.FromRGB(0, 102, 153), UIControlState.Normal);
             btnDone.SetTitleColor(UIColor.Green, UIControlState.Focused);
             btnDone.TouchUpInside += BtnDone_TouchUpInside;
             btnDone.Frame = new CGRect((View.Bounds.Width / 2) - 40, 450, 80, 40);

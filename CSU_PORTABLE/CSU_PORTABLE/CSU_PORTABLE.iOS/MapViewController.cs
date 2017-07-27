@@ -514,7 +514,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void GetInsights(int userId)
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, localToken);
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
@@ -535,7 +535,7 @@ namespace CSU_PORTABLE.iOS
             }
             else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
             {
-                IOSUtil.RefreshToken(this, loadingOverlay);
+                await IOSUtil.RefreshToken(this, loadingOverlay);
             }
             else
             {

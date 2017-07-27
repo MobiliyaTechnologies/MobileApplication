@@ -23,7 +23,6 @@ namespace CSU_PORTABLE.Droid.UI
     {
         private EditText textConfigURL;
         public Button SubmitButton { get; private set; }
-        //PreferenceHandler preferenceHandler;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -31,10 +30,7 @@ namespace CSU_PORTABLE.Droid.UI
             SetContentView(Resource.Layout.Config);
             textConfigURL = FindViewById<EditText>(Resource.Id.textConfigURL);
             SubmitButton = FindViewById<Button>(Resource.Id.SubmitButton);
-
-            //preferenceHandler = new PreferenceHandler();
             SubmitButton.Click += SubmitButton_Click;
-            // Create your application here
         }
 
         private async void SubmitButton_Click(object sender, EventArgs e)

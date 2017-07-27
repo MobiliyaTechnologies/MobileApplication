@@ -28,7 +28,6 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutProgress;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
-        //PreferenceHandler preferenceHandler;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -41,7 +40,6 @@ namespace CSU_PORTABLE.Droid.UI
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Visible;
 
-            //preferenceHandler = new PreferenceHandler();
             int userId = PreferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
@@ -69,7 +67,6 @@ namespace CSU_PORTABLE.Droid.UI
 
         private void ResetNotificationCount()
         {
-            //PreferenceHandler prefs = new PreferenceHandler();
             PreferenceHandler.setUnreadNotificationCount(0);
         }
 
@@ -128,6 +125,6 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
-
+       
     }
 }

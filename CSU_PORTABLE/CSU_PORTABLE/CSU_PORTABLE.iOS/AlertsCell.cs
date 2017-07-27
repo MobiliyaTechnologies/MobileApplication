@@ -116,7 +116,7 @@ namespace CSU_PORTABLE.iOS
             ackModel.Alert_Id = Convert.ToInt32(subView.Text);
             ackModel.Acknowledged_By = userDetails.FirstName + " " + userDetails.LastName;
 
-            var response = await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, JsonConvert.SerializeObject(ackModel), HttpMethod.Post);
+            var response = await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS, JsonConvert.SerializeObject(ackModel), HttpMethod.Put, PreferenceHandler.GetToken());
         }
 
         #endregion

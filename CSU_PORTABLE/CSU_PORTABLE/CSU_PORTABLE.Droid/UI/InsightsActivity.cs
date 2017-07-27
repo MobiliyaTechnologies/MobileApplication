@@ -30,7 +30,6 @@ namespace CSU_PORTABLE.Droid.UI
         LinearLayout layoutProgress;
         List<AlertModel> alertList = null;
         RecyclerView mRecyclerView;
-        //PreferenceHandler preferenceHandler;
         LinearLayout LayoutInsightData;
         TextView textViewConsumed;
         TextView textViewExpected;
@@ -39,7 +38,6 @@ namespace CSU_PORTABLE.Droid.UI
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            //preferenceHandler = new PreferenceHandler();
             SetContentView(Resource.Layout.insights);
 
             textViewLoading = FindViewById<TextView>(Resource.Id.textViewLoading);
@@ -65,7 +63,6 @@ namespace CSU_PORTABLE.Droid.UI
                 else
                 {
                     Utils.Utils.ShowToast(this, "Please enable your internet connection !");
-                    //ShowToast("Please enable your internet connection !");
                     layoutProgress.Visibility = ViewStates.Gone;
                     textViewLoading.Visibility = ViewStates.Visible;
                 }
@@ -73,7 +70,6 @@ namespace CSU_PORTABLE.Droid.UI
             else
             {
                 Utils.Utils.ShowToast(this, "Invalid User Id. Please Login Again !");
-                //ShowToast("Invalid User Id. Please Login Again !");
                 layoutProgress.Visibility = ViewStates.Gone;
                 textViewLoading.Visibility = ViewStates.Visible;
             }

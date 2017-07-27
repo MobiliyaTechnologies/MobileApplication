@@ -23,6 +23,7 @@ using Android.Support.V4.View;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Android.Content.PM;
+using Microsoft.Identity.Client;
 
 namespace CSU_PORTABLE.Droid.UI
 {

@@ -64,7 +64,6 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-
     }
 
     public class MyWebView : WebViewClient
@@ -76,20 +75,18 @@ namespace CSU_PORTABLE.Droid.UI
 
         }
 
-        public override void OnPageStarted(WebView view, string url, Bitmap favicon)
+        public override async void OnPageStarted(WebView view, string url, Bitmap favicon)
         {
             base.OnPageStarted(view, url, favicon);
             if (url.Contains("&code="))
             {
-                //view.Context.StartActivity(new Intent(Application.Context, typeof(MainActivity)));
                 Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
                 intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
                 view.Context.StartActivity(intent);
-
                 string code = Common.FunGetValuefromQueryString(url, "code");
-                //var preferenceHandler = new PreferenceHandler();
                 PreferenceHandler.SetAccessCode(code);
                 PreferenceHandler.setLoggedIn(true);
+                
             }
         }
     }

@@ -45,6 +45,9 @@
     <MtouchFloat32>False</MtouchFloat32>
     <IOSDebugOverWiFi>False</IOSDebugOverWiFi>
     <IOSDebuggerPort>10000</IOSDebuggerPort>
+    <CodesignKey>iPhone Distribution: Agreeya Mobility Inc</CodesignKey>
+    <CodesignProvision>
+    </CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>
@@ -85,6 +88,12 @@
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>
     </CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\logo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>CSU_PORTABLE.iOS.Application</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.14.0.8, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -320,7 +329,6 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\threelines.png" />
-    <BundleResource Include="GoogleService-Info.plist" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\splash.png" />
@@ -600,6 +608,10 @@
       <Project>{2b27bcc5-e18a-4fdf-a398-3bc318abf9f1}</Project>
       <Name>CSU_PORTABLE</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GoogleService-Info.plist" />
+    <BundleResource Include="Resources\logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />

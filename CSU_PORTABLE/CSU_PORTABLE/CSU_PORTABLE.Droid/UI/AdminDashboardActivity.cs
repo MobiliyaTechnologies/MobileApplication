@@ -28,13 +28,17 @@ using Android.Content.PM;
 using Android.Webkit;
 using Android.Graphics;
 using BarChart;
+using UserDetailsClient;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Android.Content.Res;
+using System.IO;
 
 namespace CSU_PORTABLE.Droid.UI
 {
     [Activity(Label = "Dashboard", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
-    public class AdminDashboardActivity : AppCompatActivity
+    public class AdminDashboardActivity : AppCompatActivity, IPlatformParameters
     {
-        const string TAG = "MainActivity";
+        const string TAG = "AdminDashboardActivity";
         DrawerLayout drawerLayout;
         NavigationView navigationView;
         //PreferenceHandler preferenceHandler;
@@ -47,28 +51,46 @@ namespace CSU_PORTABLE.Droid.UI
         public static TextView notifCount;
         MySampleBroadcastReceiver receiver;
 
-        static readonly BarModel[] TestData = new BarModel[] {
-            new BarModel () { Value =    1f, Legend = "0", Color = Color.DarkSlateBlue },
-            new BarModel () { Value =    2f, Legend = "1" },
-            new BarModel () { Value =    0f, Legend = "2" },
-            new BarModel () { Value =    1f, Legend = "3" },
-            new BarModel () { Value =    4f, Legend = "4", Color = Color.DarkSlateBlue },
-            new BarModel () { Value =    1f, Legend = "5" },
-            new BarModel () { Value =    3f, Legend = "6", Color = Color.DarkSlateBlue },
-            new BarModel () { Value =    2f, Legend = "7" },
-            new BarModel () { Value =  0.4f, Legend = "8", Color = Color.DarkSlateBlue }
-        };
         private BarChartView chart;
+        private IMenu optionsMenu;
+        AuthenticationResult authResult = null;
+        private WebView localChartView;
 
         protected async override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.AdminDashboard);
-            //activityContext = this;
-            //preferenceHandler = new PreferenceHandler();
             CurrentConsumption = ConsumptionFor.Premises;
             receiver = new MySampleBroadcastReceiver(this);
-            // Create your application here
+            //App.UiParent = new UIParent(this as Activity);
+            //App.PCA = new PublicClientApplication(App.ClientID, App.Authority);
+            //App.PCA.RedirectUri = $"msal{App.ClientID}://auth";
+            ////AuthenticationResult ar = await App.PCA.AcquireTokenSilentAsync(App.Scopes, GetUserByPolicy(App.PCA.Users, App.PolicySignUpSignIn), App.Authority, false);
+            //RunOnUiThread(async () =>
+            //{
+            //    AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, GetUserByPolicy(App.PCA.Users, App.PolicySignUpSignIn), App.UiParent);
+            //});
+            //PublicClientApplication myApp = new PublicClientApplication(B2CConfig.AuthorizeURL, B2CConfig.ClientId);
+            //myApp.RedirectUri = B2CConfig.Redirect_Uri;
+
+            //AuthenticationResult authResult = await myApp.AcquireTokenAsync(new string[] { B2CConfig.Grant_type, B2CConfig.Token_Grant_type }, "Energy Management", Microsoft.Identity.Client.UiOptions.ForceLogin, "");
+            //var authContext = new AuthenticationContext("https://login.microsoftonline.com/tfp/" + B2CConfig.Tenant + "/");
+            //try
+            //{
+            //    if (authContext.TokenCache.ReadItems().Count() > 0)
+            //        authContext = new AuthenticationContext(authContext.TokenCache.ReadItems().First().Authority);
+            //    authResult = await authContext.AcquireTokenAsync("55d19f44-bf45-4d2d-a3cc-53f70a30228a", B2CConfig.ClientId, new Uri(B2CConfig.Redirect_Uri), new PlatformParameters(this, true));
+            //    //authResult = await authContext.AcquireTokenAsync("https://login.microsoftonline.com/CSUB2C.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_b2cSignin&client_id=adcfca9a-078a-4e5f-9f20-829de2cef1ed&nonce=defaultNonce&redirect_uri=https%3A%2F%2Flocalhost%3A44399%2Fredirect.html&scope=openid&response_type=id_token&prompt=login", new ClientCredential(B2CConfig.ClientId, B2CConfig.ClientSecret));
+            //}
+            //catch (Exception e)
+            //{
+
+            //    throw;
+            //}
+
+            //await Authenticate(this, "https://login.windows.net/common" + "/", "", B2CConfig.ClientId, B2CConfig.Redirect_Uri);
+
+
             if (!Utils.Utils.IsNetworkEnabled(this))
             {
                 RunOnUiThread(() =>
@@ -80,42 +102,95 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-                await Utils.Utils.RefreshToken(this);
-                await CreateDashboard();
-                SetDrawer();
+                if (PreferenceHandler.GetToken() == string.Empty)
+                {
+                    await Utils.Utils.GetToken();
+                }
+                await GetUserDetails();
+                //if (PreferenceHandler.GetUserDetails().UserId <= 0)
+                //{
+                //    await GetUserDetails();
+                //}
+                //else
+                //{
+                //    CreateDashboard();
+                //}
+
                 IsPlayServicesAvailable();
+                await Utils.Utils.RefreshToken(this);
             }
         }
 
-        private async Task CreateDashboard()
+        public async Task<AuthenticationResult> Authenticate(Activity context, string authority, string resource, string clientId, string returnUri)
+        {
+            var authContext = new AuthenticationContext(authority);
+            if (authContext.TokenCache.ReadItems().Any())
+                authContext = new AuthenticationContext(authContext.TokenCache.ReadItems().First().Authority);
+            var result = await authContext.AcquireDeviceCodeAsync("https://CSUB2C.onmicrosoft.com/", B2CConfig.ClientId);
+            var uri = new Uri(returnUri);
+            var platformParams = new PlatformParameters(context);
+            try
+            {
+                var authResult = await authContext.AcquireTokenAsync("https://CSUB2C.onmicrosoft.com/", clientId, uri, platformParams, UserIdentifier.AnyUser, null);
+                //var authResult = await authContext.AcquireTokenAsync("https://CSUB2C.onmicrosoft.com/EMTestDeploy", new ClientCredential(B2CConfig.ClientId, B2CConfig.ClientSecret));
+
+                var re = await authContext.AcquireTokenByAuthorizationCodeAsync(authResult.AccessToken, uri, new ClientCredential(B2CConfig.ClientId, B2CConfig.ClientSecret));
+                return authResult;
+            }
+            catch (AdalException e)
+            {
+                return null;
+            }
+        }
+
+        //protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        //{
+        //    base.OnActivityResult(requestCode, resultCode, data);
+        //    AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
+        //}
+
+
+        //public IUser GetUserByPolicy(IEnumerable<IUser> users, string policy)
+        //{
+        //    foreach (var user in users)
+        //    {
+        //        string userIdentifier = Base64UrlDecode(user.Identifier.Split('.')[0]);
+        //        if (userIdentifier.EndsWith(policy.ToLower())) return user;
+        //    }
+
+        //    return null;
+        //}
+
+
+        //public string Base64UrlDecode(string s)
+        //{
+        //    s = s.Replace('-', '+').Replace('_', '/');
+        //    s = s.PadRight(s.Length + (4 - s.Length % 4) % 4, '=');
+        //    var byteArray = Convert.FromBase64String(s);
+        //    var decoded = Encoding.UTF8.GetString(byteArray, 0, byteArray.Count());
+        //    return decoded;
+        //}
+
+        //protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        //{
+        //    base.OnActivityResult(requestCode, resultCode, data);
+        //    AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+        //}
+
+        private void CreateDashboard()
         {
 
 
-            UserDetails user = PreferenceHandler.GetUserDetails();
-            //Get User Details
-            if (user.UserId <= 0)
-            {
-                var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
-                if (responseUser.StatusCode == HttpStatusCode.OK)
-                {
-                    GetCurrentUserResponse(responseUser);
-                    user = PreferenceHandler.GetUserDetails();
-                }
-                else
-                {
-                    await Utils.Utils.RefreshToken(this);
-                }
-            }
-
-            // tempaory made admin
-            if (user.RoleId == 1)
+            SetDrawer();
+            if (PreferenceHandler.GetUserDetails().RoleId == (int)USER_ROLE.ADMIN)
             {
                 GetConsumptionDetails(CurrentConsumption, 0);
-
+                this.Title = "Dashboard";
             }
             else
             {
                 //Show Student Fragment
+                this.Title = "Feedback";
                 var newFragment = new StudentFragment();
                 var ft = FragmentManager.BeginTransaction();
                 ft.Add(Resource.Id.fragment_container, newFragment);
@@ -123,11 +198,6 @@ namespace CSU_PORTABLE.Droid.UI
                 layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
                 layoutProgress.Visibility = ViewStates.Gone;
             }
-            //layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
-            //layoutProgress.Visibility = ViewStates.Gone;
-
-
-
         }
 
         #region " Bar Chart "
@@ -182,39 +252,6 @@ namespace CSU_PORTABLE.Droid.UI
                     //chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
                     chartItem.Color = Color.DarkSlateBlue;
                     chartData.Add(chartItem);
-
-                    #region " Chart with multiple Bars"
-                    //for (int i = 0; i < 3; i++)
-                    //{
-                    //    BarModel chartItem = new BarModel();
-                    //    chartItem.Legend = item.Name;
-                    //    chartItem.ValueCaption = item.Id.ToString();
-                    //    chartItem.ValueCaptionHidden = true;
-                    //    switch (i)
-                    //    {
-                    //        case 0:
-                    //            chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
-                    //            chartItem.Color = Color.DarkSlateBlue;
-                    //            //chartItem.ValueCaption = "Consumed";
-                    //            break;
-                    //        case 1:
-                    //            chartItem.Value = (float.Parse(item.Expected.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Expected.Replace('K', ' ').Trim()));
-                    //            chartItem.Color = Color.Green;
-                    //            //chartItem.ValueCaption = "Expected";
-                    //            break;
-                    //        case 2:
-                    //            //chartItem.Value = (float.Parse(item.Overused.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Overused.Replace('K', ' ').Trim()));
-                    //            chartItem.Value = float.Parse(item.Overused.Replace('K', ' ').Trim());
-                    //            chartItem.Color = Color.Red;
-                    //            //chartItem.ValueCaption = "Overused";
-                    //            break;
-                    //        default:
-                    //            break;
-                    //    }
-                    //chartData.Add(chartItem);
-
-                    //}
-                    #endregion
                 }
                 chart.AutoLevelsEnabled = true;
                 chart.BarCaptionFontSize = 20;
@@ -224,8 +261,8 @@ namespace CSU_PORTABLE.Droid.UI
                     chart.TextAlignment = TextAlignment.TextEnd;
                     chart.TextDirection = TextDirection.Rtl;
                     //remark.Visibility = ViewStates.Invisible;
-                    FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
-                    FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(chart);
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(chart);
                 }
                 else
                 {
@@ -240,10 +277,8 @@ namespace CSU_PORTABLE.Droid.UI
                     remarks.SetTextColor(Color.LightGray);
                     remarks.Gravity = GravityFlags.Center;
                     remarks.TextSize = 20;
-                    //remark.Text = "No records found!";
-                    //remark.Visibility = ViewStates.Visible;
-                    FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
-                    FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(remarks);
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
+                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(remarks);
                 }
             }
             else
@@ -252,8 +287,42 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        #endregion
+        private void SetConsumptionBarChartWebView(List<ConsumptionModel> consumpModels)
+        {
+            string[][] r = Array.ConvertAll(consumpModels.Select(x => new { x.Name, x.Consumed, x.Expected, x.Overused }).ToArray(), x => new string[] { x.Name, x.Consumed, x.Expected, x.Overused });
+            string[] Labels = null;
+            try
+            {
+                Labels = consumpModels.Select(x => x.Name.Split('-')[1]).ToArray();
+            }
+            catch (Exception ex)
+            {
+                Labels = consumpModels.Select(x => x.Name).ToArray();
+            }
+            string[] Consumed = consumpModels.Select(x => x.Consumed.Replace('K', ' ').Trim()).ToArray();
+            string[] Expected = consumpModels.Select(x => x.Expected.Replace('K', ' ').Trim()).ToArray();
+            string[] Overused = consumpModels.Select(x => x.Overused.Replace('K', ' ').Trim()).ToArray();
+            localChartView = FindViewById<WebView>(Resource.Id.LocalChartView1);
+            localChartView.SetWebViewClient(new MyChartView()); // stops request going to Web Browser
+            localChartView.ClearCache(true);
+            localChartView.RequestFocusFromTouch();
+            localChartView.Settings.JavaScriptEnabled = true;
+            string content = string.Empty;
+            AssetManager aManager = this.Assets;
+            using (StreamReader sr = new StreamReader(aManager.Open("ChartC3.html")))
+            {
+                content = sr.ReadToEnd();
+            }
+            content = content.Replace("LabelsData", "'" + string.Join("','", Labels) + "'");
+            content = content.Replace("ConsumedData", "'" + string.Join("','", Consumed) + "'");
+            content = content.Replace("ExpectedData", "'" + string.Join("','", Expected) + "'");
+            content = content.Replace("OverusedData", "'" + string.Join("','", Overused) + "'");
+            //content = content.Replace("jsondata", "[['Premises', 'Consumed', 'Expected', 'Overused'],['Premise 1', 1000, 400, 200],['Premise 1', 1170, 460, 230],['Premise 1', 660, 1120, 240],['Premise 1', 1030, 540, 260]]");
+            localChartView.LoadDataWithBaseURL("file:///android_asset/", content, "text/html", "utf-8", null);
+            //localChartView.LoadUrl("file:///android_asset/ChartC3.html");
+        }
 
+        #endregion
 
         private async void GetCurrentUserResponse(HttpResponseMessage responseUser)
         {
@@ -261,19 +330,34 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 string strContent = await responseUser.Content.ReadAsStringAsync();
                 UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
-                //var preferenceHandler = new PreferenceHandler();
                 PreferenceHandler.SaveUserDetails(user);
-
-            }
-            else
-            {
-                Utils.Utils.ShowToast(Application.Context, "User details not found!");
+                CreateDashboard();
             }
         }
 
+        public async Task GetUserDetails()
+        {
+            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            if (responseUser.StatusCode == HttpStatusCode.OK)
+            {
+                GetCurrentUserResponse(responseUser);
+            }
+            else if (responseUser.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await Utils.Utils.RefreshToken(this);
+            }
+        }
+
+        //protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        //{
+        //    base.OnActivityResult(requestCode, resultCode, data);
+        //    AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
+        //}
+
+        #region " Consumption "
+
         public override void OnBackPressed()
         {
-            //base.OnBackPressed();
             layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Visible;
             layoutProgress.Enabled = true;
@@ -298,11 +382,10 @@ namespace CSU_PORTABLE.Droid.UI
 
         }
 
-        #region " Consumption "
         private void SetConsumptions(List<ConsumptionModel> consumpModels)
         {
-            SetConsumptionBarChart(consumpModels);
-
+            //SetConsumptionBarChart(consumpModels);
+            SetConsumptionBarChartWebView(consumpModels);
             mAdapter = new ConsumptionListAdapter(this, consumpModels);
             mAdapter.ItemClick += OnItemClick;
 
@@ -311,13 +394,8 @@ namespace CSU_PORTABLE.Droid.UI
 
             mLayoutManager = new LinearLayoutManager(this);
             mRecyclerView.SetLayoutManager(mLayoutManager);
-            // Plug the adapter into the RecyclerView:
             mRecyclerView.SetAdapter(mAdapter);
-
-
         }
-
-
 
         private async void GetConsumptionDetails(ConsumptionFor currentConsumption, int Id)
         {
@@ -331,10 +409,6 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 GetConsumptionResponse(responseConsumption);
                 layoutProgress.Visibility = ViewStates.Gone;
-            }
-            else if (responseConsumption.StatusCode == HttpStatusCode.BadRequest || responseConsumption.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                await Utils.Utils.RefreshToken(this);
             }
         }
 
@@ -352,7 +426,6 @@ namespace CSU_PORTABLE.Droid.UI
                     return string.Empty;
             }
         }
-
 
         private List<ConsumptionModel> GetConsumptionModels(string consumptionContent)
         {
@@ -394,25 +467,35 @@ namespace CSU_PORTABLE.Droid.UI
             return conModels;
         }
 
-
         private async void GetConsumptionResponse(HttpResponseMessage responseConsumption)
         {
             if (responseConsumption != null && responseConsumption.StatusCode == System.Net.HttpStatusCode.OK && responseConsumption.Content != null)
             {
                 string strContent = await responseConsumption.Content.ReadAsStringAsync();
                 List<ConsumptionModel> consumptions = GetConsumptionModels(strContent);
-                //consumpModels = JsonConvert.DeserializeObject<List<ConsumptionModel>>(strContent);
-                SetConsumptions(consumptions);
+
+                if (consumptions.Count > 0)
+                {
+                    SetConsumptions(consumptions);
+                }
+                else
+                {
+                    Utils.Utils.ShowDialog(this, "No " + CurrentConsumption.ToString() + " found!");
+                    switch (CurrentConsumption)
+                    {
+                        case ConsumptionFor.Buildings:
+                            CurrentConsumption = ConsumptionFor.Premises;
+                            break;
+                        case ConsumptionFor.Meters:
+                            CurrentConsumption = ConsumptionFor.Buildings;
+                            break;
+                    }
+                }
+
                 layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
                 layoutProgress.Visibility = ViewStates.Gone;
             }
-            else
-            {
-                await Utils.Utils.RefreshToken(this);
-            }
         }
-
-
 
         void OnItemClick(object sender, int position)
         {
@@ -423,7 +506,6 @@ namespace CSU_PORTABLE.Droid.UI
                 layoutProgress.Enabled = true;
                 int photoNum = position + 1;
                 ConsumptionListAdapter consumptionListAdapter = (ConsumptionListAdapter)sender;
-                //Toast.MakeText(this, "This is photo number " + photoNum.ToString(), ToastLength.Short).Show();
                 switch (CurrentConsumption)
                 {
                     case ConsumptionFor.Premises:
@@ -431,13 +513,11 @@ namespace CSU_PORTABLE.Droid.UI
                         CurrentConsumption = ConsumptionFor.Buildings;
                         break;
                     case ConsumptionFor.Buildings:
-                        //CurrentBuildingId = consumptionListAdapter.mConsumptionModels[position].Id;
                         CurrentConsumption = ConsumptionFor.Meters;
                         break;
                 }
                 GetConsumptionDetails(CurrentConsumption, consumptionListAdapter.mConsumptionModels[position].Id);
             }
-            //GetCurrentConsumption(position);
         }
 
 
@@ -455,7 +535,6 @@ namespace CSU_PORTABLE.Droid.UI
                         CurrentConsumption = ConsumptionFor.Buildings;
                         break;
                     case ConsumptionFor.Buildings:
-                        //CurrentBuildingId = consumptionListAdapter.mConsumptionModels[position].Id;
                         CurrentConsumption = ConsumptionFor.Meters;
                         break;
                 }
@@ -468,17 +547,11 @@ namespace CSU_PORTABLE.Droid.UI
 
         private void SetDrawer()
         {
-            //var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
-            //SetSupportActionBar(toolbar);
-
-            //Enable support action bar to display hamburger
             SupportActionBar.SetHomeAsUpIndicator(Resource.Drawable.ic_menu);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
             drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
-
-
             bool isLoggedIn = PreferenceHandler.IsLoggedIn();
             if (isLoggedIn)
             {
@@ -487,7 +560,6 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     IMenu nav_Menu = navigationView.Menu;
                     nav_Menu.FindItem(Resource.Id.nav_dashboard).SetVisible(false);
-                    //nav_Menu.FindItem(Resource.Id.nav_reports).SetVisible(false);
                     nav_Menu.FindItem(Resource.Id.nav_insights).SetVisible(false);
                     nav_Menu.FindItem(Resource.Id.nav_alerts).SetVisible(false);
                 }
@@ -496,7 +568,6 @@ namespace CSU_PORTABLE.Droid.UI
             TextView textViewUserName =
                 navigationView.GetHeaderView(0).FindViewById<TextView>(
                     Resource.Id.textViewUserName);
-            //PreferenceHandler pref = new PreferenceHandler();
             UserDetails user = PreferenceHandler.GetUserDetails();
             textViewUserName.Text = user.FirstName + " " + user.LastName;
 
@@ -511,15 +582,11 @@ namespace CSU_PORTABLE.Droid.UI
             navigationView.NavigationItemSelected += (sender, e) =>
             {
                 e.MenuItem.SetChecked(true);
-
                 //react to click here and swap fragments or navigate
                 switch (e.MenuItem.ItemId)
                 {
                     case Resource.Id.nav_dashboard:
                         break;
-                    //case Resource.Id.nav_reports:
-                    //    StartActivity(new Intent(Application.Context, typeof(GlobalReportsActivity)));
-                    //    break;
                     case Resource.Id.nav_alerts:
                         showAlerts();
                         break;
@@ -534,28 +601,49 @@ namespace CSU_PORTABLE.Droid.UI
 
                 drawerLayout.CloseDrawers();
             };
-        }
 
+            if (optionsMenu != null)
+            {
+                MenuInflater.Inflate(Resource.Menu.main_menu, optionsMenu);
+
+                if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
+                {
+                    optionsMenu.GetItem(0).SetVisible(false);
+                }
+                else
+                {
+                    RelativeLayout alertItem = (RelativeLayout)(optionsMenu.FindItem(Resource.Id.alerts).ActionView);
+                    alertItem.Click += delegate
+                    {
+                        showAlerts();
+                    };
+                    notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
+                    setNotificationCount();
+                }
+            }
+        }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            MenuInflater.Inflate(Resource.Menu.main_menu, menu);
-            if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
-            {
-                menu.GetItem(0).SetVisible(false);
-            }
-            else
-            {
+            optionsMenu = menu;
+            //MenuInflater.Inflate(Resource.Menu.main_menu, menu);
 
-                RelativeLayout alertItem = (RelativeLayout)(menu.FindItem(Resource.Id.alerts).ActionView);
-                alertItem.Click += delegate
-                {
-                    showAlerts();
-                };
-                notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
-                setNotificationCount();
+            //if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
+            //{
+            //    menu.GetItem(0).SetVisible(false);
+            //}
+            //else
+            //{
 
-            }
+            //    RelativeLayout alertItem = (RelativeLayout)(menu.FindItem(Resource.Id.alerts).ActionView);
+            //    alertItem.Click += delegate
+            //    {
+            //        showAlerts();
+            //    };
+            //    notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
+            //    setNotificationCount();
+
+            //}
             return base.OnPrepareOptionsMenu(menu);
         }
 
@@ -645,23 +733,20 @@ namespace CSU_PORTABLE.Droid.UI
         private void Logout(LogoutModel logoutModel)
         {
             Log.Debug(TAG, "Local Logout Started");
-            //PreferenceHandler preferenceHandler = new PreferenceHandler();
             PreferenceHandler.setLoggedIn(false);
+            PreferenceHandler.SetToken(string.Empty);
+            PreferenceHandler.SetRefreshToken(string.Empty);
             PreferenceHandler.SaveUserDetails(new UserDetails());
-            layoutProgress.Visibility = ViewStates.Gone;
-            Finish();
-            // Delete Existing User Details from cache
             CookieManager.Instance.RemoveAllCookie();
             StartActivity(new Intent(Application.Context, typeof(LoginActivity)));
-
+            Finish();
+            layoutProgress.Visibility = ViewStates.Gone;
         }
 
-        private void LogoutResponse(HttpResponseMessage restResponse)
+        private async void LogoutResponse(HttpResponseMessage restResponse)
         {
-
             Log.Debug(TAG, "Local Logout Successful");
             layoutProgress.Visibility = ViewStates.Gone;
-            Utils.Utils.RefreshToken(this);
         }
 
         [BroadcastReceiver(Enabled = true, Exported = false)]

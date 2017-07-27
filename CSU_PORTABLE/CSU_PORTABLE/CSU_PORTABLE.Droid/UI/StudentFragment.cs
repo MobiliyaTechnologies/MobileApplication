@@ -45,7 +45,6 @@ namespace CSU_PORTABLE.Droid.UI
         TextView textViewNormal;
         TextView textViewCold;
         TextView textViewTooCold;
-        //Toast toast;
         List<RoomModel> classList = null;
         List<QuestionModel> questionList = null;
         RecyclerView mRecyclerView;
@@ -62,7 +61,7 @@ namespace CSU_PORTABLE.Droid.UI
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             var view = inflater.Inflate(Resource.Layout.student_dashboard, container, false);
-
+            view.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
             textViewInfo = view.FindViewById<TextView>(Resource.Id.textViewInfo);
             layoutProgress = view.FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutSelectClassroom = view.FindViewById<LinearLayout>(Resource.Id.layout_select_classroom);
@@ -104,7 +103,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewTooCold.Alpha = 0.5f;
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(214, 69, 66));
-
+                view.SetBackgroundColor(new Android.Graphics.Color(214, 69, 66));
             };
             textViewHot.Click += delegate
             {
@@ -118,7 +117,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewTooCold.Alpha = 0.5f;
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(204, 84, 48));
-
+                view.SetBackgroundColor(new Android.Graphics.Color(204, 84, 48));
 
             };
             textViewNormal.Click += delegate
@@ -133,7 +132,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewTooCold.Alpha = 0.5f;
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
-
+                view.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
             };
             textViewCold.Click += delegate
             {
@@ -147,7 +146,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewTooCold.Alpha = 0.5f;
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(16, 84, 86));
-
+                view.SetBackgroundColor(new Android.Graphics.Color(16, 84, 86));
             };
             textViewTooCold.Click += delegate
             {
@@ -161,7 +160,7 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewTooCold.Alpha = 1f;
 
                 layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(11, 125, 206));
-
+                view.SetBackgroundColor(new Android.Graphics.Color(11, 125, 206));
             };
             buttonNext.Click += delegate
             {
@@ -174,15 +173,12 @@ namespace CSU_PORTABLE.Droid.UI
                 else
                 {
                     Utils.Utils.ShowToast(this.Context, "Please select a Room");
-                    //ShowToast("Please select a Classroom");
                 }
             };
             buttonBack.Click += delegate
             {
                 Log.Debug(TAG, "Back button click");
-                selectedClass = null;
-                selectedRoomId = -1;
-                textViewSelectedClass.Text = "";
+                ResetFeedback(view);
                 showLayoutSelectClass();
             };
             buttonSubmit.Click += delegate
@@ -192,11 +188,11 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     showLayoutSubmit();
                     submitFeedback(userId);
+                    ResetFeedback(view);
                 }
                 else
                 {
                     Utils.Utils.ShowToast(this.Context, "Please select an option");
-                    //ShowToast("Please select an option");
                 }
             };
             buttonDone.Click += delegate
@@ -212,7 +208,6 @@ namespace CSU_PORTABLE.Droid.UI
             showLayoutProgress("Loading...");
             mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
 
-            //var preferenceHandler = new PreferenceHandler();
             userId = PreferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
@@ -225,18 +220,32 @@ namespace CSU_PORTABLE.Droid.UI
                 else
                 {
                     Utils.Utils.ShowToast(this.Context, "Please enable your internet connection !");
-                    //ShowToast("Please enable your internet connection !");
                     showLayoutInfo();
                 }
             }
             else
             {
                 Utils.Utils.ShowToast(this.Context, "Invalid User Id. Please Login Again !");
-                //ShowToast("Invalid User Id. Please Login Again !");
                 showLayoutInfo();
             }
 
             return view;
+        }
+
+        private void ResetFeedback(View view)
+        {
+            selectedClass = null;
+            selectedRoomId = -1;
+            selectedAnswer = null;
+            selectedAnswerId = -1;
+            textViewSelectedClass.Text = "";
+            textViewTooHot.Alpha = 0.5f;
+            textViewHot.Alpha = 0.5f;
+            textViewNormal.Alpha = 0.5f;
+            textViewCold.Alpha = 0.5f;
+            textViewTooCold.Alpha = 0.5f;
+            layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
+            view.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
         }
 
         private async void submitFeedback(int userId)
@@ -440,39 +449,6 @@ namespace CSU_PORTABLE.Droid.UI
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 JArray array = JArray.Parse(strContent);
                 questionList = array.ToObject<List<QuestionModel>>();
-                //questionList.Add(new Models.QuestionModel()
-                //{
-                //    QuestionId = 1,
-                //    QuestionDesc = "How do you feel?",
-                //    Answers = new List<AnswerModel>()
-                //    {
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 1,
-                //            AnswerDesc = "Very Cold"
-                //        },
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 2,
-                //            AnswerDesc = "Cold"
-                //        },
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 3,
-                //            AnswerDesc = "Normal"
-                //        },
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 4,
-                //            AnswerDesc = "Hot"
-                //        },
-                //         new AnswerModel()
-                //        {
-                //            AnswerId = 5,
-                //            AnswerDesc = "Very Hot"
-                //        }
-                //    }
-                //});
                 showClasses();
             }
             else if (restResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)

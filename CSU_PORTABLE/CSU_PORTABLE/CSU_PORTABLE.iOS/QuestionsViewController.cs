@@ -85,11 +85,7 @@ namespace CSU_PORTABLE.iOS
             View.Add(loadingOverlay);
             if (SelectedAnswer > 0)
             {
-
                 submitFeedback(userdetail.UserId);
-                //var ThankYouViewController = Storyboard.InstantiateViewController("ThankYouViewController") as ThankYouViewController;
-                //ThankYouViewController.NavigationItem.SetHidesBackButton(true, false);
-                //NavigationController.PushViewController(ThankYouViewController, true);
             }
             else
             {

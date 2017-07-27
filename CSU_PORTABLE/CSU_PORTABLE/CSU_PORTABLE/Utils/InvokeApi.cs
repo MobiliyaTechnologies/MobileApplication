@@ -15,7 +15,7 @@ namespace CSU_PORTABLE.Utils
 
         public static void SetDomainUrl(string domainUrl)
         {
-            ServerBaseURL = domainUrl+ "/api/";
+            ServerBaseURL = domainUrl + "/api/";
         }
 
         public static async Task<HttpResponseMessage> Invoke(string serviceUrl, string json, HttpMethod method, string token = "")
@@ -23,7 +23,7 @@ namespace CSU_PORTABLE.Utils
             HttpClient client = new HttpClient();
             try
             {
-                 HttpRequestMessage request = new HttpRequestMessage(method, ServerBaseURL + serviceUrl);
+                HttpRequestMessage request = new HttpRequestMessage(method, ServerBaseURL + serviceUrl);
                 client.DefaultRequestHeaders
                          .Accept
                          .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
@@ -81,8 +81,9 @@ namespace CSU_PORTABLE.Utils
 
                 return responseMessage;
             }
-            
+
 
         }
+
     }
 }

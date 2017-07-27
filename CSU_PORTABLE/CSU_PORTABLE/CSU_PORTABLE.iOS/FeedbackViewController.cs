@@ -21,7 +21,7 @@ namespace CSU_PORTABLE.iOS
         UILabel FeedbackHomeHeader, FeedbackHomeSubHeader;
         public static int classRoomId { get; set; }
         LoadingOverlay loadingOverlay;
-        private List<QuestionModel> questionList;
+        public static List<QuestionModel> questionList;
         UIPickerViewModel modelClassRooms;
         UIPickerView classRoomPicker;
         public static List<RoomModel> roomsList;
@@ -36,7 +36,7 @@ namespace CSU_PORTABLE.iOS
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
             this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-            classRoomId = 0;
+            //classRoomId = 0;
 
             NavigationItem.SetRightBarButtonItem(
                 new UIBarButtonItem(UIImage.FromBundle("a")
@@ -49,9 +49,10 @@ namespace CSU_PORTABLE.iOS
             // Added for showing loading screen
 
             CreateFeedbackDashboard();
-            if (roomsList == null)
+            if (roomsList == null || questionList == null)
             {
                 await GetRooms();
+                await GetQuestionList();
             }
             else
             {
@@ -223,24 +224,28 @@ namespace CSU_PORTABLE.iOS
 
         private void BindClassRooms(List<RoomModel> roomsList)
         {
-            modelClassRooms = new ClassRoomPickerViewModel(roomsList);
-            classRoomPicker = new UIPickerView()
+            if (classRoomPicker == null)
             {
-                Frame = new CGRect(50, 220, View.Bounds.Width - 100, 200),
-                ShowSelectionIndicator = true,
-                Model = modelClassRooms,
-            };
-            classRoomPicker.AccessibilityNavigationStyle = UIAccessibilityNavigationStyle.Automatic;
-            classRoomPicker.ContentMode = UIViewContentMode.Center;
-            var subViewTop = new UIView(new CGRect(classRoomPicker.Bounds.X - 20, classRoomPicker.Bounds.Y + 85, classRoomPicker.Bounds.Width, 1));
-            var subViewBottom = new UIView(new CGRect(classRoomPicker.Bounds.X - 20, classRoomPicker.Bounds.Y + 115, classRoomPicker.Bounds.Width, 1));
-            subViewTop.BackgroundColor = UIColor.White;
-            subViewBottom.BackgroundColor = UIColor.White;
+                modelClassRooms = new ClassRoomPickerViewModel(roomsList);
 
-            classRoomPicker.AddSubview(subViewTop);
-            classRoomPicker.AddSubview(subViewBottom);
-            View.AddSubviews(classRoomPicker);
-            classRoomPicker.Select(0, 0, true);
+                classRoomPicker = new UIPickerView()
+                {
+                    Frame = new CGRect(50, 220, View.Bounds.Width - 100, 200),
+                    ShowSelectionIndicator = true,
+                    Model = modelClassRooms,
+                };
+                classRoomPicker.AccessibilityNavigationStyle = UIAccessibilityNavigationStyle.Automatic;
+                classRoomPicker.ContentMode = UIViewContentMode.Center;
+                var subViewTop = new UIView(new CGRect(classRoomPicker.Bounds.X - 20, classRoomPicker.Bounds.Y + 85, classRoomPicker.Bounds.Width, 1));
+                var subViewBottom = new UIView(new CGRect(classRoomPicker.Bounds.X - 20, classRoomPicker.Bounds.Y + 115, classRoomPicker.Bounds.Width, 1));
+                subViewTop.BackgroundColor = UIColor.White;
+                subViewBottom.BackgroundColor = UIColor.White;
+
+                classRoomPicker.AddSubview(subViewTop);
+                classRoomPicker.AddSubview(subViewBottom);
+                View.AddSubviews(classRoomPicker);
+                classRoomPicker.Select(0, 0, true);
+            }
             if (loadingOverlay != null)
             {
                 loadingOverlay.Hide();

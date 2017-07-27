@@ -110,10 +110,11 @@ namespace CSU_PORTABLE.iOS
                 RowHeight = 100,
                 Source = new AlertsSource(alertsList)
             };
+            _table.ReloadData();
             View.AddSubview(_table);
         }
 
-       
+
     }
 
 

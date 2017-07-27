@@ -16,6 +16,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using CSU_PORTABLE.Droid.UI;
 using static CSU_PORTABLE.Utils.Constants;
+using System.Net;
+using CSU_PORTABLE.Models;
 
 namespace CSU_PORTABLE.Droid.Utils
 {
@@ -67,7 +69,6 @@ namespace CSU_PORTABLE.Droid.Utils
             builder.SetTitle("Energy Management");
             builder.SetMessage(message);
             builder.SetPositiveButton("OK", (sender, args) => { /* do stuff on OK */ });
-            //builder.SetNegativeButton("No", (sender, args) => { cmd = "cancel"; });
             builder.SetCancelable(false);
             builder.Show();
         }
@@ -77,15 +78,13 @@ namespace CSU_PORTABLE.Droid.Utils
         {
             PreferenceHandler.setLoggedIn(false);
             PreferenceHandler.SetToken(string.Empty);
+            PreferenceHandler.SetRefreshToken(string.Empty);
             Intent intent = new Intent(Application.Context, typeof(LoginNewActivity));
             intent.PutExtra(LoginNewActivity.KEY_SHOW_PAGE, (int)SignInType.SIGN_IN);
             context.StartActivity(intent);
-            //context.Dispose();
-            //layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
-            //layoutProgress.Visibility = ViewStates.Gone;
         }
 
-        public static async Task RefreshToken(Context context)
+        public static async Task GetToken()
         {
             string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetAccessCode());
             var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
@@ -94,11 +93,27 @@ namespace CSU_PORTABLE.Droid.Utils
                 string strContent = await response.Content.ReadAsStringAsync();
                 var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
                 PreferenceHandler.SetToken(tokenNew.id_token);
+                PreferenceHandler.SetRefreshToken(tokenNew.refresh_token);
+            }
+        }
+
+        public static async Task RefreshToken(Context context)
+        {
+            string tokenURL = string.Format(B2CConfig.RefreshTokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetRefreshToken());
+            var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string strContent = await response.Content.ReadAsStringAsync();
+                var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+                PreferenceHandler.SetToken(tokenNew.id_token);
+                PreferenceHandler.SetRefreshToken(tokenNew.refresh_token);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 RedirectToLogin(context);
             }
         }
+
+        
     }
 }
