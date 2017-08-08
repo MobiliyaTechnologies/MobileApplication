@@ -42,7 +42,7 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Working in the background - important stuff.");
             });
 
-            startupWork.ContinueWith(t =>
+            startupWork.ContinueWith(async t =>
             {
                 Log.Debug(TAG, "Work is finished.");
 
@@ -66,6 +66,7 @@ namespace CSU_PORTABLE.Droid.UI
                         B2CConfigManager.GetInstance().Initialize(config);
                         if (PreferenceHandler.IsLoggedIn())
                         {
+                            await Utils.Utils.RefreshToken(this);
                             Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
                             intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
                             StartActivity(intent);

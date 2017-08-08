@@ -57,6 +57,7 @@ namespace CSU_PORTABLE.Droid.UI
 
     public class ChangePasswordView : WebViewClient
     {
+        public LinearLayout layoutProgress;
         public override void OnPageFinished(WebView view, string url)
         {
             base.OnPageFinished(view, url);
@@ -74,8 +75,19 @@ namespace CSU_PORTABLE.Droid.UI
                 view.Context.StartActivity(intent);
                 view.Dispose();
             }
+            if (layoutProgress != null)
+            {
+                layoutProgress.Visibility = ViewStates.Gone;
+            }
         }
 
+        public override void OnPageStarted(WebView view, string url, Bitmap favicon)
+        {
+            base.OnPageStarted(view, url, favicon);
+            layoutProgress = view.FindViewById<LinearLayout>(Resource.Id.layout_progress);
+            layoutProgress.Visibility = ViewStates.Visible;
+            layoutProgress.Enabled = true;
+        }
     }
 
 }

@@ -50,10 +50,7 @@ namespace CSU_PORTABLE.Droid.UI
         int CurrentPremisesId = 0;
         public static TextView notifCount;
         MySampleBroadcastReceiver receiver;
-
         private BarChartView chart;
-        private IMenu optionsMenu;
-        AuthenticationResult authResult = null;
         private WebView localChartView;
 
         protected async override void OnCreate(Bundle savedInstanceState)
@@ -88,7 +85,7 @@ namespace CSU_PORTABLE.Droid.UI
             //    throw;
             //}
 
-            //await Authenticate(this, "https://login.windows.net/common" + "/", "", B2CConfig.ClientId, B2CConfig.Redirect_Uri);
+            //await Authenticate(this, "https://login.microsoftonline.com/CSUB2C.onmicrosoft.com", "", B2CConfig.ClientId, B2CConfig.Redirect_Uri);
 
 
             if (!Utils.Utils.IsNetworkEnabled(this))
@@ -106,18 +103,10 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     await Utils.Utils.GetToken();
                 }
-                await GetUserDetails();
-                //if (PreferenceHandler.GetUserDetails().UserId <= 0)
-                //{
-                //    await GetUserDetails();
-                //}
-                //else
-                //{
-                //    CreateDashboard();
-                //}
-
+                CreateDashboard();
+                //await GetUserDetails();
                 IsPlayServicesAvailable();
-                await Utils.Utils.RefreshToken(this);
+                //await Utils.Utils.RefreshToken(this);
             }
         }
 
@@ -126,12 +115,12 @@ namespace CSU_PORTABLE.Droid.UI
             var authContext = new AuthenticationContext(authority);
             if (authContext.TokenCache.ReadItems().Any())
                 authContext = new AuthenticationContext(authContext.TokenCache.ReadItems().First().Authority);
-            var result = await authContext.AcquireDeviceCodeAsync("https://CSUB2C.onmicrosoft.com/", B2CConfig.ClientId);
+            //var result = await authContext.AcquireDeviceCodeAsync("https://login.windows.net/common", B2CConfig.ClientId);
             var uri = new Uri(returnUri);
             var platformParams = new PlatformParameters(context);
             try
             {
-                var authResult = await authContext.AcquireTokenAsync("https://CSUB2C.onmicrosoft.com/", clientId, uri, platformParams, UserIdentifier.AnyUser, null);
+                var authResult = await authContext.AcquireTokenAsync(clientId, clientId, uri, platformParams);
                 //var authResult = await authContext.AcquireTokenAsync("https://CSUB2C.onmicrosoft.com/EMTestDeploy", new ClientCredential(B2CConfig.ClientId, B2CConfig.ClientSecret));
 
                 var re = await authContext.AcquireTokenByAuthorizationCodeAsync(authResult.AccessToken, uri, new ClientCredential(B2CConfig.ClientId, B2CConfig.ClientSecret));
@@ -179,8 +168,6 @@ namespace CSU_PORTABLE.Droid.UI
 
         private void CreateDashboard()
         {
-
-
             SetDrawer();
             if (PreferenceHandler.GetUserDetails().RoleId == (int)USER_ROLE.ADMIN)
             {
@@ -602,48 +589,47 @@ namespace CSU_PORTABLE.Droid.UI
                 drawerLayout.CloseDrawers();
             };
 
-            if (optionsMenu != null)
-            {
-                MenuInflater.Inflate(Resource.Menu.main_menu, optionsMenu);
+            //if (optionsMenu != null)
+            //{
+            //    MenuInflater.Inflate(Resource.Menu.main_menu, optionsMenu);
 
-                if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
-                {
-                    optionsMenu.GetItem(0).SetVisible(false);
-                }
-                else
-                {
-                    RelativeLayout alertItem = (RelativeLayout)(optionsMenu.FindItem(Resource.Id.alerts).ActionView);
-                    alertItem.Click += delegate
-                    {
-                        showAlerts();
-                    };
-                    notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
-                    setNotificationCount();
-                }
-            }
+            //    if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
+            //    {
+            //        optionsMenu.GetItem(0).SetVisible(false);
+            //    }
+            //    else
+            //    {
+            //        RelativeLayout alertItem = (RelativeLayout)(optionsMenu.FindItem(Resource.Id.alerts).ActionView);
+            //        alertItem.Click += delegate
+            //        {
+            //            showAlerts();
+            //        };
+            //        notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
+            //        setNotificationCount();
+            //    }
+            //}
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            optionsMenu = menu;
-            //MenuInflater.Inflate(Resource.Menu.main_menu, menu);
+            //optionsMenu = menu;
+            MenuInflater.Inflate(Resource.Menu.main_menu, menu);
+            if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
+            {
+                menu.GetItem(0).SetVisible(false);
+            }
+            else
+            {
 
-            //if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.STUDENT)
-            //{
-            //    menu.GetItem(0).SetVisible(false);
-            //}
-            //else
-            //{
+                RelativeLayout alertItem = (RelativeLayout)(menu.FindItem(Resource.Id.alerts).ActionView);
+                alertItem.Click += delegate
+                {
+                    showAlerts();
+                };
+                notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
+                setNotificationCount();
 
-            //    RelativeLayout alertItem = (RelativeLayout)(menu.FindItem(Resource.Id.alerts).ActionView);
-            //    alertItem.Click += delegate
-            //    {
-            //        showAlerts();
-            //    };
-            //    notifCount = alertItem.FindViewById<TextView>(Resource.Id.notif_count);
-            //    setNotificationCount();
-
-            //}
+            }
             return base.OnPrepareOptionsMenu(menu);
         }
 
@@ -732,6 +718,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         private void Logout(LogoutModel logoutModel)
         {
+            layoutProgress.Visibility = ViewStates.Visible;
             Log.Debug(TAG, "Local Logout Started");
             PreferenceHandler.setLoggedIn(false);
             PreferenceHandler.SetToken(string.Empty);

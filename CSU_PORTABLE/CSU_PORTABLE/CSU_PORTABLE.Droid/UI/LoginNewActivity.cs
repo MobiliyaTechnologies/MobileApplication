@@ -18,6 +18,8 @@ using CSU_PORTABLE.Droid.Utils;
 using CSU_PORTABLE.Models;
 using static CSU_PORTABLE.Utils.Constants;
 using Android.Content.PM;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -34,6 +36,7 @@ namespace CSU_PORTABLE.Droid.UI
         {
             localContext = this;
             base.OnCreate(savedInstanceState);
+
             if (!Utils.Utils.IsNetworkEnabled(this))
             {
                 Utils.Utils.ShowDialog(this, "Internet not available.");
@@ -68,25 +71,54 @@ namespace CSU_PORTABLE.Droid.UI
 
     public class MyWebView : WebViewClient
     {
-
+        public LinearLayout layoutProgress;
         public override void OnPageFinished(WebView view, string url)
         {
             base.OnPageFinished(view, url);
-
+            if (layoutProgress != null)
+            {
+                layoutProgress.Visibility = ViewStates.Gone;
+            }
         }
 
         public override async void OnPageStarted(WebView view, string url, Bitmap favicon)
         {
             base.OnPageStarted(view, url, favicon);
+            layoutProgress = view.FindViewById<LinearLayout>(Resource.Id.layout_progress);
+            layoutProgress.Visibility = ViewStates.Visible;
+            layoutProgress.Enabled = true;
+            view.DispatchFinishTemporaryDetach();
             if (url.Contains("&code="))
             {
-                Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
-                intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
-                view.Context.StartActivity(intent);
                 string code = Common.FunGetValuefromQueryString(url, "code");
                 PreferenceHandler.SetAccessCode(code);
                 PreferenceHandler.setLoggedIn(true);
-                
+                layoutProgress.Visibility = ViewStates.Visible;
+                await Utils.Utils.GetToken();
+                await GetUserDetails(view);
+            }
+        }
+
+        private async void GetCurrentUserResponse(HttpResponseMessage responseUser, WebView view)
+        {
+            if (responseUser != null && responseUser.StatusCode == System.Net.HttpStatusCode.OK && responseUser.Content != null)
+            {
+                string strContent = await responseUser.Content.ReadAsStringAsync();
+                UserDetails user = JsonConvert.DeserializeObject<UserDetails>(strContent);
+                PreferenceHandler.SaveUserDetails(user);
+                Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
+                intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
+                view.Context.StartActivity(intent);
+                layoutProgress.Visibility = ViewStates.Gone;
+            }
+        }
+
+        public async Task GetUserDetails(WebView view)
+        {
+            var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            if (responseUser.StatusCode == HttpStatusCode.OK)
+            {
+                GetCurrentUserResponse(responseUser, view);
             }
         }
     }

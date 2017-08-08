@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using UIKit;
@@ -30,6 +32,7 @@ namespace CSU_PORTABLE.iOS
         private BarChartView chart;
         public UILabel lblHeader;
         public UIButton btnBack;
+        private UIWebView localChartView;
 
         public MapViewController(IntPtr handle) : base(handle)
         {
@@ -213,12 +216,13 @@ namespace CSU_PORTABLE.iOS
 
         private void SetConsumptions(List<ConsumptionModel> consumpModels)
         {
-            SetConsumptionBarChart(consumpModels);
+            //SetConsumptionBarChart(consumpModels);
+            SetConsumptionBarChartWebView(consumpModels);
             UITableView _table = new UITableView();
 
             _table = new UITableView
             {
-                Frame = new CoreGraphics.CGRect(0, 340, View.Bounds.Width, View.Bounds.Height - 340),
+                Frame = new CoreGraphics.CGRect(0, 370, View.Bounds.Width, View.Bounds.Height - 370),
                 RowHeight = 100,
                 BackgroundColor = UIColor.FromRGBA(193, 214, 218, 0.3f),
                 Source = new ConsumptionSource(consumpModels, this)
@@ -227,6 +231,45 @@ namespace CSU_PORTABLE.iOS
             _table.ClipsToBounds = true;
             View.AddSubview(_table);
             loadingOverlay.Hide();
+        }
+
+        private void SetConsumptionBarChartWebView(List<ConsumptionModel> consumpModels)
+        {
+            string[][] r = Array.ConvertAll(consumpModels.Select(x => new { x.Name, x.Consumed, x.Expected, x.Overused }).ToArray(), x => new string[] { x.Name, x.Consumed, x.Expected, x.Overused });
+            string[] Labels = null;
+            try
+            {
+                Labels = consumpModels.Select(x => x.Name.Split('-')[1]).ToArray();
+            }
+            catch (Exception ex)
+            {
+                Labels = consumpModels.Select(x => x.Name).ToArray();
+            }
+            string[] Consumed = consumpModels.Select(x => x.Consumed.Replace('K', ' ').Trim()).ToArray();
+            string[] Expected = consumpModels.Select(x => x.Expected.Replace('K', ' ').Trim()).ToArray();
+            string[] Overused = consumpModels.Select(x => x.Overused.Replace('K', ' ').Trim()).ToArray();
+
+            localChartView = new UIWebView()
+            {
+                Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 60, View.Bounds.Width, 330),
+            };
+            string content = string.Empty;
+            string fileName = "Content/ChartC3.html"; // remember case-sensitive
+            string localHtmlUrl = Path.Combine(NSBundle.MainBundle.BundlePath, fileName);
+            string localJSUrl = Path.Combine(NSBundle.MainBundle.BundlePath, "Content/Chart.bundle.min.js");
+            using (StreamReader sr = new StreamReader(localHtmlUrl))
+            {
+                content = sr.ReadToEnd();
+            }
+            content = content.Replace("ChartJS", localJSUrl);
+            content = content.Replace("LabelsData", "'" + string.Join("','", Labels) + "'");
+            content = content.Replace("ConsumedData", "'" + string.Join("','", Consumed) + "'");
+            content = content.Replace("ExpectedData", "'" + string.Join("','", Expected) + "'");
+            content = content.Replace("OverusedData", "'" + string.Join("','", Overused) + "'");
+            localChartView.LoadHtmlString(content, new NSUrl(localHtmlUrl, true));
+            //localChartView.ScalesPageToFit = true;
+            //localChartView.LoadUrl("file:///android_asset/ChartC3.html");
+            View.AddSubview(localChartView);
         }
 
         private void SetConsumptionBarChart(List<ConsumptionModel> consumpModels)

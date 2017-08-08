@@ -33,7 +33,23 @@ namespace CSU_PORTABLE.iOS.Utils
         }
 
 
-        public async static Task RefreshToken(UIViewController viewController, LoadingOverlay loadingOverlay)
+        //public async static Task RefreshToken(UIViewController viewController, LoadingOverlay loadingOverlay)
+        //{
+        //    string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetAccessCode());
+        //    var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+        //    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        //    {
+        //        string strContent = await response.Content.ReadAsStringAsync();
+        //        var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+        //        PreferenceHandler.SetToken(tokenNew.id_token);
+        //    }
+        //    else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        //    {
+        //        RedirectToLogin(viewController, loadingOverlay);
+        //    }
+        //}
+
+        public static async Task GetToken()
         {
             string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetAccessCode());
             var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
@@ -42,6 +58,20 @@ namespace CSU_PORTABLE.iOS.Utils
                 string strContent = await response.Content.ReadAsStringAsync();
                 var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
                 PreferenceHandler.SetToken(tokenNew.id_token);
+                PreferenceHandler.SetRefreshToken(tokenNew.refresh_token);
+            }
+        }
+
+        public static async Task RefreshToken(UIViewController viewController, LoadingOverlay loadingOverlay)
+        {
+            string tokenURL = string.Format(B2CConfig.RefreshTokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetRefreshToken());
+            var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string strContent = await response.Content.ReadAsStringAsync();
+                var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+                PreferenceHandler.SetToken(tokenNew.id_token);
+                PreferenceHandler.SetRefreshToken(tokenNew.refresh_token);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {

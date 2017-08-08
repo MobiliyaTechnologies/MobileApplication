@@ -3,8 +3,20 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <WebView
-        android:id="@+id/LocalWebView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+  <WebView
+      android:id="@+id/LocalWebView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" >
+    <LinearLayout
+            android:id="@+id/layout_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_trans_dark"
+            android:gravity="center">
+      <ProgressBar
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+    </LinearLayout>
+
+  </WebView>
 </LinearLayout>

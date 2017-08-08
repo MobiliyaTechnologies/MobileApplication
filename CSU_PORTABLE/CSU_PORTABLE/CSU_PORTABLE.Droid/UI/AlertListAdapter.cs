@@ -51,6 +51,7 @@ namespace CSU_PORTABLE.Droid.UI
             AlertViewHolder vhAlerts = holder as AlertViewHolder;
             vhAlerts.textViewAlert.Text = mAlertModels[position].Alert_Desc;
             vhAlerts.textViewClass.Text = mAlertModels[position].Class_Desc;
+
             string dt = GetFormatedDate(mAlertModels[position].Timestamp);
             if (dt == null)
             {
@@ -65,10 +66,12 @@ namespace CSU_PORTABLE.Droid.UI
             }
             else
             {
-                vhAlerts.textViewAck.Visibility = ViewStates.Visible;
+
                 vhAlerts.textViewAck.Click += async delegate
                 {
+                    vhAlerts.textViewAck.SystemUiVisibility = StatusBarVisibility.Hidden;
                     vhAlerts.textViewAck.Visibility = ViewStates.Gone;
+                    vhAlerts.textViewAck.Text = string.Empty;
                     AlertAcknowledgeModel ackModel = new AlertAcknowledgeModel();
                     ackModel.Alert_Id = vhAlerts.alertId;
                     ackModel.Acknowledged_By = PreferenceHandler.GetUserDetails().FirstName + " " + PreferenceHandler.GetUserDetails().LastName;
@@ -154,6 +157,6 @@ namespace CSU_PORTABLE.Droid.UI
         {
             return await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS, JsonConvert.SerializeObject(acknowledgeModel), HttpMethod.Put, PreferenceHandler.GetToken());
         }
-       
+
     }
 }

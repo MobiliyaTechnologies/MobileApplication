@@ -45,7 +45,7 @@
     <MtouchFloat32>False</MtouchFloat32>
     <IOSDebugOverWiFi>False</IOSDebugOverWiFi>
     <IOSDebuggerPort>10000</IOSDebuggerPort>
-    <CodesignKey>iPhone Distribution: Agreeya Mobility Inc</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <CodesignProvision>
     </CodesignProvision>
   </PropertyGroup>
@@ -610,6 +610,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Chart.bundle.min.js" />
+    <Content Include="Content\ChartC3.html" />
     <Content Include="GoogleService-Info.plist" />
     <BundleResource Include="Resources\logo.ico" />
   </ItemGroup>

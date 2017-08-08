@@ -74,7 +74,7 @@ namespace CSU_PORTABLE.iOS
 
         private void BtnNext_TouchUpInside(object sender, EventArgs e)
         {
-            if (classRoomId > 0)
+            if (classRoomId > 0 && questionList != null)
             {
                 if (questionList.Count > 0)
                 {
@@ -214,6 +214,7 @@ namespace CSU_PORTABLE.iOS
                     View.AddSubviews(lblRemark);
                     loadingOverlay.Hide();
                 }
+
             }
             else
             {

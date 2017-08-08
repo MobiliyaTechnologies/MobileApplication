@@ -75,7 +75,17 @@ namespace CSU_PORTABLE.iOS
             loadingOverlay = new LoadingOverlay(bounds);
             View.Add(loadingOverlay);
             PreferenceHandler.setLoggedIn(false);
-
+            PreferenceHandler.SetToken(string.Empty);
+            PreferenceHandler.SetRefreshToken(string.Empty);
+            PreferenceHandler.SaveUserDetails(new UserDetails()
+            {
+                Email = string.Empty,
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                RoleId = 0,
+                RoleType = 0,
+                UserId = 0
+            });
             Action ResetSession = () =>
            {
 

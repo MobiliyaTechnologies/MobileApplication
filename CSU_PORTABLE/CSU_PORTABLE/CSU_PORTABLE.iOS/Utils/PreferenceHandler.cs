@@ -21,6 +21,7 @@ namespace CSU_PORTABLE.iOS.Utils
         static string preferenceUserCampus = "CSUPREF_user_campus";
         static string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
         static string preferenceToken = "CSUPREF_token";
+        static string preferenceRefreshToken = "CSUPREF_refreshtoken";
         static string preferenceAccessCode = "CSUPREF_accesscode";
         static string preferenceConfig = "CSUPREF_config";
         static string preferenceDomainKey = "CSUPREF_domainkey";
@@ -82,6 +83,20 @@ namespace CSU_PORTABLE.iOS.Utils
             return plist.StringForKey(preferenceToken);
         }
 
+        public static void SetRefreshToken(string RefreshToken)
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            plist.SetString(RefreshToken, preferenceRefreshToken);
+            plist.Synchronize();
+        }
+
+
+        public static string GetRefreshToken()
+        {
+            var plist = NSUserDefaults.StandardUserDefaults;
+            return plist.StringForKey(preferenceRefreshToken);
+        }
+
 
         public static bool IsLoggedIn()
         {
@@ -99,13 +114,17 @@ namespace CSU_PORTABLE.iOS.Utils
         public static bool SaveUserDetails(UserDetails loginResponse)
         {
             var plist = NSUserDefaults.StandardUserDefaults;
-            plist.SetString(loginResponse.Email, preferenceEmail);
-            plist.SetString(loginResponse.FirstName, preferenceFirstName);
-            plist.SetString(loginResponse.LastName, preferenceLastName);
-            plist.SetInt(loginResponse.UserId, preferenceUserId);
-            plist.SetInt(loginResponse.RoleId, preferenceRoleId);
-            plist.SetBool(true, preferenceIsLoggedIn);
-            plist.SetString(JsonConvert.SerializeObject(loginResponse.UserCampus), preferenceUserCampus);
+            if (loginResponse != null)
+            {
+                plist.SetString(loginResponse.Email, preferenceEmail);
+                plist.SetString(loginResponse.FirstName, preferenceFirstName);
+                plist.SetString(loginResponse.LastName, preferenceLastName);
+                plist.SetInt(loginResponse.UserId, preferenceUserId);
+                plist.SetInt(loginResponse.RoleId, preferenceRoleId);
+                plist.SetBool(true, preferenceIsLoggedIn);
+                plist.SetString(JsonConvert.SerializeObject(loginResponse.UserCampus), preferenceUserCampus);
+
+            }
             return plist.Synchronize();
         }
 
