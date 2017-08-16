@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EM_PORTABLE.Droid", "CSU_PORTABLE\CSU_PORTABLE.Droid\EM_PORTABLE.Droid.csproj", "{6C4E8D25-E2B1-4061-B0CD-6CCDC91FA8B7}"
 EndProject

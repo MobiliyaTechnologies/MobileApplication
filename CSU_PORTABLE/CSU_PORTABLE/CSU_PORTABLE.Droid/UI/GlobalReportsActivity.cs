@@ -41,7 +41,6 @@ namespace CSU_PORTABLE.Droid.UI
             String body = "<html><body>Loading reports...</body></html>";
             showContentOnWebView(body);
 
-            //var preferenceHandler = new PreferenceHandler();
             int userId = PreferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {

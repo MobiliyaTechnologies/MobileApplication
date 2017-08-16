@@ -15,6 +15,7 @@ namespace CSU_PORTABLE.Droid.Utils
         static string preferenceRoleId = "CSUPREF_role_id";
         static string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
         static string preferenceToken = "CSUPREF_token";
+        static string preferenceRefreshToken = "CSUPREF_refreshtoken";
         static string preferenceAccessCode = "CSUPREF_accesscode";
         static string preferenceConfig = "CSUPREF_config";
         static string preferenceDomainKey = "CSUPREF_domainkey";
@@ -78,6 +79,21 @@ namespace CSU_PORTABLE.Droid.Utils
         {
             var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
             return contextPref.GetString(preferenceToken, string.Empty);
+        }
+
+        public static bool SetRefreshToken(string RefreshToken)
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            var contextEdit = contextPref.Edit();
+            contextEdit.PutString(preferenceRefreshToken, RefreshToken);
+            return contextEdit.Commit();
+        }
+
+
+        public static string GetRefreshToken()
+        {
+            var contextPref = Android.App.Application.Context.GetSharedPreferences(preferenceName, FileCreationMode.Private);
+            return contextPref.GetString(preferenceRefreshToken, string.Empty);
         }
 
         public static bool setLoggedIn(bool value)

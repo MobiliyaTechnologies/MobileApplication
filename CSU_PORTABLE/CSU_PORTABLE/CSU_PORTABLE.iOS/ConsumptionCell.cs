@@ -28,7 +28,7 @@ namespace CSU_PORTABLE.iOS
 
             UILabel.Appearance.Font = UIFont.FromName("Futura-Medium", 20f);
 
-            double lblWidth = (Bounds.Width / 3);
+            double lblWidth = (Bounds.Width / 3) - 10;
             UIImageView imgConsumed = new UIImageView()
             {
                 Frame = new CGRect(-2, 5, 10, 20),
@@ -49,7 +49,7 @@ namespace CSU_PORTABLE.iOS
 
             lblConsumedCount = new UILabel()
             {
-                Frame = new CGRect(20, 35, lblWidth, 30),
+                Frame = new CGRect(10, 35, lblWidth, 30),
                 Font = UIFont.PreferredTitle2,
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
@@ -67,7 +67,7 @@ namespace CSU_PORTABLE.iOS
 
             lblExpectedCount = new UILabel()
             {
-                Frame = new CGRect(lblWidth + 40, 35, lblWidth, 30),
+                Frame = new CGRect(lblWidth + 12, 35, lblWidth, 30),
                 Font = UIFont.PreferredTitle2,
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
@@ -84,7 +84,7 @@ namespace CSU_PORTABLE.iOS
 
             lblOverusedCount = new UILabel()
             {
-                Frame = new CGRect((lblWidth * 2) + 40, 35, lblWidth, 30),
+                Frame = new CGRect((lblWidth * 2) + 12, 35, lblWidth, 30),
                 Font = UIFont.PreferredTitle2,
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
@@ -99,7 +99,7 @@ namespace CSU_PORTABLE.iOS
 
             UILabel lblConsumed = new UILabel()
             {
-                Frame = new CGRect(15, 60, lblWidth, 30),
+                Frame = new CGRect(5, 60, lblWidth, 30),
                 Text = "CONSUMED",
                 Font = UIFont.FromName("Futura-Medium", 10f),
                 TextColor = UIColor.Gray,
@@ -111,7 +111,7 @@ namespace CSU_PORTABLE.iOS
 
             UILabel lblExpected = new UILabel()
             {
-                Frame = new CGRect(new CGPoint(lblWidth + 25, 60), new CGSize(lblWidth, 30)),
+                Frame = new CGRect(new CGPoint(lblWidth + 15, 60), new CGSize(lblWidth, 30)),
                 Text = "EXPECTED",
                 Font = UIFont.FromName("Futura-Medium", 10f),
                 TextColor = UIColor.Gray,
@@ -123,7 +123,7 @@ namespace CSU_PORTABLE.iOS
 
             UILabel lblOverused = new UILabel()
             {
-                Frame = new CGRect(new CGPoint((lblWidth * 2) + 30, 60), new CGSize(lblWidth, 30)),
+                Frame = new CGRect(new CGPoint((lblWidth * 2) + 20, 60), new CGSize(lblWidth, 30)),
                 Text = "OVERUSED",
                 Font = UIFont.FromName("Futura-Medium", 10f),
                 TextColor = UIColor.Gray,
@@ -135,7 +135,7 @@ namespace CSU_PORTABLE.iOS
 
             UIView seperator = new UIView()
             {
-                Frame = new CGRect(20, 99, Bounds.Width, 2),
+                Frame = new CGRect(0, 99, Bounds.Width, 2),
                 BackgroundColor = UIColor.Gray
             };
 

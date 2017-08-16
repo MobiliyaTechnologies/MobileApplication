@@ -201,7 +201,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void getRecommendationsList()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), IOSUtil.CurrentStage);
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -249,7 +249,7 @@ namespace CSU_PORTABLE.iOS
 
         private async void GetInsights()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), IOSUtil.CurrentStage);
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>

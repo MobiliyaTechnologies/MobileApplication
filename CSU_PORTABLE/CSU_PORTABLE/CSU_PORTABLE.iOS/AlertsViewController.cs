@@ -42,7 +42,7 @@ namespace CSU_PORTABLE.iOS
 
         public async void GetAlerts()
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), IOSUtil.CurrentStage);
             if (response.StatusCode != 0)
             {
                 InvokeOnMainThread(() =>
@@ -110,10 +110,11 @@ namespace CSU_PORTABLE.iOS
                 RowHeight = 100,
                 Source = new AlertsSource(alertsList)
             };
+            _table.ReloadData();
             View.AddSubview(_table);
         }
 
-       
+
     }
 
 

@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
   <LinearLayout
       android:id="@+id/layout_progress"
       android:layout_width="match_parent"
@@ -40,7 +39,7 @@
       android:layout_height="match_parent"
       android:padding="20dp"
       android:visibility="gone"
-      android:background="#006699">
+      android:background="@color/colorPrimary">
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
@@ -98,7 +97,7 @@
       android:layout_height="match_parent"
       android:padding="20dp"
       android:visibility="gone"
-      android:background="#006699">
+      android:background="@color/colorPrimary">
     <TextView
         android:id="@+id/textViewQuestion"
         android:layout_width="match_parent"
@@ -225,7 +224,7 @@
       android:layout_height="match_parent"
       android:padding="20dp"
       android:visibility="gone"
-      android:background="#006699">
+      android:background="@color/colorPrimary">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

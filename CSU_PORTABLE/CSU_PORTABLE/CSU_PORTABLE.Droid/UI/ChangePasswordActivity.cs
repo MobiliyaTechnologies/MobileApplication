@@ -57,29 +57,37 @@ namespace CSU_PORTABLE.Droid.UI
 
     public class ChangePasswordView : WebViewClient
     {
+        public LinearLayout layoutProgress;
         public override void OnPageFinished(WebView view, string url)
         {
             base.OnPageFinished(view, url);
-            //var preferenceHandler = new PreferenceHandler();
             if (url.Contains("id_token="))
             {
                 string token = Common.FunGetValuefromQueryString(url, "id_token");
                 PreferenceHandler.SetToken(token);
-                //view.Context.StartActivity(new Intent(Application.Context, typeof(MainActivity)));
                 Intent intent = new Intent(Application.Context, typeof(MainActivity));
                 intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
                 view.Context.StartActivity(intent);
             }
             if (url.Contains("error="))
             {
-                //Utils.Utils.ShowToast(view.Context, "Failed to change password.Please try again later.");
                 Intent intent = new Intent(Application.Context, typeof(AdminDashboardActivity));
-                //intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
                 view.Context.StartActivity(intent);
                 view.Dispose();
             }
+            if (layoutProgress != null)
+            {
+                layoutProgress.Visibility = ViewStates.Gone;
+            }
         }
 
+        public override void OnPageStarted(WebView view, string url, Bitmap favicon)
+        {
+            base.OnPageStarted(view, url, favicon);
+            layoutProgress = view.FindViewById<LinearLayout>(Resource.Id.layout_progress);
+            layoutProgress.Visibility = ViewStates.Visible;
+            layoutProgress.Enabled = true;
+        }
     }
 
 }

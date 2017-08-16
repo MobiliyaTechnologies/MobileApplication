@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>CSU</string>
+	<string>Energy Management</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.mobiliya.em</string>
 	<key>CFBundleShortVersionString</key>

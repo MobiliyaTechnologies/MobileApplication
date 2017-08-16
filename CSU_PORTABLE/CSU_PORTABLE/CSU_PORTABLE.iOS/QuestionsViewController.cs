@@ -30,25 +30,6 @@ namespace CSU_PORTABLE.iOS
         {
         }
 
-        //// provide access to the navigation controller to all inheriting controllers
-        //protected NavController NavController
-        //{
-        //    get
-        //    {
-        //        return (UIApplication.SharedApplication.Delegate as AppDelegate).RootViewController.NavController;
-        //    }
-        //}
-
-        //// provide access to the storyboard to all inheriting controllers
-        //public override UIStoryboard Storyboard
-        //{
-        //    get
-        //    {
-        //        return (UIApplication.SharedApplication.Delegate as AppDelegate).RootViewController.Storyboard;
-        //    }
-        //}
-
-
         #region " Events "
 
         public override void ViewWillAppear(bool animated)
@@ -85,15 +66,11 @@ namespace CSU_PORTABLE.iOS
             View.Add(loadingOverlay);
             if (SelectedAnswer > 0)
             {
-
                 submitFeedback(userdetail.UserId);
-                //var ThankYouViewController = Storyboard.InstantiateViewController("ThankYouViewController") as ThankYouViewController;
-                //ThankYouViewController.NavigationItem.SetHidesBackButton(true, false);
-                //NavigationController.PushViewController(ThankYouViewController, true);
             }
             else
             {
-                ShowMessage("Please select an option");
+                IOSUtil.ShowMessage("Please select an option", loadingOverlay, this);
             }
         }
 
@@ -111,7 +88,7 @@ namespace CSU_PORTABLE.iOS
 
         private void GetQuestionView()
         {
-            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
+            this.View.BackgroundColor = IOSUtil.PrimaryColor;
             QuestionHeader = new UILabel()
             {
                 Font = UIFont.FromName("Helvetica-Bold", 20f),
@@ -166,7 +143,7 @@ namespace CSU_PORTABLE.iOS
             UITextAttributes attAnswersSelected = new UITextAttributes()
             {
                 Font = UIFont.FromName("Futura-Medium", 12f),
-                TextColor = UIColor.FromRGB(30, 77, 43),
+                TextColor = IOSUtil.PrimaryColor,
                 TextShadowColor = UIColor.LightTextColor
             };
             segAnswers.TintColor = UIColor.White;
@@ -210,37 +187,37 @@ namespace CSU_PORTABLE.iOS
                 {
                     case 0:
                         segAnswers.SetImage(UIImage.FromBundle("Very_Cold_Icon.png"), SelectedSegment);
-                        View.BackgroundColor = UIColor.FromRGB(36, 116, 169);
-                        btnBack.BackgroundColor = UIColor.FromRGB(36, 116, 169);
-                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(36, 116, 169);
+                        View.BackgroundColor = IOSUtil.VeryCold;
+                        btnBack.BackgroundColor = IOSUtil.VeryCold;
+                        this.NavigationController.NavigationBar.BarTintColor = IOSUtil.VeryCold;
                         break;
                     case 1:
                         segAnswers.SetImage(UIImage.FromBundle("Cold_Icon.png"), SelectedSegment);
-                        btnBack.BackgroundColor = UIColor.FromRGB(16, 84, 86);
-                        View.BackgroundColor = UIColor.FromRGB(16, 84, 86);
-                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(16, 84, 86);
+                        btnBack.BackgroundColor = IOSUtil.Cold;
+                        View.BackgroundColor = IOSUtil.Cold;
+                        this.NavigationController.NavigationBar.BarTintColor = IOSUtil.Cold;
                         break;
                     case 2:
                         segAnswers.SetImage(UIImage.FromBundle("Normal_Icon.png"), SelectedSegment);
-                        View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
-                        btnBack.BackgroundColor = UIColor.FromRGB(0, 102, 153);
-                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
+                        View.BackgroundColor = IOSUtil.Normal;
+                        btnBack.BackgroundColor = IOSUtil.Normal;
+                        this.NavigationController.NavigationBar.BarTintColor = IOSUtil.Normal;
                         break;
                     case 3:
                         segAnswers.SetImage(UIImage.FromBundle("Hot_Icon.png"), SelectedSegment);
 
-                        View.BackgroundColor = UIColor.FromRGB(204, 84, 48);
-                        btnBack.BackgroundColor = UIColor.FromRGB(204, 84, 48);
-                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(204, 84, 48);
+                        View.BackgroundColor = IOSUtil.Hot;
+                        btnBack.BackgroundColor = IOSUtil.Hot;
+                        this.NavigationController.NavigationBar.BarTintColor = IOSUtil.Hot;
                         break;
                     case 4:
                         segAnswers.SetImage(UIImage.FromBundle("Very_Hot_Icon.png"), SelectedSegment);
-                        btnBack.BackgroundColor = UIColor.FromRGB(214, 69, 66);
-                        View.BackgroundColor = UIColor.FromRGB(214, 69, 66);
-                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(214, 69, 66);
+                        btnBack.BackgroundColor = IOSUtil.VeryHot;
+                        View.BackgroundColor = IOSUtil.VeryHot;
+                        this.NavigationController.NavigationBar.BarTintColor = IOSUtil.VeryHot;
                         break;
                     default:
-                        this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(36, 116, 169);
+                        this.NavigationController.NavigationBar.BarTintColor = IOSUtil.PrimaryColor;
                         break;
                 }
 
@@ -312,29 +289,13 @@ namespace CSU_PORTABLE.iOS
                 }
                 else
                 {
-                    ShowMessage("Failed to submit feedback, please try again!");
+                    IOSUtil.ShowMessage("Failed to submit feedback, please try again!", loadingOverlay, this);
                 }
             }
             else
             {
-                ShowMessage("Failed to submit feedback, please try again!");
+                IOSUtil.ShowMessage("Failed to submit feedback, please try again!", loadingOverlay, this);
             }
-        }
-
-
-
-
-        private void ShowMessage(string v)
-        {
-            //BTProgressHUD.ShowToast("Hello from Toast");
-            loadingOverlay.Hide();
-            //MessageLabel.Text = " " + v;
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-
-            PresentViewController(alertController, true, null);
-
         }
 
         #endregion

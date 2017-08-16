@@ -33,7 +33,7 @@ namespace CSU_PORTABLE.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
+            this.View.BackgroundColor = IOSUtil.PrimaryColor;
             this.NavigationController.NavigationBarHidden = true;
             this.Title = string.Empty;
 
@@ -75,7 +75,7 @@ namespace CSU_PORTABLE.iOS
             };
 
             UIView topLine = new UIView(new CGRect(25, 170, View.Bounds.Width - 50, 10));
-            topLine.BackgroundColor = UIColor.FromRGB(0, 114, 198);
+            topLine.BackgroundColor = IOSUtil.PrimaryColor;
 
             ButtonLogin = new UIButton(UIButtonType.Custom);
             ButtonLogin.SetTitle("SIGN IN", UIControlState.Normal);
@@ -83,7 +83,7 @@ namespace CSU_PORTABLE.iOS
             ButtonLogin.SetTitleColor(UIColor.White, UIControlState.Normal);
             ButtonLogin.SetTitleColor(UIColor.White, UIControlState.Focused);
             ButtonLogin.Frame = new CGRect((View.Bounds.Width / 2) - 120, 250, 240, 50);
-            ButtonLogin.BackgroundColor = UIColor.FromRGB(0, 114, 198);
+            ButtonLogin.BackgroundColor = IOSUtil.SecondaryColor;
             ButtonLogin.TouchUpInside += delegate
              {
                  // Added for showing loading screen
@@ -100,16 +100,16 @@ namespace CSU_PORTABLE.iOS
             ButtonSignUp.SetTitleColor(UIColor.White, UIControlState.Normal);
             ButtonSignUp.SetTitleColor(UIColor.White, UIControlState.Focused);
             ButtonSignUp.Frame = new CGRect((View.Bounds.Width / 2) - 120, 330, 240, 50);
-            ButtonSignUp.BackgroundColor = UIColor.FromRGB(0, 114, 198);
+            ButtonSignUp.BackgroundColor = IOSUtil.SecondaryColor;
             ButtonSignUp.TouchUpInside += ButtonSignUp_TouchUpInside;
 
             UIButton btnForgotPassword = new UIButton(UIButtonType.Custom);
             btnForgotPassword.SetTitle("Forgot password", UIControlState.Normal);
             btnForgotPassword.Font = UIFont.FromName("Futura-Medium", 13f);
-            btnForgotPassword.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
+            btnForgotPassword.SetTitleColor(IOSUtil.SecondaryColor, UIControlState.Normal);
             btnForgotPassword.SetTitleColor(UIColor.White, UIControlState.Selected);
             btnForgotPassword.Frame = new CGRect((View.Bounds.Width / 2) - 120, 410, 240, 50);
-            btnForgotPassword.BackgroundColor = UIColor.LightTextColor;
+            btnForgotPassword.BackgroundColor = UIColor.Clear;
             btnForgotPassword.TouchUpInside += BtnForgotPassword_TouchUpInside;
             View.AddSubviews(imgLogin, viewWhiteBG, topLine, imgLogo, ButtonLogin, ButtonSignUp, btnForgotPassword);
 
@@ -224,20 +224,6 @@ namespace CSU_PORTABLE.iOS
                 SidebarController.ReopenOnRotate = false;
             }
         }
-
-        //private void ShowMessage(string v)
-        //{
-        //    //BTProgressHUD.ShowToast("Hello from Toast");
-        //    loadingOverlay.Hide();
-        //    //MessageLabel.Text = " " + v;
-        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-
-        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-
-        //    PresentViewController(alertController, true, null);
-
-        //}
-
         #endregion
     }
 }

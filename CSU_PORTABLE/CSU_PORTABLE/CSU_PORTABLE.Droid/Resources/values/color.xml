@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <color name="colorPrimary">#0072c6</color>
-  <color name="colorPrimaryDark">#0072c6</color>
-  <color name="colorAccent">#0072c6</color>
-  
+  <color name="colorPrimary">#464e78</color>
+  <color name="colorPrimaryDark">#464e78</color>
+  <color name="colorAccent">#464e78</color>
+  <color name="colorSecondary">#35accf</color>
   <color name="theme_color">#0078d7</color>
   <color name="white_fade">#eeeeee</color>
   <color name="white">#ffffff</color>
@@ -21,7 +21,7 @@
   <color name="list_bg_gray">#dfdfdf</color>
   <color name="divider">#5e6264</color>
 
-  <color name="green_theme">#0072c6</color>
-    
+  <color name="green_theme">#35accf</color>
+
 
 </resources>

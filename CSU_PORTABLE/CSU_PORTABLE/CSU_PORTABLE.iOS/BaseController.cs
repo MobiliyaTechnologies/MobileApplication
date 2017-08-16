@@ -7,6 +7,7 @@ using Foundation;
 using CSU_PORTABLE.iOS.Utils;
 using CoreGraphics;
 using CSU_PORTABLE.Models;
+using static CSU_PORTABLE.Utils.Constants;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -63,22 +64,22 @@ namespace CSU_PORTABLE.iOS
             //PreferenceHandler prefHandler = new PreferenceHandler();
             UserDetails userDetail = PreferenceHandler.GetUserDetails();
 
-            //if (userDetail.Role_Id == 2)
-            //{
-            btnBadge = new UIButton()
+            if (PreferenceHandler.GetUserDetails().RoleId == (int)USER_ROLE.ADMIN)
             {
-                Frame = new CGRect(0, 0, 25, 25),
-            };
-            btnBadge.SetBackgroundImage(UIImage.FromBundle("Notification_Icon.png"), UIControlState.Normal);
-            btnBadge.SetTitleColor(UIColor.White, UIControlState.Normal);
-            btnBadge.TouchUpInside += BtnBadge_TouchUpInside;
-            btnAlertsBadge = new BadgeBarButtonItem(btnBadge);
-            btnAlertsBadge.BadgeValue = UIApplication.SharedApplication.ApplicationIconBadgeNumber.ToString();
-            btnAlertsBadge.Style = UIBarButtonItemStyle.Plain;
-            btnAlertsBadge.ShouldHideBadgeAtZero = true;
-            btnAlertsBadge.BadgeOriginX = 10;
-            NavigationItem.SetRightBarButtonItem(btnAlertsBadge, true);
-            //}
+                btnBadge = new UIButton()
+                {
+                    Frame = new CGRect(0, 0, 25, 25),
+                };
+                btnBadge.SetBackgroundImage(UIImage.FromBundle("Notification_Icon.png"), UIControlState.Normal);
+                btnBadge.SetTitleColor(UIColor.White, UIControlState.Normal);
+                btnBadge.TouchUpInside += BtnBadge_TouchUpInside;
+                btnAlertsBadge = new BadgeBarButtonItem(btnBadge);
+                btnAlertsBadge.BadgeValue = UIApplication.SharedApplication.ApplicationIconBadgeNumber.ToString();
+                btnAlertsBadge.Style = UIBarButtonItemStyle.Plain;
+                btnAlertsBadge.ShouldHideBadgeAtZero = true;
+                btnAlertsBadge.BadgeOriginX = 10;
+                NavigationItem.SetRightBarButtonItem(btnAlertsBadge, true);
+            }
         }
 
 
@@ -87,8 +88,8 @@ namespace CSU_PORTABLE.iOS
             var btnBadge = (UIButton)sender;
             UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
             btnAlertsBadge.BadgeValue = "0";
-            var InsightsViewController = (InsightsViewController)Storyboard.InstantiateViewController("InsightsViewController");
-            NavController.PushViewController(InsightsViewController, false);
+            var AlertsViewController = (AlertsViewController)Storyboard.InstantiateViewController("AlertsViewController");
+            NavController.PushViewController(AlertsViewController, false);
         }
     }
 }

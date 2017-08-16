@@ -3,11 +3,11 @@ using CSU_PORTABLE.Models;
 using CSU_PORTABLE.Utils;
 using Foundation;
 using Newtonsoft.Json;
-using SafariServices;
 using System;
 using System.Net.Http;
 using UIKit;
 using WebKit;
+
 
 namespace CSU_PORTABLE.iOS
 {
@@ -20,7 +20,6 @@ namespace CSU_PORTABLE.iOS
 
         public LoginViewController(IntPtr handle) : base(handle)
         {
-            // preferenceHandler = new PreferenceHandler();
             userDetails = PreferenceHandler.GetUserDetails();
         }
 
@@ -33,10 +32,29 @@ namespace CSU_PORTABLE.iOS
             webView.ScalesPageToFit = false;
             View.AddSubview(webView);
             string strLogin = string.Format(B2CConfig.AuthorizeURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, B2CConfig.Redirect_Uri);
-            NSUrlRequest request = new NSUrlRequest(new NSUrl(strLogin));
+            NSUrlRequest request = new NSUrlRequest(new NSUrl(Uri.EscapeUriString(strLogin)));
             webView.LoadRequest(request);
             webView.LoadError += WebView_LoadError;
+            webView.LoadStarted += WebView_LoadStarted;
+            webView.LoadFinished += WebView_LoadFinished;
+        }
 
+        private void WebView_LoadFinished(object sender, EventArgs e)
+        {
+            if (loadingOverlay != null)
+            {
+                loadingOverlay.Hide();
+            }
+        }
+
+        private void WebView_LoadStarted(object sender, EventArgs e)
+        {
+            InvokeOnMainThread(() =>
+            {
+                var bounds = UIScreen.MainScreen.Bounds;
+                loadingOverlay = new LoadingOverlay(bounds);
+                View.Add(loadingOverlay);
+            });
         }
 
         private async void WebView_LoadError(object sender, UIWebErrorArgs e)
@@ -56,7 +74,7 @@ namespace CSU_PORTABLE.iOS
                     string strContent = await response.Content.ReadAsStringAsync();
                     var token = JsonConvert.DeserializeObject<AccessToken>(strContent);
                     PreferenceHandler.SetToken(token.id_token);
-
+                    PreferenceHandler.SetRefreshToken(token.refresh_token);
                 }
             }
 
@@ -64,6 +82,7 @@ namespace CSU_PORTABLE.iOS
             {
                 string token = Common.FunGetValuefromQueryString(req, "id_token");
                 PreferenceHandler.SetToken(token);
+                //PreferenceHandler.SetRefreshToken(token.refresh_token);
             }
 
             var responseUser = await InvokeApi.Invoke(Constants.API_GET_CURRENTUSER, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
@@ -128,6 +147,10 @@ namespace CSU_PORTABLE.iOS
             else
             {
                 ShowMap();
+            }
+            if (loadingOverlay != null)
+            {
+                loadingOverlay.Hide();
             }
         }
 

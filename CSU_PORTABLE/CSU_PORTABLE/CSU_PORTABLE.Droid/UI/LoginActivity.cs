@@ -14,33 +14,30 @@ using Android.Webkit;
 using static CSU_PORTABLE.Utils.Constants;
 using Android.Content.PM;
 using Android.Net;
+using Microsoft.Identity.Client;
 
 namespace CSU_PORTABLE.Droid.UI
 {
-    [Activity(Label = "CSU APP", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
+    [Activity(Label = "Energy Management", MainLauncher = false, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/MyTheme")]
     class LoginActivity : Activity
     {
         const string TAG = "LoginActivity";
-        //private EditText etUsername;
-        //private EditText etPassword;
         private Button buttonSignIn;
         private Button buttonSignUp;
         private ProgressBar progressBar;
         private TextView tvForgotPassword;
-        //PreferenceHandler preferenceHandler;
+        
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.Login_view);
-
-            //preferenceHandler = new Utils.PreferenceHandler();
             if (string.IsNullOrEmpty(PreferenceHandler.GetConfig()))
             {
                 StartActivity(new Intent(Application.Context, typeof(ConfigActivity)));
                 Finish();
             }
-
+            
             buttonSignIn = FindViewById<Button>(Resource.Id.SignInButton);
             buttonSignUp = FindViewById<Button>(Resource.Id.SignUpButton);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
@@ -101,89 +98,6 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        #region "Old Text"
-        //public async void Login(LoginModel loginModel)
-        //{
-        //    Log.Debug(TAG, "Login() " + loginModel.ToString());
-        //    var response = await InvokeApi.Invoke(Constants.API_SIGN_IN, JsonConvert.SerializeObject(loginModel), HttpMethod.Post);
-        //    progressBar.Visibility = ViewStates.Visible;
-        //    buttonSignIn.Visibility = ViewStates.Gone;
-        //    Console.WriteLine(response.ReasonPhrase);
-        //    if (response.StatusCode != 0)
-        //    {
-        //        Log.Debug(TAG, "async Response : " + response.ToString());
-        //        RunOnUiThread(() =>
-        //        {
-        //            LoginResponse(response);
-        //        });
-        //    }
-        //}
-
-        //private async void LoginResponse(HttpResponseMessage restResponse)
-        //{
-        //    if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-        //    {
-        //        Log.Debug(TAG, restResponse.Content.ToString());
-        //        string strContent = await restResponse.Content.ReadAsStringAsync();
-        //        UserDetails response = JsonConvert.DeserializeObject<UserDetails>(strContent);
-
-        //        if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
-        //        {
-        //            Log.Debug(TAG, "Login Successful");
-        //            progressBar.Visibility = ViewStates.Gone;
-        //            SaveUserData(response);
-        //        }
-        //        else
-        //        {
-        //            Log.Debug(TAG, "Login Failed");
-        //            progressBar.Visibility = ViewStates.Gone;
-        //            buttonSignIn.Visibility = ViewStates.Visible;
-        //            Utils.Utils.ShowToast(this, "Either username or password is incorrect !");
-
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Log.Debug(TAG, "Login Failed");
-        //        progressBar.Visibility = ViewStates.Gone;
-        //        buttonSignIn.Visibility = ViewStates.Visible;
-        //        Utils.Utils.ShowToast(this, "Error while login. Please try again.");
-        //    }
-        //}
-
-        //private void SaveUserData(UserDetails userDetails)
-        //{
-        //    //store data in preferences
-
-        //    PreferenceHandler preferenceHandler = new PreferenceHandler();
-        //    preferenceHandler.SaveUserDetails(userDetails);
-        //    if (userDetails.RoleId == (int)Constants.USER_ROLE.STUDENT)
-        //    {
-        //        ShowStudentDashboard();
-        //    }
-        //    else
-        //    {
-        //        ShowAdminDashboard();
-        //    }
-
-
-        //}
-
-        //private void ShowStudentDashboard()
-        //{
-        //    Intent intent = new Intent(Application.Context, typeof(MainActivity));
-        //    intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.STUDENT);
-        //    StartActivity(intent);
-        //    Finish();
-        //}
-
-        //private void ShowAdminDashboard()
-        //{
-        //    Intent intent = new Intent(Application.Context, typeof(MainActivity));
-        //    intent.PutExtra(MainActivity.KEY_USER_ROLE, (int)Constants.USER_ROLE.ADMIN);
-        //    StartActivity(intent);
-        //    Finish();
-        //}
-        #endregion
+        
     }
 }

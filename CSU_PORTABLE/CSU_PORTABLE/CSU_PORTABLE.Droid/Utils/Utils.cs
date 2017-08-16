@@ -16,6 +16,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using CSU_PORTABLE.Droid.UI;
 using static CSU_PORTABLE.Utils.Constants;
+using System.Net;
+using CSU_PORTABLE.Models;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
+using Android.Graphics;
 
 namespace CSU_PORTABLE.Droid.Utils
 {
@@ -23,6 +28,16 @@ namespace CSU_PORTABLE.Droid.Utils
     {
         public const string ALERT_BROADCAST = "com.mobiliya.em.Alerts";
         private static Toast toast;
+
+        public static DemoStage CurrentStage;
+
+        public static Color PrimaryColor = Color.Rgb(70, 78, 120);
+        public static Color SecondaryColor = Color.Rgb(53, 172, 207);
+        public static Color VeryCold = Color.Rgb(193, 235, 244);
+        public static Color Cold = Color.Rgb(148, 221, 242);
+        public static Color Normal = Color.Rgb(150, 197, 245);
+        public static Color Hot = Color.Rgb(210, 207, 235);
+        public static Color VeryHot = Color.Rgb(235, 230, 207);
 
         /// <summary>
         /// Common fuction to check Internet Connectivity
@@ -67,7 +82,6 @@ namespace CSU_PORTABLE.Droid.Utils
             builder.SetTitle("Energy Management");
             builder.SetMessage(message);
             builder.SetPositiveButton("OK", (sender, args) => { /* do stuff on OK */ });
-            //builder.SetNegativeButton("No", (sender, args) => { cmd = "cancel"; });
             builder.SetCancelable(false);
             builder.Show();
         }
@@ -77,15 +91,13 @@ namespace CSU_PORTABLE.Droid.Utils
         {
             PreferenceHandler.setLoggedIn(false);
             PreferenceHandler.SetToken(string.Empty);
+            PreferenceHandler.SetRefreshToken(string.Empty);
             Intent intent = new Intent(Application.Context, typeof(LoginNewActivity));
             intent.PutExtra(LoginNewActivity.KEY_SHOW_PAGE, (int)SignInType.SIGN_IN);
             context.StartActivity(intent);
-            //context.Dispose();
-            //layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
-            //layoutProgress.Visibility = ViewStates.Gone;
         }
 
-        public static async Task RefreshToken(Context context)
+        public static async Task GetToken()
         {
             string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetAccessCode());
             var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
@@ -94,11 +106,27 @@ namespace CSU_PORTABLE.Droid.Utils
                 string strContent = await response.Content.ReadAsStringAsync();
                 var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
                 PreferenceHandler.SetToken(tokenNew.id_token);
+                PreferenceHandler.SetRefreshToken(tokenNew.refresh_token);
+            }
+        }
+
+        public static async Task RefreshToken(Context context)
+        {
+            string tokenURL = string.Format(B2CConfig.RefreshTokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetRefreshToken());
+            var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                string strContent = await response.Content.ReadAsStringAsync();
+                var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+                PreferenceHandler.SetToken(tokenNew.id_token);
+                PreferenceHandler.SetRefreshToken(tokenNew.refresh_token);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 RedirectToLogin(context);
             }
         }
+
+
     }
 }

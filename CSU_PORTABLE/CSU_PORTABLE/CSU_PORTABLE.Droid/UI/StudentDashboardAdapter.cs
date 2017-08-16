@@ -32,8 +32,6 @@ namespace CSU_PORTABLE.Droid.UI
         {
             ClassViewHolder vh = holder as ClassViewHolder;
             vh.textViewClass.Text = mRoomModels[position].RoomName;
-            //vh.textViewBuilding.Text = mClassModels[position].Building;
-            //vh.textViewBrackerDetail.Text = mClassModels[position].Breaker_details;
         }
 
         public override int ItemCount
@@ -52,14 +50,10 @@ namespace CSU_PORTABLE.Droid.UI
         public class ClassViewHolder : RecyclerView.ViewHolder
         {
             public TextView textViewClass { get; set; }
-            //public TextView textViewBuilding { get; set; }
-            //public TextView textViewBrackerDetail { get; set; }
 
             public ClassViewHolder(View itemView, Action<int> listener) : base(itemView)
             {
                 textViewClass = itemView.FindViewById<TextView>(Resource.Id.textViewClass);
-                //textViewBuilding = itemView.FindViewById<TextView>(Resource.Id.textViewBuilding);
-                //textViewBrackerDetail = itemView.FindViewById<TextView>(Resource.Id.textViewBrackerDetail);
                 itemView.Click += (sender, e) => listener(base.Position);
             }
         }

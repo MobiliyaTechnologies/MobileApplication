@@ -20,6 +20,7 @@ using Android.Content.Res;
 using Android.Graphics;
 using Java.Text;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -41,54 +42,78 @@ namespace CSU_PORTABLE.Droid.UI
         {
             View itemView = LayoutInflater.From(parent.Context).
                         Inflate(Resource.Layout.alert_item, parent, false);
-            AlertViewHolder vh = new AlertViewHolder(itemView);
-            return vh;
+            AlertViewHolder vhAlerts = new AlertViewHolder(itemView);
+            return vhAlerts;
         }
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
-            AlertViewHolder vh = holder as AlertViewHolder;
-            vh.textViewAlert.Text = mAlertModels[position].Alert_Desc;
-            vh.textViewClass.Text = mAlertModels[position].Class_Desc;
+            AlertViewHolder vhAlerts = holder as AlertViewHolder;
+            vhAlerts.textViewAlert.Text = mAlertModels[position].Alert_Desc;
+            vhAlerts.textViewClass.Text = mAlertModels[position].Class_Desc;
+
             string dt = GetFormatedDate(mAlertModels[position].Timestamp);
             if (dt == null)
             {
                 dt = mAlertModels[position].Timestamp;
             }
-            vh.textViewTime.Text = dt;
-            vh.alertId = mAlertModels[position].Alert_Id;
+            vhAlerts.textViewTime.Text = dt;
+            vhAlerts.alertId = mAlertModels[position].Alert_Id;
             if (!isAcknowledgementEnabled || mAlertModels[position].Is_Acknowledged)
             {
-                vh.textViewAck.Visibility = ViewStates.Gone;
-                vh.divider.Visibility = ViewStates.Gone;
+                vhAlerts.textViewAck.Visibility = ViewStates.Gone;
+                vhAlerts.divider.Visibility = ViewStates.Gone;
             }
             else
             {
-                vh.textViewAck.Visibility = ViewStates.Visible;
-                vh.textViewAck.Click += delegate
+
+                vhAlerts.textViewAck.Click += async delegate
                 {
-
-                    //var preferenceHandler = new PreferenceHandler();
-                    UserDetails userDetails = PreferenceHandler.GetUserDetails();
-                    int userId = userDetails.UserId;
-
+                    vhAlerts.textViewAck.SystemUiVisibility = StatusBarVisibility.Hidden;
+                    vhAlerts.textViewAck.Visibility = ViewStates.Gone;
+                    vhAlerts.textViewAck.Text = string.Empty;
                     AlertAcknowledgeModel ackModel = new AlertAcknowledgeModel();
-                    ackModel.Alert_Id = vh.alertId;
-                    ackModel.Acknowledged_By = userDetails.FirstName + " " + userDetails.LastName;
+                    ackModel.Alert_Id = vhAlerts.alertId;
+                    ackModel.Acknowledged_By = PreferenceHandler.GetUserDetails().FirstName + " " + PreferenceHandler.GetUserDetails().LastName;
 
-                    vh.textViewAck.SaveEnabled = false;
-                    vh.textViewAck.SetTextColor(Color.LightGray);
+                    vhAlerts.textViewAck.SaveEnabled = false;
+                    vhAlerts.textViewAck.SetTextColor(Color.LightGray);
                     mAlertModels[position].Is_Acknowledged = true;
 
                     bool isNetworkEnabled = Utils.Utils.IsNetworkEnabled(mContext);
                     if (isNetworkEnabled)
                     {
-                        AcknowledgeAlert(ackModel, userId);
+                        var restResponse = await AcknowledgeAlert(ackModel);
+                        if (restResponse.StatusCode != 0)
+                        {
+                            Log.Debug(TAG, "async Response : " + restResponse.ToString());
+                            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
+                            {
+                                Log.Debug(TAG, restResponse.Content.ToString());
+                                string strContent = await restResponse.Content.ReadAsStringAsync();
+                                AlertAcknowledgementResponseModel responseAlert = JsonConvert.DeserializeObject<AlertAcknowledgementResponseModel>(strContent);
+
+                                if (responseAlert.Status_Code != Constants.STATUS_CODE_SUCCESS)
+                                {
+                                    Log.Debug(TAG, "Acknowledged Failed");
+                                    Utils.Utils.ShowToast(mContext, "Failed to Acknowledged. Please try later !");
+                                }
+                            }
+                            else
+                            {
+                                Log.Debug(TAG, "acknowledgeAlertResponse() Failed");
+                                Utils.Utils.ShowToast(mContext, "Failed to Acknowledged. Please try later !");
+
+                            }
+                        }
+                        else
+                        {
+                            vhAlerts.textViewAck.Visibility = ViewStates.Visible;
+                        }
                     }
                     else
                     {
                         Utils.Utils.ShowToast(mContext, "Please enable your internet connection !");
-                        //ShowToast("Please enable your internet connection !");
                     }
                 };
             }
@@ -99,7 +124,6 @@ namespace CSU_PORTABLE.Droid.UI
             get { return mAlertModels.Count(); }
         }
 
-        //view holder class
         public class AlertViewHolder : RecyclerView.ViewHolder
         {
             public TextView textViewAlert { get; set; }
@@ -129,50 +153,10 @@ namespace CSU_PORTABLE.Droid.UI
             return dt;
         }
 
-        private async void AcknowledgeAlert(AlertAcknowledgeModel acknowledgeModel, int userId)
+        private async Task<HttpResponseMessage> AcknowledgeAlert(AlertAcknowledgeModel acknowledgeModel)
         {
-            if (userId != -1)
-            {
-                Log.Debug(TAG, "getAlertList()");
-                var response = await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS + "/" + userId, JsonConvert.SerializeObject(acknowledgeModel), HttpMethod.Post);
-                if (response.StatusCode != 0)
-                {
-                    Log.Debug(TAG, "async Response : " + response.ToString());
-                    AcknowledgeAlertResponse(response);
-                }
-            }
-            else
-            {
-                Log.Debug(TAG, "Invalid User Id. Please Login Again !");
-                Utils.Utils.ShowToast(mContext, "Invalid User Id. Please Login Again !");
-                //ShowToast("Invalid User Id. Please Login Again !");
-            }
+            return await InvokeApi.Invoke(Constants.API_ACKNOWLWDGE_ALERTS, JsonConvert.SerializeObject(acknowledgeModel), HttpMethod.Put, PreferenceHandler.GetToken());
         }
 
-        private async void AcknowledgeAlertResponse(HttpResponseMessage restResponse)
-        {
-            if (restResponse != null && restResponse.StatusCode == System.Net.HttpStatusCode.OK && restResponse.Content != null)
-            {
-                Log.Debug(TAG, restResponse.Content.ToString());
-                string strContent = await restResponse.Content.ReadAsStringAsync();
-                AlertAcknowledgementResponseModel response = JsonConvert.DeserializeObject<AlertAcknowledgementResponseModel>(strContent);
-
-                if (response.Status_Code == Constants.STATUS_CODE_SUCCESS)
-                {
-                    Log.Debug(TAG, "acknowledgement Successful");
-                    Utils.Utils.ShowToast(mContext, "Acknowlwdged successfully.");
-                }
-                else
-                {
-                    Log.Debug(TAG, "Acknowledgement Failed");
-                    Utils.Utils.ShowToast(mContext, "Failed to acknowlwdge. Please try later !");
-                }
-            }
-            else
-            {
-                Log.Debug(TAG, "acknowledgeAlertResponse() Failed");
-                Utils.Utils.ShowToast(mContext, "Failed to acknowlwdge. Please try later !");
-            }
-        }
     }
 }

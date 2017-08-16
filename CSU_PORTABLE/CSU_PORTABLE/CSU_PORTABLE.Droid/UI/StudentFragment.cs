@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
+using Android.Graphics;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -45,7 +46,6 @@ namespace CSU_PORTABLE.Droid.UI
         TextView textViewNormal;
         TextView textViewCold;
         TextView textViewTooCold;
-        //Toast toast;
         List<RoomModel> classList = null;
         List<QuestionModel> questionList = null;
         RecyclerView mRecyclerView;
@@ -58,11 +58,18 @@ namespace CSU_PORTABLE.Droid.UI
         int selectedAnswerId = -1;
         int userId;
 
+        public Color VeryCold = Color.Argb(0, 193, 235, 244);
+        public Color Cold = Color.Argb(0, 148, 221, 242);
+        public Color Normal = Color.Argb(0, 150, 197, 245);
+        public Color Hot = Color.Argb(0, 210, 207, 235);
+        public Color VeryHot = Color.Argb(0, 235, 230, 207);
+
+
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             var view = inflater.Inflate(Resource.Layout.student_dashboard, container, false);
-
+            view.SetBackgroundColor(Utils.Utils.PrimaryColor);
             textViewInfo = view.FindViewById<TextView>(Resource.Id.textViewInfo);
             layoutProgress = view.FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutSelectClassroom = view.FindViewById<LinearLayout>(Resource.Id.layout_select_classroom);
@@ -103,8 +110,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(214, 69, 66));
-
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.VeryHot);
+                view.SetBackgroundColor(Utils.Utils.VeryHot);
             };
             textViewHot.Click += delegate
             {
@@ -117,8 +124,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(204, 84, 48));
-
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.Hot);
+                view.SetBackgroundColor(Utils.Utils.Hot);
 
             };
             textViewNormal.Click += delegate
@@ -132,8 +139,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
-
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.Normal);
+                view.SetBackgroundColor(Utils.Utils.Normal);
             };
             textViewCold.Click += delegate
             {
@@ -146,8 +153,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 1f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(16, 84, 86));
-
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.Cold);
+                view.SetBackgroundColor(Utils.Utils.Cold);
             };
             textViewTooCold.Click += delegate
             {
@@ -160,8 +167,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 1f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(11, 125, 206));
-
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.VeryCold);
+                view.SetBackgroundColor(Utils.Utils.VeryCold);
             };
             buttonNext.Click += delegate
             {
@@ -174,15 +181,12 @@ namespace CSU_PORTABLE.Droid.UI
                 else
                 {
                     Utils.Utils.ShowToast(this.Context, "Please select a Room");
-                    //ShowToast("Please select a Classroom");
                 }
             };
             buttonBack.Click += delegate
             {
                 Log.Debug(TAG, "Back button click");
-                selectedClass = null;
-                selectedRoomId = -1;
-                textViewSelectedClass.Text = "";
+                ResetFeedback(view);
                 showLayoutSelectClass();
             };
             buttonSubmit.Click += delegate
@@ -192,11 +196,11 @@ namespace CSU_PORTABLE.Droid.UI
                 {
                     showLayoutSubmit();
                     submitFeedback(userId);
+                    ResetFeedback(view);
                 }
                 else
                 {
                     Utils.Utils.ShowToast(this.Context, "Please select an option");
-                    //ShowToast("Please select an option");
                 }
             };
             buttonDone.Click += delegate
@@ -212,7 +216,6 @@ namespace CSU_PORTABLE.Droid.UI
             showLayoutProgress("Loading...");
             mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.recyclerView);
 
-            //var preferenceHandler = new PreferenceHandler();
             userId = PreferenceHandler.GetUserDetails().UserId;
             if (userId != -1)
             {
@@ -225,18 +228,32 @@ namespace CSU_PORTABLE.Droid.UI
                 else
                 {
                     Utils.Utils.ShowToast(this.Context, "Please enable your internet connection !");
-                    //ShowToast("Please enable your internet connection !");
                     showLayoutInfo();
                 }
             }
             else
             {
                 Utils.Utils.ShowToast(this.Context, "Invalid User Id. Please Login Again !");
-                //ShowToast("Invalid User Id. Please Login Again !");
                 showLayoutInfo();
             }
 
             return view;
+        }
+
+        private void ResetFeedback(View view)
+        {
+            selectedClass = null;
+            selectedRoomId = -1;
+            selectedAnswer = null;
+            selectedAnswerId = -1;
+            textViewSelectedClass.Text = "";
+            textViewTooHot.Alpha = 0.5f;
+            textViewHot.Alpha = 0.5f;
+            textViewNormal.Alpha = 0.5f;
+            textViewCold.Alpha = 0.5f;
+            textViewTooCold.Alpha = 0.5f;
+            layoutSelectTemperature.SetBackgroundColor(Utils.Utils.PrimaryColor);
+            view.SetBackgroundColor(Utils.Utils.PrimaryColor);
         }
 
         private async void submitFeedback(int userId)
@@ -440,39 +457,6 @@ namespace CSU_PORTABLE.Droid.UI
                 string strContent = await restResponse.Content.ReadAsStringAsync();
                 JArray array = JArray.Parse(strContent);
                 questionList = array.ToObject<List<QuestionModel>>();
-                //questionList.Add(new Models.QuestionModel()
-                //{
-                //    QuestionId = 1,
-                //    QuestionDesc = "How do you feel?",
-                //    Answers = new List<AnswerModel>()
-                //    {
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 1,
-                //            AnswerDesc = "Very Cold"
-                //        },
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 2,
-                //            AnswerDesc = "Cold"
-                //        },
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 3,
-                //            AnswerDesc = "Normal"
-                //        },
-                //        new AnswerModel()
-                //        {
-                //            AnswerId = 4,
-                //            AnswerDesc = "Hot"
-                //        },
-                //         new AnswerModel()
-                //        {
-                //            AnswerId = 5,
-                //            AnswerDesc = "Very Hot"
-                //        }
-                //    }
-                //});
                 showClasses();
             }
             else if (restResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)

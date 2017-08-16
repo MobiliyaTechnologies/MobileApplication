@@ -1,5 +1,4 @@
-﻿using BarChart;
-using CoreGraphics;
+﻿using CoreGraphics;
 using CoreLocation;
 using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
@@ -10,26 +9,29 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using UIKit;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
+using static CSU_PORTABLE.Utils.Constants;
 
 namespace CSU_PORTABLE.iOS
 {
     public partial class MapViewController : BaseController
     {
-        MKMapView map;
-        List<MeterDetails> meterList = null;
-        List<MonthlyConsumptionDetails> monthlyConsumptionList = null;
-        //private PreferenceHandler prefHandler;
         private UserDetails userdetail;
         private LoadingOverlay loadingOverlay;
         private string localToken = string.Empty;
         public ConsumptionFor CurrentConsumption = ConsumptionFor.Premises;
         public int CurrentPremisesId = 0;
-        private BarChartView chart;
         public UILabel lblHeader;
         public UIButton btnBack;
+        private UIWebView localChartView;
+        public MqttClient client;
 
         public MapViewController(IntPtr handle) : base(handle)
         {
@@ -40,25 +42,28 @@ namespace CSU_PORTABLE.iOS
             base.ViewDidLoad();
             this.NavigationController.NavigationBarHidden = false;
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
-            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
+            this.NavigationController.NavigationBar.BarTintColor = IOSUtil.PrimaryColor;
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+            try
+            {
+                if (IOSUtil.CurrentStage == DemoStage.None && IsDemoMode)
+                {
+                    IOSUtil.CurrentStage = DemoStage.Yesterday;
+                }
+                SubscribeMQTT();
+            }
+            catch (Exception e)
+            {
 
-
-            //IOSUtil.RedirectToLogin(this, loadingOverlay);
-
-            //prefHandler = new PreferenceHandler();
-
-            //await IOSUtil.RefreshToken(this, loadingOverlay);
+            }
             userdetail = PreferenceHandler.GetUserDetails();
-            //this.localToken = PreferenceHandler.GetToken();
-            //GetInsights(userdetail.UserId);
             lblHeader = new UILabel()
             {
                 Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 20, View.Bounds.Width, 40),
                 Text = "Premises",
                 Font = UIFont.FromName("Futura-Medium", 15f),
                 TextColor = UIColor.White,
-                BackgroundColor = UIColor.FromRGB(0, 102, 153),
+                BackgroundColor = IOSUtil.PrimaryColor,
                 LineBreakMode = UILineBreakMode.WordWrap,
                 Lines = 1,
                 TextAlignment = UITextAlignment.Center
@@ -68,23 +73,15 @@ namespace CSU_PORTABLE.iOS
             {
                 Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 20, 80, 40),
                 Font = UIFont.FromName("Futura-Medium", 15f),
-                BackgroundColor = UIColor.FromRGB(0, 102, 153),
+                BackgroundColor = IOSUtil.PrimaryColor,
             };
             btnBack.SetTitle("< BACK", UIControlState.Normal);
             btnBack.SetTitleColor(UIColor.White, UIControlState.Normal);
-            btnBack.SetTitleShadowColor(UIColor.FromRGB(0, 102, 180), UIControlState.Normal);
+            btnBack.SetTitleShadowColor(IOSUtil.PrimaryColor, UIControlState.Normal);
             btnBack.TouchUpInside += BtnBack_TouchUpInside;
             btnBack.Hidden = true;
             View.AddSubviews(lblHeader, btnBack);
             GetConsumptionDetails(CurrentConsumption, 0);
-            //InvokeOnMainThread(() =>
-            //{
-            //    // Added for showing loading screen
-            //    var bounds = UIScreen.MainScreen.Bounds;
-            //    // show the loading overlay on the UI thread using the correct orientation sizing
-            //    loadingOverlay = new LoadingOverlay(bounds);
-            //    View.Add(loadingOverlay);
-            //});
         }
 
         private void BtnBack_TouchUpInside(object sender, EventArgs e)
@@ -128,7 +125,7 @@ namespace CSU_PORTABLE.iOS
             {
                 url = url + "/" + Convert.ToString(Id);
             }
-            var responseConsumption = await InvokeApi.Invoke(url, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var responseConsumption = await InvokeApi.Invoke(url, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), IOSUtil.CurrentStage);
             if (responseConsumption.StatusCode == HttpStatusCode.OK)
             {
                 GetConsumptionResponse(responseConsumption);
@@ -213,12 +210,12 @@ namespace CSU_PORTABLE.iOS
 
         private void SetConsumptions(List<ConsumptionModel> consumpModels)
         {
-            SetConsumptionBarChart(consumpModels);
+            SetConsumptionBarChartWebView(consumpModels);
             UITableView _table = new UITableView();
 
             _table = new UITableView
             {
-                Frame = new CoreGraphics.CGRect(0, 340, View.Bounds.Width, View.Bounds.Height - 340),
+                Frame = new CoreGraphics.CGRect(0, 370, View.Bounds.Width, View.Bounds.Height - 370),
                 RowHeight = 100,
                 BackgroundColor = UIColor.FromRGBA(193, 214, 218, 0.3f),
                 Source = new ConsumptionSource(consumpModels, this)
@@ -229,116 +226,45 @@ namespace CSU_PORTABLE.iOS
             loadingOverlay.Hide();
         }
 
-        private void SetConsumptionBarChart(List<ConsumptionModel> consumpModels)
+        private void SetConsumptionBarChartWebView(List<ConsumptionModel> consumpModels)
         {
-            if (consumpModels.Count > 0)
+            string[][] r = Array.ConvertAll(consumpModels.Select(x => new { x.Name, x.Consumed, x.Expected, x.Overused }).ToArray(), x => new string[] { x.Name, x.Consumed, x.Expected, x.Overused });
+            string[] Labels = null;
+            try
             {
-                chart = new BarChartView()
-                {
-                    Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 60, View.Bounds.Width, 235),
-                    BarCaptionInnerColor = UIColor.White,
-                    BarCaptionOuterColor = UIColor.White,
-                    BarWidth = 80,
-                    BarOffset = 40,
-                    BackgroundColor = UIColor.LightGray,
-                    LayoutMargins = new UIEdgeInsets(5, 5, 5, 5),
-                    MinimumValue = 0
-                };
-                //#pragma warning disable CS0618 // Type or member is obsolete
-                //var layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-                //#pragma warning restore CS0618 // Type or member is obsolete
-                //layoutParams.SetMargins(5, 5, 5, 5);
-                //chart.LayoutParameters = layoutParams;
-                //chart.MinimumValue = -1;
-                //chart.MaximumValue = 2;
-                //chart.BarCaptionInnerColor = UIColor.Blue.CGColor;
-                //chart.BarCaptionOuterColor = UIColor.Blue;
-                //chart.SetBackgroundColor(UIColor.Blue);
-                chart.BarClick += Chart_BarClick; ;
-
-                var chartData = new List<BarModel>();
-                bool ShowChart = false;
-                foreach (var item in consumpModels)
-                {
-
-                    BarModel chartItem = new BarModel();
-                    try
-                    {
-                        chartItem.Legend = item.Name.Split('-')[1];
-                    }
-                    catch (Exception)
-                    {
-                        chartItem.Legend = item.Name;
-                    }
-
-                    chartItem.ValueCaption = item.Id.ToString();
-                    chartItem.ValueCaptionHidden = true;
-                    chartItem.Value = float.Parse(item.Consumed.Replace('K', ' ').Trim());
-                    if (float.Parse(item.Consumed.Replace('K', ' ').Trim()) > 0)
-                    {
-                        ShowChart = true;
-                    }
-                    //chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
-                    chartItem.Color = UIColor.Blue;
-                    chartData.Add(chartItem);
-                }
-                chart.AutoLevelsEnabled = true;
-                //chart.BarCaptionFontSize = 20;
-                if (ShowChart)
-                {
-                    chart.ItemsSource = chartData;
-                    View.AddSubview(chart);
-                    //chart.TextAlignment = TextAlignment.TextEnd;
-                    //chart.TextDirection = TextDirection.Rtl;
-                    //remark.Visibility = ViewStates.Invisible;
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(chart);
-                }
-                else
-                {
-                    //var remarks = new TextView(this);
-                    //remarks.Text = "No Records Found!";
-                    //var remarksLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-
-                    //layoutParams.SetMargins(5, 5, 5, 5);
-                    //remarks.LayoutParameters = remarksLayoutParams;
-                    //remarks.TextDirection = TextDirection.FirstStrongRtl;
-                    //remarks.TextAlignment = TextAlignment.Center;
-                    //remarks.SetTextColor(Color.LightGray);
-                    //remarks.Gravity = GravityFlags.Center;
-                    //remarks.TextSize = 20;
-                    //remark.Text = "No records found!";
-                    //remark.Visibility = ViewStates.Visible;
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(remarks);
-                }
+                Labels = consumpModels.Select(x => x.Name.Split('-')[1]).ToArray();
             }
-            else
+            catch (Exception ex)
             {
-                //Utils.Utils.ShowToast(this, "No records found!");
+                Labels = consumpModels.Select(x => x.Name).ToArray();
             }
+            string[] Consumed = consumpModels.Select(x => x.Consumed.Replace('K', ' ').Trim()).ToArray();
+            string[] Expected = consumpModels.Select(x => x.Expected.Replace('K', ' ').Trim()).ToArray();
+            string[] Overused = consumpModels.Select(x => x.Overused.Replace('K', ' ').Trim()).ToArray();
+
+            localChartView = new UIWebView()
+            {
+                Frame = new CGRect(0, this.NavigationController.NavigationBar.Bounds.Bottom + 60, View.Bounds.Width, 330),
+            };
+            string content = string.Empty;
+            string fileName = "Content/ChartC3.html"; // remember case-sensitive
+            string localHtmlUrl = Path.Combine(NSBundle.MainBundle.BundlePath, fileName);
+            string localJSUrl = Path.Combine(NSBundle.MainBundle.BundlePath, "Content/Chart.bundle.min.js");
+            using (StreamReader sr = new StreamReader(localHtmlUrl))
+            {
+                content = sr.ReadToEnd();
+            }
+            content = content.Replace("ChartJS", localJSUrl);
+            content = content.Replace("LabelsData", "'" + string.Join("','", Labels) + "'");
+            content = content.Replace("ConsumedData", "'" + string.Join("','", Consumed) + "'");
+            content = content.Replace("ExpectedData", "'" + string.Join("','", Expected) + "'");
+            content = content.Replace("OverusedData", "'" + string.Join("','", Overused) + "'");
+            localChartView.LoadHtmlString(content, new NSUrl(localHtmlUrl, true));
+            //localChartView.ScalesPageToFit = true;
+            //localChartView.LoadUrl("file:///android_asset/ChartC3.html");
+            View.AddSubview(localChartView);
         }
 
-        private void Chart_BarClick(object sender, BarClickEventArgs e)
-        {
-            if (CurrentConsumption != ConsumptionFor.Meters)
-            {
-                switch (CurrentConsumption)
-                {
-                    case ConsumptionFor.Premises:
-                        CurrentPremisesId = Convert.ToInt32(e.Bar.ValueCaption);
-                        CurrentConsumption = ConsumptionFor.Buildings;
-                        lblHeader.Text = ConsumptionFor.Buildings.ToString();
-                        break;
-                    case ConsumptionFor.Buildings:
-                        CurrentConsumption = ConsumptionFor.Meters;
-                        lblHeader.Text = ConsumptionFor.Meters.ToString();
-                        break;
-                }
-                btnBack.Hidden = false;
-                GetConsumptionDetails(CurrentConsumption, Convert.ToInt32(e.Bar.ValueCaption));
-            }
-        }
         #endregion
 
         private void GenerateInsightsHeader(InsightDataModel insightDM)
@@ -500,21 +426,13 @@ namespace CSU_PORTABLE.iOS
             SidebarController.CloseMenu();
         }
 
-        private void ShowMessage(string v)
-        {
-            UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-
-            alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-
-            PresentViewController(alertController, true, null);
-
-        }
+       
 
         #region INSIGHTS
 
         private async void GetInsights(int userId)
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, localToken);
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), IOSUtil.CurrentStage);
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
@@ -535,7 +453,7 @@ namespace CSU_PORTABLE.iOS
             }
             else if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
             {
-                IOSUtil.RefreshToken(this, loadingOverlay);
+                await IOSUtil.RefreshToken(this, loadingOverlay);
             }
             else
             {
@@ -545,6 +463,47 @@ namespace CSU_PORTABLE.iOS
 
         #endregion
 
+        #region " MQTT "
 
+        public void SubscribeMQTT()
+        {
+            if (client == null)
+            {
+                client = new MqttClient("52.161.22.116");
+            }
+            if (client != null && client.IsConnected == false)
+            {
+                byte code = client.Connect(Guid.NewGuid().ToString());
+                string[] topics = { "#" };
+                client.Subscribe(topics, new byte[] { 0 });
+                client.MqttMsgPublishReceived += new MqttClient.MqttMsgPublishEventHandler(client_MqttMsgPublishReceived);
+            }
+        }
+
+        public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        {
+            InvokeOnMainThread(() =>
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(Encoding.UTF8.GetString(e.Message)))
+                    {
+                        int stage = Convert.ToInt32(JsonConvert.DeserializeObject<DemoState>(Encoding.UTF8.GetString(e.Message)).State);
+                        IOSUtil.CurrentStage = (DemoStage)stage;
+                        if (PreferenceHandler.GetUserDetails().RoleId == (int)USER_ROLE.ADMIN)
+                        {
+                            var MapViewController = (MapViewController)Storyboard.InstantiateViewController("MapViewController");
+                            NavController.PushViewController(MapViewController, false);
+                        }
+                        SidebarController.CloseMenu();
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            });
+        }
+
+        #endregion
     }
 }

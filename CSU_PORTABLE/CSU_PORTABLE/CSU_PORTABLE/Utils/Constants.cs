@@ -54,6 +54,8 @@ namespace CSU_PORTABLE.Utils
             SIGN_UP = 2
         }
 
+        public static bool IsDemoMode = true;
+
     }
 
     public enum ConsumptionFor
@@ -71,6 +73,8 @@ namespace CSU_PORTABLE.Utils
         public string not_before { get; set; }
         public string id_token_expires_in { get; set; }
         public string profile_info { get; set; }
+        public string refresh_token { get; set; }
+        public string refresh_token_expires_in { get; set; }
 
     }
 
@@ -87,8 +91,9 @@ namespace CSU_PORTABLE.Utils
     public class B2CConfig
     {
 
-        public static string AuthorizeURL = "";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri={3}&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri={3}&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
+        public static string AuthorizeURL = "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri={3}&response_mode=query&scope=openid offline_access&state=arbitrary_data_you_can_receive_in_the_response";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri={3}&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
         public static string TokenURL = "";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type=authorization_code&client_id={2}&code={3}";// "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type={2}&client_secret={3}&client_id={4}&code={5}";
+        public static string RefreshTokenURL = "https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type=refresh_token&scope=openid offline_access&client_id={2}&refresh_token={3}";
         //public static string AuthorizeURLIOS = "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_id={2}&response_type=code&redirect_uri=com.onmicrosoft.csu://iosresponse/&response_mode=query&scope=openid&state=arbitrary_data_you_can_receive_in_the_response";
         public static string TokenURLIOS = "";//"https://login.microsoftonline.com/{0}/oauth2/v2.0/token?p={1}&grant_type={2}&client_id={3}&code={4}";
         public static string ChangePasswordURL = "";//  "https://login.microsoftonline.com/{0}/oauth2/v2.0/authorize?p={1}&client_Id={2}&nonce=defaultNonce&redirect_uri={3}&scope=openid&response_type=id_token&prompt=login";
@@ -97,12 +102,12 @@ namespace CSU_PORTABLE.Utils
         public static string ClientSecret = "";//  ":63s]7`4F^3261*}";//":63s]7`4F^3261*}";
         public static string Tenant = "";// "amartest123.onmicrosoft.com";//"csub2c.onmicrosoft.com";
         public static string Grant_type = "authorization_code";
-        public static string Token_Grant_type = "offline_access";
+        public static string Token_Grant_type = "refresh_token";
         public static string Redirect_Uri = "";// "https://login.microsoftonline.com/tfp/oauth2/nativeclient";
 
         public void ReInitialize(B2CConfiguration config)
         {
-            AuthorizeURL = config.B2cAuthorizeURL;
+            //AuthorizeURL = config.B2cAuthorizeURL;
             TokenURL = config.B2cTokenURL;
             TokenURLIOS = config.B2cTokenURLIOS;
             ChangePasswordURL = config.B2cChangePasswordURL;
@@ -115,4 +120,28 @@ namespace CSU_PORTABLE.Utils
             Redirect_Uri = config.B2cRedirectUrl;
         }
     }
+
+    public enum DemoStage
+    {
+        None = 0,
+        Yesterday = 1,
+        Today = 2,
+        Week1 = 3,
+        Week2 = 4,
+        Week3 = 5,
+        Week4 = 6,
+        Month1 = 7,
+        Month2 = 8,
+        Month3 = 9,
+        Month4 = 10,
+        Month5 = 11,
+        Month6 = 12
+    }
+
+    public class DemoState
+    {
+        public int State { get; set; }
+    }
+
+
 }
