@@ -72,7 +72,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         private async void GetAlertList(int userId)
         {
-            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_ALL_ALERTS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), Utils.Utils.CurrentStage);
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());
@@ -125,6 +125,6 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewLoading.Visibility = ViewStates.Visible;
             }
         }
-       
+
     }
 }

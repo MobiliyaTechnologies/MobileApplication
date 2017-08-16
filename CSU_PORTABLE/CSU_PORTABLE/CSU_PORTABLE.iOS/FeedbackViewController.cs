@@ -34,9 +34,9 @@ namespace CSU_PORTABLE.iOS
             base.ViewWillAppear(animated);
             this.NavigationController.NavigationBarHidden = false;
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
-            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
+            this.NavigationController.NavigationBar.BarTintColor = IOSUtil.PrimaryColor;
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-            //classRoomId = 0;
+            
 
             NavigationItem.SetRightBarButtonItem(
                 new UIBarButtonItem(UIImage.FromBundle("a")
@@ -133,7 +133,7 @@ namespace CSU_PORTABLE.iOS
         private void CreateFeedbackDashboard()
         {
 
-            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
+            this.View.BackgroundColor = IOSUtil.PrimaryColor;
             FeedbackHomeHeader = new UILabel()
             {
                 Font = UIFont.FromName("Helvetica-Bold", 20f),
@@ -252,22 +252,7 @@ namespace CSU_PORTABLE.iOS
                 loadingOverlay.Hide();
             }
         }
-
-        //private void ShowMessage(string v)
-        //{
-        //    //BTProgressHUD.ShowToast("Hello from Toast");
-        //    if (loadingOverlay != null)
-        //    {
-        //        loadingOverlay.Hide();
-        //    }
-        //    //MessageLabel.Text = " " + v;
-        //    UIAlertController alertController = UIAlertController.Create("Message", v, UIAlertControllerStyle.Alert);
-
-        //    alertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, (action) => Console.WriteLine("OK Clicked.")));
-
-        //    PresentViewController(alertController, true, null);
-
-        //}
+       
         #endregion
 
 

@@ -78,11 +78,9 @@ namespace CSU_PORTABLE.iOS
                     B2CConfigManager.GetInstance().Initialize(config);
                     if (IsLogged)
                     {
+
                         if (userDetail.RoleId == 2)
                         {
-                            //var ClassRoomController = (ClassRoomController)Storyboard.InstantiateViewController("ClassRoomController");
-                            //NavController.PushViewController(ClassRoomController, false);
-
                             var FeedbackViewController = Storyboard.InstantiateViewController("FeedbackViewController") as FeedbackViewController;
                             NavController.PushViewController(FeedbackViewController, false);
                         }

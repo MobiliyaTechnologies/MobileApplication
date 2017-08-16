@@ -78,7 +78,7 @@ namespace CSU_PORTABLE.Droid.UI
         private async void GetRecommendationsList(int userId)
         {
             Log.Debug(TAG, "getAlertList()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_RECOMMENDATIONS, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), Utils.Utils.CurrentStage);
             Console.WriteLine(response);
             if (response.StatusCode != 0)
             {
@@ -137,7 +137,7 @@ namespace CSU_PORTABLE.Droid.UI
         private async void GetInsights(int userId)
         {
             Log.Debug(TAG, "GetInsights()");
-            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var response = await InvokeApi.Invoke(Constants.API_GET_INSIGHT_DATA, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), Utils.Utils.CurrentStage);
             if (response.StatusCode != 0)
             {
                 Log.Debug(TAG, "async Response : " + response.ToString());

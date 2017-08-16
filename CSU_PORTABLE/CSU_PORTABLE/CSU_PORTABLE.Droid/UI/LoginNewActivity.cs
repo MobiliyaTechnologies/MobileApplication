@@ -75,7 +75,7 @@ namespace CSU_PORTABLE.Droid.UI
         public override void OnPageFinished(WebView view, string url)
         {
             base.OnPageFinished(view, url);
-            if (layoutProgress != null)
+            if (layoutProgress != null && !url.Contains("&code="))
             {
                 layoutProgress.Visibility = ViewStates.Gone;
             }
@@ -87,15 +87,25 @@ namespace CSU_PORTABLE.Droid.UI
             layoutProgress = view.FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutProgress.Visibility = ViewStates.Visible;
             layoutProgress.Enabled = true;
-            view.DispatchFinishTemporaryDetach();
+            //view.DispatchFinishTemporaryDetach();
             if (url.Contains("&code="))
             {
                 string code = Common.FunGetValuefromQueryString(url, "code");
                 PreferenceHandler.SetAccessCode(code);
                 PreferenceHandler.setLoggedIn(true);
-                layoutProgress.Visibility = ViewStates.Visible;
-                await Utils.Utils.GetToken();
-                await GetUserDetails(view);
+
+                string tokenURL = string.Format(B2CConfig.TokenURL, B2CConfig.Tenant, B2CPolicy.SignInPolicyId, B2CConfig.ClientId, PreferenceHandler.GetAccessCode());
+                var response = await InvokeApi.Authenticate(tokenURL, string.Empty, HttpMethod.Post);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    string strContent = await response.Content.ReadAsStringAsync();
+                    var tokenNew = JsonConvert.DeserializeObject<AccessToken>(strContent);
+                    PreferenceHandler.SetToken(tokenNew.id_token);
+                    PreferenceHandler.SetRefreshToken(tokenNew.refresh_token);
+                    layoutProgress.Visibility = ViewStates.Visible;
+                    await GetUserDetails(view);
+                }
+
             }
         }
 

@@ -18,6 +18,9 @@ using CSU_PORTABLE.Droid.UI;
 using static CSU_PORTABLE.Utils.Constants;
 using System.Net;
 using CSU_PORTABLE.Models;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
+using Android.Graphics;
 
 namespace CSU_PORTABLE.Droid.Utils
 {
@@ -25,6 +28,16 @@ namespace CSU_PORTABLE.Droid.Utils
     {
         public const string ALERT_BROADCAST = "com.mobiliya.em.Alerts";
         private static Toast toast;
+
+        public static DemoStage CurrentStage;
+
+        public static Color PrimaryColor = Color.Rgb(70, 78, 120);
+        public static Color SecondaryColor = Color.Rgb(53, 172, 207);
+        public static Color VeryCold = Color.Rgb(193, 235, 244);
+        public static Color Cold = Color.Rgb(148, 221, 242);
+        public static Color Normal = Color.Rgb(150, 197, 245);
+        public static Color Hot = Color.Rgb(210, 207, 235);
+        public static Color VeryHot = Color.Rgb(235, 230, 207);
 
         /// <summary>
         /// Common fuction to check Internet Connectivity
@@ -114,6 +127,6 @@ namespace CSU_PORTABLE.Droid.Utils
             }
         }
 
-        
+
     }
 }

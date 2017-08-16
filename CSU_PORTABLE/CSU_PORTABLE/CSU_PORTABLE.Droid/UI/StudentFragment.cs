@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
+using Android.Graphics;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -57,11 +58,18 @@ namespace CSU_PORTABLE.Droid.UI
         int selectedAnswerId = -1;
         int userId;
 
+        public Color VeryCold = Color.Argb(0, 193, 235, 244);
+        public Color Cold = Color.Argb(0, 148, 221, 242);
+        public Color Normal = Color.Argb(0, 150, 197, 245);
+        public Color Hot = Color.Argb(0, 210, 207, 235);
+        public Color VeryHot = Color.Argb(0, 235, 230, 207);
+
+
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             var view = inflater.Inflate(Resource.Layout.student_dashboard, container, false);
-            view.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
+            view.SetBackgroundColor(Utils.Utils.PrimaryColor);
             textViewInfo = view.FindViewById<TextView>(Resource.Id.textViewInfo);
             layoutProgress = view.FindViewById<LinearLayout>(Resource.Id.layout_progress);
             layoutSelectClassroom = view.FindViewById<LinearLayout>(Resource.Id.layout_select_classroom);
@@ -102,8 +110,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(214, 69, 66));
-                view.SetBackgroundColor(new Android.Graphics.Color(214, 69, 66));
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.VeryHot);
+                view.SetBackgroundColor(Utils.Utils.VeryHot);
             };
             textViewHot.Click += delegate
             {
@@ -116,8 +124,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(204, 84, 48));
-                view.SetBackgroundColor(new Android.Graphics.Color(204, 84, 48));
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.Hot);
+                view.SetBackgroundColor(Utils.Utils.Hot);
 
             };
             textViewNormal.Click += delegate
@@ -131,8 +139,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
-                view.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.Normal);
+                view.SetBackgroundColor(Utils.Utils.Normal);
             };
             textViewCold.Click += delegate
             {
@@ -145,8 +153,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 1f;
                 textViewTooCold.Alpha = 0.5f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(16, 84, 86));
-                view.SetBackgroundColor(new Android.Graphics.Color(16, 84, 86));
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.Cold);
+                view.SetBackgroundColor(Utils.Utils.Cold);
             };
             textViewTooCold.Click += delegate
             {
@@ -159,8 +167,8 @@ namespace CSU_PORTABLE.Droid.UI
                 textViewCold.Alpha = 0.5f;
                 textViewTooCold.Alpha = 1f;
 
-                layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(11, 125, 206));
-                view.SetBackgroundColor(new Android.Graphics.Color(11, 125, 206));
+                layoutSelectTemperature.SetBackgroundColor(Utils.Utils.VeryCold);
+                view.SetBackgroundColor(Utils.Utils.VeryCold);
             };
             buttonNext.Click += delegate
             {
@@ -244,8 +252,8 @@ namespace CSU_PORTABLE.Droid.UI
             textViewNormal.Alpha = 0.5f;
             textViewCold.Alpha = 0.5f;
             textViewTooCold.Alpha = 0.5f;
-            layoutSelectTemperature.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
-            view.SetBackgroundColor(new Android.Graphics.Color(0, 102, 153));
+            layoutSelectTemperature.SetBackgroundColor(Utils.Utils.PrimaryColor);
+            view.SetBackgroundColor(Utils.Utils.PrimaryColor);
         }
 
         private async void submitFeedback(int userId)

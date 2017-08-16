@@ -11,7 +11,7 @@ namespace CSU_PORTABLE.iOS.Utils
 {
     public static class PreferenceHandler
     {
-        static string preferenceName = "CSUPREF";
+        //static string preferenceName = "CSUPREF";
         static string preferenceIsLoggedIn = "CSUPREF_isLoggedIn";
         static string preferenceEmail = "CSUPREF_email";
         static string preferenceFirstName = "CSUPREF_first_name";
@@ -19,7 +19,7 @@ namespace CSU_PORTABLE.iOS.Utils
         static string preferenceUserId = "CSUPREF_user_id";
         static string preferenceRoleId = "CSUPREF_role_id";
         static string preferenceUserCampus = "CSUPREF_user_campus";
-        static string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
+        //static string PreferenceUnreadNotificationCount = "CSUPREF_unread_notifications";
         static string preferenceToken = "CSUPREF_token";
         static string preferenceRefreshToken = "CSUPREF_refreshtoken";
         static string preferenceAccessCode = "CSUPREF_accesscode";

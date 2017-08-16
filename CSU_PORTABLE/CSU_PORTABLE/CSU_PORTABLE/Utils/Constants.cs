@@ -54,6 +54,8 @@ namespace CSU_PORTABLE.Utils
             SIGN_UP = 2
         }
 
+        public static bool IsDemoMode = true;
+
     }
 
     public enum ConsumptionFor
@@ -118,4 +120,28 @@ namespace CSU_PORTABLE.Utils
             Redirect_Uri = config.B2cRedirectUrl;
         }
     }
+
+    public enum DemoStage
+    {
+        None = 0,
+        Yesterday = 1,
+        Today = 2,
+        Week1 = 3,
+        Week2 = 4,
+        Week3 = 5,
+        Week4 = 6,
+        Month1 = 7,
+        Month2 = 8,
+        Month3 = 9,
+        Month4 = 10,
+        Month5 = 11,
+        Month6 = 12
+    }
+
+    public class DemoState
+    {
+        public int State { get; set; }
+    }
+
+
 }

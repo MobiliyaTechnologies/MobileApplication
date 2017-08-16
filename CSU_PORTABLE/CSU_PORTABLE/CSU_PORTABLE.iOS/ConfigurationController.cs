@@ -42,7 +42,7 @@ namespace CSU_PORTABLE.iOS
             TextFieldConfig = new UITextField()
             {
                 Font = UIFont.FromName("Helvetica", 15f),
-                TextColor = UIColor.FromRGB(30, 77, 43),
+                TextColor = IOSUtil.PrimaryColor,
                 BackgroundColor = UIColor.Clear,
                 Frame = new CGRect((View.Bounds.Width / 2) - 120, 250, 240, 30),
                 Placeholder = "Enter Domain URL",
@@ -51,7 +51,7 @@ namespace CSU_PORTABLE.iOS
                 LeftView = paddingView,
                 LeftViewMode = UITextFieldViewMode.Always,
                 BorderStyle = UITextBorderStyle.RoundedRect,
-                TintColor = UIColor.FromRGB(30, 77, 43)
+                TintColor = IOSUtil.PrimaryColor
             };
 
             ButtonSubmit = new UIButton(UIButtonType.Custom);
@@ -60,18 +60,8 @@ namespace CSU_PORTABLE.iOS
             ButtonSubmit.SetTitleColor(UIColor.White, UIControlState.Normal);
             ButtonSubmit.SetTitleColor(UIColor.White, UIControlState.Focused);
             ButtonSubmit.Frame = new CGRect((View.Bounds.Width / 2) - 120, 300, 240, 30);
-            ButtonSubmit.BackgroundColor = UIColor.FromRGB(30, 77, 43);
+            ButtonSubmit.BackgroundColor = IOSUtil.SecondaryColor;
             ButtonSubmit.TouchUpInside += ButtonSubmit_TouchUpInside;
-            View.AddSubviews(TextFieldConfig, ButtonSubmit);
-
-            //ButtonCancel = new UIButton(UIButtonType.Custom);
-            //ButtonCancel.SetTitle("Cancel", UIControlState.Normal);
-            //ButtonCancel.Font = UIFont.FromName("Futura-Medium", 15f);
-            //ButtonCancel.SetTitleColor(UIColor.White, UIControlState.Normal);
-            //ButtonCancel.SetTitleColor(UIColor.White, UIControlState.Focused);
-            //ButtonCancel.Frame = new CGRect((View.Bounds.Width / 2) - 120, 350, 240, 30);
-            //ButtonCancel.BackgroundColor = UIColor.FromRGB(30, 77, 43);
-            //ButtonCancel.TouchUpInside += ButtonCancel_TouchUpInside;
             View.AddSubviews(TextFieldConfig, ButtonSubmit);
         }
 

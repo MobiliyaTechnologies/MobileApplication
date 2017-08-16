@@ -15,7 +15,6 @@ namespace CSU_PORTABLE.iOS
         #region " Variables "
 
         LoadingOverlay loadingOverlay;
-        //PreferenceHandler prefHandler;
         UserDetails userdetail;
 
         #endregion
@@ -24,10 +23,6 @@ namespace CSU_PORTABLE.iOS
         public MyMenuController(IntPtr handle) : base(handle)
         {
         }
-
-
-
-
 
         #region " Events "
 
@@ -115,15 +110,13 @@ namespace CSU_PORTABLE.iOS
 
         public void GenerateMenu()
         {
-
-            //prefHandler = new PreferenceHandler();
             userdetail = PreferenceHandler.GetUserDetails();
 
             double profileRadius = 100;
             double profileViewHeight = 230;
 
             UIView viewProfile = new UIView(new CGRect(0, 0, View.Bounds.Width, profileViewHeight));
-            viewProfile.BackgroundColor = UIColor.FromRGB(0, 102, 153);
+            viewProfile.BackgroundColor = IOSUtil.PrimaryColor;
 
             UIImageView imgProfile = new UIImageView()
             {
@@ -175,7 +168,7 @@ namespace CSU_PORTABLE.iOS
             };
             DashboardButton.SetTitle("DASHBOARD", UIControlState.Normal);
             DashboardButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
-            DashboardButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+            DashboardButton.SetTitleColor(IOSUtil.PrimaryColor, UIControlState.Selected);
             DashboardButton.BackgroundColor = UIColor.LightTextColor;
             DashboardButton.VerticalAlignment = UIControlContentVerticalAlignment.Center;
 
@@ -186,7 +179,7 @@ namespace CSU_PORTABLE.iOS
             };
             AlertsButton.SetTitle("ALERTS", UIControlState.Normal);
             AlertsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
-            AlertsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+            AlertsButton.SetTitleColor(IOSUtil.PrimaryColor, UIControlState.Selected);
 
             UIButton InsightsButton = new UIButton()
             {
@@ -195,7 +188,7 @@ namespace CSU_PORTABLE.iOS
             };
             InsightsButton.SetTitle("INSIGHTS", UIControlState.Normal);
             InsightsButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
-            InsightsButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+            InsightsButton.SetTitleColor(IOSUtil.PrimaryColor, UIControlState.Selected);
 
 
             UIButton ChangePasswordButton = new UIButton()
@@ -205,7 +198,7 @@ namespace CSU_PORTABLE.iOS
             };
             ChangePasswordButton.SetTitle("CHANGE PASSWORD", UIControlState.Normal);
             ChangePasswordButton.SetTitleColor(UIColor.DarkTextColor, UIControlState.Normal);
-            ChangePasswordButton.SetTitleColor(UIColor.FromRGB(30, 77, 43), UIControlState.Selected);
+            ChangePasswordButton.SetTitleColor(IOSUtil.PrimaryColor, UIControlState.Selected);
 
 
 

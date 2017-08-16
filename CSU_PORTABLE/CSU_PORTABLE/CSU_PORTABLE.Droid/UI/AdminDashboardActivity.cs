@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -27,11 +26,13 @@ using static CSU_PORTABLE.Utils.Constants;
 using Android.Content.PM;
 using Android.Webkit;
 using Android.Graphics;
-using BarChart;
 using UserDetailsClient;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Android.Content.Res;
 using System.IO;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -50,8 +51,8 @@ namespace CSU_PORTABLE.Droid.UI
         int CurrentPremisesId = 0;
         public static TextView notifCount;
         MySampleBroadcastReceiver receiver;
-        private BarChartView chart;
         private WebView localChartView;
+        public MqttClient client;
 
         protected async override void OnCreate(Bundle savedInstanceState)
         {
@@ -59,33 +60,6 @@ namespace CSU_PORTABLE.Droid.UI
             SetContentView(Resource.Layout.AdminDashboard);
             CurrentConsumption = ConsumptionFor.Premises;
             receiver = new MySampleBroadcastReceiver(this);
-            //App.UiParent = new UIParent(this as Activity);
-            //App.PCA = new PublicClientApplication(App.ClientID, App.Authority);
-            //App.PCA.RedirectUri = $"msal{App.ClientID}://auth";
-            ////AuthenticationResult ar = await App.PCA.AcquireTokenSilentAsync(App.Scopes, GetUserByPolicy(App.PCA.Users, App.PolicySignUpSignIn), App.Authority, false);
-            //RunOnUiThread(async () =>
-            //{
-            //    AuthenticationResult ar = await App.PCA.AcquireTokenAsync(App.Scopes, GetUserByPolicy(App.PCA.Users, App.PolicySignUpSignIn), App.UiParent);
-            //});
-            //PublicClientApplication myApp = new PublicClientApplication(B2CConfig.AuthorizeURL, B2CConfig.ClientId);
-            //myApp.RedirectUri = B2CConfig.Redirect_Uri;
-
-            //AuthenticationResult authResult = await myApp.AcquireTokenAsync(new string[] { B2CConfig.Grant_type, B2CConfig.Token_Grant_type }, "Energy Management", Microsoft.Identity.Client.UiOptions.ForceLogin, "");
-            //var authContext = new AuthenticationContext("https://login.microsoftonline.com/tfp/" + B2CConfig.Tenant + "/");
-            //try
-            //{
-            //    if (authContext.TokenCache.ReadItems().Count() > 0)
-            //        authContext = new AuthenticationContext(authContext.TokenCache.ReadItems().First().Authority);
-            //    authResult = await authContext.AcquireTokenAsync("55d19f44-bf45-4d2d-a3cc-53f70a30228a", B2CConfig.ClientId, new Uri(B2CConfig.Redirect_Uri), new PlatformParameters(this, true));
-            //    //authResult = await authContext.AcquireTokenAsync("https://login.microsoftonline.com/CSUB2C.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_b2cSignin&client_id=adcfca9a-078a-4e5f-9f20-829de2cef1ed&nonce=defaultNonce&redirect_uri=https%3A%2F%2Flocalhost%3A44399%2Fredirect.html&scope=openid&response_type=id_token&prompt=login", new ClientCredential(B2CConfig.ClientId, B2CConfig.ClientSecret));
-            //}
-            //catch (Exception e)
-            //{
-
-            //    throw;
-            //}
-
-            //await Authenticate(this, "https://login.microsoftonline.com/CSUB2C.onmicrosoft.com", "", B2CConfig.ClientId, B2CConfig.Redirect_Uri);
 
 
             if (!Utils.Utils.IsNetworkEnabled(this))
@@ -104,10 +78,9 @@ namespace CSU_PORTABLE.Droid.UI
                     await Utils.Utils.GetToken();
                 }
                 CreateDashboard();
-                //await GetUserDetails();
                 IsPlayServicesAvailable();
-                //await Utils.Utils.RefreshToken(this);
             }
+
         }
 
         public async Task<AuthenticationResult> Authenticate(Activity context, string authority, string resource, string clientId, string returnUri)
@@ -126,48 +99,26 @@ namespace CSU_PORTABLE.Droid.UI
                 var re = await authContext.AcquireTokenByAuthorizationCodeAsync(authResult.AccessToken, uri, new ClientCredential(B2CConfig.ClientId, B2CConfig.ClientSecret));
                 return authResult;
             }
-            catch (AdalException e)
+            catch (AdalException)
             {
                 return null;
             }
         }
 
-        //protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
-        //{
-        //    base.OnActivityResult(requestCode, resultCode, data);
-        //    AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
-        //}
-
-
-        //public IUser GetUserByPolicy(IEnumerable<IUser> users, string policy)
-        //{
-        //    foreach (var user in users)
-        //    {
-        //        string userIdentifier = Base64UrlDecode(user.Identifier.Split('.')[0]);
-        //        if (userIdentifier.EndsWith(policy.ToLower())) return user;
-        //    }
-
-        //    return null;
-        //}
-
-
-        //public string Base64UrlDecode(string s)
-        //{
-        //    s = s.Replace('-', '+').Replace('_', '/');
-        //    s = s.PadRight(s.Length + (4 - s.Length % 4) % 4, '=');
-        //    var byteArray = Convert.FromBase64String(s);
-        //    var decoded = Encoding.UTF8.GetString(byteArray, 0, byteArray.Count());
-        //    return decoded;
-        //}
-
-        //protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
-        //{
-        //    base.OnActivityResult(requestCode, resultCode, data);
-        //    AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
-        //}
-
         private void CreateDashboard()
         {
+            try
+            {
+                if (Utils.Utils.CurrentStage == DemoStage.None && IsDemoMode)
+                {
+                    Utils.Utils.CurrentStage = DemoStage.Yesterday;
+                }
+                SubscribeMQTT(this);
+            }
+            catch (Exception)
+            {
+
+            }
             SetDrawer();
             if (PreferenceHandler.GetUserDetails().RoleId == (int)USER_ROLE.ADMIN)
             {
@@ -185,94 +136,11 @@ namespace CSU_PORTABLE.Droid.UI
                 layoutProgress = FindViewById<LinearLayout>(Resource.Id.layout_progress);
                 layoutProgress.Visibility = ViewStates.Gone;
             }
+
+
         }
 
         #region " Bar Chart "
-
-        void HandleBarClick(object sender, BarClickEventArgs e)
-        {
-            Console.WriteLine("Bar {0} with value {1}", e.Bar.Legend, e.Bar.ValueCaption);
-            GetCurrentConsumption(Convert.ToInt32(e.Bar.ValueCaption));
-        }
-
-        private void SetConsumptionBarChart(List<ConsumptionModel> consumpModels)
-        {
-            if (consumpModels.Count > 0)
-            {
-                //Also you can add bar chart manually, if you want
-                chart = new BarChartView(this);
-#pragma warning disable CS0618 // Type or member is obsolete
-                var layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-#pragma warning restore CS0618 // Type or member is obsolete
-                layoutParams.SetMargins(5, 5, 5, 5);
-                chart.LayoutParameters = layoutParams;
-                //chart.MinimumValue = -1;
-                //chart.MaximumValue = 2;
-                chart.BarCaptionInnerColor = Color.Rgb(187, 187, 187);
-                chart.BarCaptionOuterColor = Color.Rgb(187, 187, 187);
-                chart.SetBackgroundColor(Color.Rgb(187, 187, 187));
-                chart.BarClick += HandleBarClick;
-                chart.BarWidth = 200;
-                chart.BarOffset = 100;
-                var chartData = new List<BarModel>();
-                bool ShowChart = false;
-                foreach (var item in consumpModels)
-                {
-
-                    BarModel chartItem = new BarModel();
-                    try
-                    {
-                        chartItem.Legend = item.Name.Split('-').LastOrDefault();
-                    }
-                    catch (Exception)
-                    {
-                        chartItem.Legend = item.Name;
-                    }
-
-                    chartItem.ValueCaption = item.Id.ToString();
-                    chartItem.ValueCaptionHidden = true;
-                    chartItem.Value = float.Parse(item.Consumed.Replace('K', ' ').Trim());
-                    if (float.Parse(item.Consumed.Replace('K', ' ').Trim()) > 0)
-                    {
-                        ShowChart = true;
-                    }
-                    //chartItem.Value = (float.Parse(item.Consumed.Replace('K', ' ').Trim()) == 0 ? 0.01f : float.Parse(item.Consumed.Replace('K', ' ').Trim()));
-                    chartItem.Color = Color.DarkSlateBlue;
-                    chartData.Add(chartItem);
-                }
-                chart.AutoLevelsEnabled = true;
-                chart.BarCaptionFontSize = 20;
-                if (ShowChart)
-                {
-                    chart.ItemsSource = chartData;
-                    chart.TextAlignment = TextAlignment.TextEnd;
-                    chart.TextDirection = TextDirection.Rtl;
-                    //remark.Visibility = ViewStates.Invisible;
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(chart);
-                }
-                else
-                {
-                    var remarks = new TextView(this);
-                    remarks.Text = "No Records Found!";
-                    var remarksLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FillParent, ViewGroup.LayoutParams.FillParent);
-
-                    layoutParams.SetMargins(5, 5, 5, 5);
-                    remarks.LayoutParameters = remarksLayoutParams;
-                    remarks.TextDirection = TextDirection.FirstStrongRtl;
-                    remarks.TextAlignment = TextAlignment.Center;
-                    remarks.SetTextColor(Color.LightGray);
-                    remarks.Gravity = GravityFlags.Center;
-                    remarks.TextSize = 20;
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).RemoveAllViewsInLayout();
-                    //FindViewById<LinearLayout>(Resource.Id.dashboard).AddView(remarks);
-                }
-            }
-            else
-            {
-                Utils.Utils.ShowToast(this, "No records found!");
-            }
-        }
 
         private void SetConsumptionBarChartWebView(List<ConsumptionModel> consumpModels)
         {
@@ -335,11 +203,6 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
 
-        //protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
-        //{
-        //    base.OnActivityResult(requestCode, resultCode, data);
-        //    AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
-        //}
 
         #region " Consumption "
 
@@ -391,7 +254,7 @@ namespace CSU_PORTABLE.Droid.UI
             {
                 url = url + "/" + Convert.ToString(Id);
             }
-            var responseConsumption = await InvokeApi.Invoke(url, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken());
+            var responseConsumption = await InvokeApi.Invoke(url, string.Empty, HttpMethod.Get, PreferenceHandler.GetToken(), Utils.Utils.CurrentStage);
             if (responseConsumption.StatusCode == HttpStatusCode.OK)
             {
                 GetConsumptionResponse(responseConsumption);
@@ -730,7 +593,7 @@ namespace CSU_PORTABLE.Droid.UI
             layoutProgress.Visibility = ViewStates.Gone;
         }
 
-        private async void LogoutResponse(HttpResponseMessage restResponse)
+        private void LogoutResponse(HttpResponseMessage restResponse)
         {
             Log.Debug(TAG, "Local Logout Successful");
             layoutProgress.Visibility = ViewStates.Gone;
@@ -762,5 +625,90 @@ namespace CSU_PORTABLE.Droid.UI
             }
         }
         #endregion
+
+        #region " MQTT "
+
+        public void SubscribeMQTT(Context context)
+        {
+            if (client == null)
+            {
+                client = new MqttClient("52.161.22.116");
+            }
+            if (client != null && client.IsConnected == false)
+            {
+                byte code = client.Connect(Guid.NewGuid().ToString());
+                string[] topics = { "#" };
+                client.Subscribe(topics, new byte[] { 0 });
+                client.MqttMsgPublishReceived += new MqttClient.MqttMsgPublishEventHandler(client_MqttMsgPublishReceived);
+            }
+        }
+
+        public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        {
+            RunOnUiThread(() =>
+            {
+                if (!string.IsNullOrEmpty(Encoding.UTF8.GetString(e.Message)))
+                {
+                    try
+                    {
+                        layoutProgress.Visibility = ViewStates.Visible;
+                        int stage = Convert.ToInt32(JsonConvert.DeserializeObject<DemoState>(Encoding.UTF8.GetString(e.Message)).State);
+                        Utils.Utils.CurrentStage = (DemoStage)stage;
+                        if (PreferenceHandler.GetUserDetails().RoleId == (int)USER_ROLE.ADMIN)
+                        {
+                            StartActivity(new Intent(Application.Context, typeof(AdminDashboardActivity)));
+                            Finish();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            });
+
+            //Utils.Utils.ShowDialog(this, CurrentStage.ToString());
+        }
+
+        //[Service]
+        //public class MQTT
+        //{
+        //    Context localContext;
+        //    DelegateShowMessage ShowMainMessage;
+        //    public void SubscribeMQTT(Context context)
+        //    {
+        //        this.localContext = context;
+        //        if (client == null)
+        //        {
+        //            client = new MqttClient("54.165.217.177");
+
+        //        }
+        //        if (client != null && client.IsConnected == false)
+        //        {
+        //            byte code = client.Connect(Guid.NewGuid().ToString());
+        //            string[] topics = { "krunal1" };
+        //            client.Subscribe(topics, new byte[] { 0 });
+        //            client.MqttMsgPublishReceived += new MqttClient.MqttMsgPublishEventHandler(client_MqttMsgPublishReceived);
+        //        }
+        //    }
+
+        //    public delegate void MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e);
+        //    public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        //    {
+
+        //    }
+
+        //    private void Client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
+        //    {
+        //        client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
+        //    }
+
+        //    private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //}
+        #endregion
+
     }
 }

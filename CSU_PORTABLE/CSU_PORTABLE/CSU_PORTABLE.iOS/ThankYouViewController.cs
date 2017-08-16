@@ -27,7 +27,7 @@ namespace CSU_PORTABLE.iOS
         {
             base.ViewDidLoad();
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
-            this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB(0, 102, 153);
+            this.NavigationController.NavigationBar.BarTintColor = IOSUtil.PrimaryColor;
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
 
             NavigationItem.SetRightBarButtonItem(
@@ -55,7 +55,7 @@ namespace CSU_PORTABLE.iOS
 
         private void GetThankYouView()
         {
-            this.View.BackgroundColor = UIColor.FromRGB(0, 102, 153);
+            this.View.BackgroundColor = IOSUtil.PrimaryColor;
             ThankYouHeader = new UILabel()
             {
                 Font = UIFont.FromName("Futura-Medium", 18f),
