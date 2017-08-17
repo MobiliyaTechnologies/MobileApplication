@@ -4,6 +4,7 @@ using Firebase.Iid;
 using Android.Util;
 using Android.Widget;
 using Firebase.Messaging;
+using CSU_PORTABLE.Utils;
 
 namespace CSU_Android_App
 {
@@ -17,7 +18,15 @@ namespace CSU_Android_App
             var refreshedToken = FirebaseInstanceId.Instance.Token;
             Log.Debug(TAG, "MyFirebaseIIDService() Refreshed token: " + refreshedToken);
             //SendRegistrationToServer(refreshedToken);
-            FirebaseMessaging.Instance.SubscribeToTopic("Alerts");
+            if (Constants.IsDemoMode)
+            {
+                FirebaseMessaging.Instance.SubscribeToTopic("AlertsDemo");
+            }
+            else
+            {
+                FirebaseMessaging.Instance.SubscribeToTopic("Alerts");
+            }
+
         }
 
 

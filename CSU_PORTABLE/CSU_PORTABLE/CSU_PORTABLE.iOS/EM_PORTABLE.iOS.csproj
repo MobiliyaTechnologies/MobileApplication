@@ -84,10 +84,9 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>false</MtouchProfiling>
-    <CodesignKey>iPhone Distribution</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignProvision>
-    </CodesignProvision>
+    <CodesignProvision>38f1920d-cd64-460a-ac94-270bdf5d3477</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\logo.ico</ApplicationIcon>
@@ -554,8 +553,6 @@
   <ItemGroup>
     <Content Include="Content\Chart.bundle.min.js" />
     <Content Include="Content\ChartC3.html" />
-    <Content Include="GoogleService-Info.plist" />
-    <Content Include="GoogleService-Info_Prod.plist" />
     <BundleResource Include="Resources\logo.ico" />
     <BundleResource Include="Resources\Next_BTN_White%402x.png" />
     <BundleResource Include="Resources\Next_BTN_White%403x.png" />
@@ -563,6 +560,7 @@
     <BundleResource Include="Resources\Thank_You_Icon%403x.png" />
     <BundleResource Include="Resources\Tick_BTN_White%402x.png" />
     <BundleResource Include="Resources\Tick_BTN_White%403x.png" />
+    <Content Include="GoogleService-Info.plist" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />

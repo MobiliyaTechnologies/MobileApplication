@@ -54,9 +54,9 @@ namespace CSU_PORTABLE.Utils
             SIGN_UP = 2
         }
 
-        public static bool IsDemoMode = true;
+        public static bool IsDemoMode = false;
         //public static string MqttServer = "52.161.22.116";
-        public static string MqttServer = "emdemo.mobiliya.com";
+        public static string MqttServer = "iot.eclipse.org";
         public static string[] MqttTopics = { "EMState" };
 
     }

@@ -49,8 +49,9 @@ namespace CSU_PORTABLE.iOS
                 if (IOSUtil.CurrentStage == DemoStage.None && IsDemoMode)
                 {
                     IOSUtil.CurrentStage = DemoStage.Yesterday;
+                    client = new MqttClient(Constants.MqttServer);
+                    SubscribeMQTT();
                 }
-                SubscribeMQTT();
             }
             catch (Exception e)
             {
