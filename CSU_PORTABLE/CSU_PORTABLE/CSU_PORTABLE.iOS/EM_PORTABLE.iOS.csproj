@@ -84,7 +84,7 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>false</MtouchProfiling>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Distribution</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>
     </CodesignProvision>
@@ -555,6 +555,7 @@
     <Content Include="Content\Chart.bundle.min.js" />
     <Content Include="Content\ChartC3.html" />
     <Content Include="GoogleService-Info.plist" />
+    <Content Include="GoogleService-Info_Prod.plist" />
     <BundleResource Include="Resources\logo.ico" />
     <BundleResource Include="Resources\Next_BTN_White%402x.png" />
     <BundleResource Include="Resources\Next_BTN_White%403x.png" />

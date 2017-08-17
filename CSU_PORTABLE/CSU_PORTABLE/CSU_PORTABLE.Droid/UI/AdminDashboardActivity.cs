@@ -632,12 +632,12 @@ namespace CSU_PORTABLE.Droid.UI
         {
             if (client == null)
             {
-                client = new MqttClient("52.161.22.116");
+                client = new MqttClient(Constants.MqttServer);
             }
             if (client != null && client.IsConnected == false)
             {
                 byte code = client.Connect(Guid.NewGuid().ToString());
-                string[] topics = { "#" };
+                string[] topics = Constants.MqttTopics;
                 client.Subscribe(topics, new byte[] { 0 });
                 client.MqttMsgPublishReceived += new MqttClient.MqttMsgPublishEventHandler(client_MqttMsgPublishReceived);
             }
