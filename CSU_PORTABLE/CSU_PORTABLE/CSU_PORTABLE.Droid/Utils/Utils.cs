@@ -27,6 +27,7 @@ namespace CSU_PORTABLE.Droid.Utils
     public class Utils
     {
         public const string ALERT_BROADCAST = "com.mobiliya.em.Alerts";
+        public const string ALERT_BROADCAST_DEMO = "com.mobiliya.em.AlertsDemo";
         private static Toast toast;
 
         public static DemoStage CurrentStage;

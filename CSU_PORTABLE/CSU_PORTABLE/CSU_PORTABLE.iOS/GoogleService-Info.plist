@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>173702707248-9os48h6c8me5c5tgh8gvnl97pjvu4n8u.apps.googleusercontent.com</string>
+	<string>976024703467-9orgp6b5v6aglo2u6kh02v9tia92k3e5.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.173702707248-9os48h6c8me5c5tgh8gvnl97pjvu4n8u</string>
+	<string>com.googleusercontent.apps.976024703467-9orgp6b5v6aglo2u6kh02v9tia92k3e5</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDC88BXYuxlfj_VyD6E3MRi5JCclGwSxHM</string>
+	<string>AIzaSyDugMed3hqlgHBcgFHTUaEbcHafC_yskSk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>173702707248</string>
+	<string>976024703467</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.mobiliya.em</string>
 	<key>PROJECT_ID</key>
-	<string>emdemo-5ea6f</string>
+	<string>emtest-186ce</string>
 	<key>STORAGE_BUCKET</key>
-	<string>emdemo-5ea6f.appspot.com</string>
+	<string>emtest-186ce.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true/>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:173702707248:ios:bee4b3455d91bd0a</string>
+	<string>1:976024703467:ios:bee4b3455d91bd0a</string>
 	<key>DATABASE_URL</key>
-	<string>https://emdemo-5ea6f.firebaseio.com</string>
+	<string>https://emtest-186ce.firebaseio.com</string>
 </dict>
 </plist>

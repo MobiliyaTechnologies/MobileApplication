@@ -8,6 +8,7 @@ using Firebase.CloudMessaging;
 using Firebase.InstanceID;
 using BigTed;
 using CSU_PORTABLE.Models;
+using CSU_PORTABLE.Utils;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -108,8 +109,14 @@ namespace CSU_PORTABLE.iOS
                 var refreshedToken = InstanceId.SharedInstance.Token;
 
                 // Do your magic to refresh the token where is needed
-
-                Messaging.SharedInstance.Subscribe("Alerts");
+                if (Constants.IsDemoMode)
+                {
+                    Messaging.SharedInstance.Subscribe("AlertsDemo");
+                }
+                else
+                {
+                    Messaging.SharedInstance.Subscribe("Alerts");
+                }
             });
 
             // Request notification permissions from the user

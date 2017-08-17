@@ -112,8 +112,9 @@ namespace CSU_PORTABLE.Droid.UI
                 if (Utils.Utils.CurrentStage == DemoStage.None && IsDemoMode)
                 {
                     Utils.Utils.CurrentStage = DemoStage.Yesterday;
+                    client = new MqttClient(Constants.MqttServer);
+                    SubscribeMQTT(this);
                 }
-                SubscribeMQTT(this);
             }
             catch (Exception)
             {
@@ -540,7 +541,14 @@ namespace CSU_PORTABLE.Droid.UI
         protected override void OnResume()
         {
             base.OnResume();
-            RegisterReceiver(receiver, new IntentFilter(Utils.Utils.ALERT_BROADCAST));
+            if (IsDemoMode)
+            {
+                RegisterReceiver(receiver, new IntentFilter(Utils.Utils.ALERT_BROADCAST_DEMO));
+            }
+            else
+            {
+                RegisterReceiver(receiver, new IntentFilter(Utils.Utils.ALERT_BROADCAST));
+            }
             if (PreferenceHandler.GetUserDetails().RoleId == (int)Constants.USER_ROLE.ADMIN)
             {
                 setNotificationCount();
@@ -630,10 +638,7 @@ namespace CSU_PORTABLE.Droid.UI
 
         public void SubscribeMQTT(Context context)
         {
-            if (client == null)
-            {
-                client = new MqttClient(Constants.MqttServer);
-            }
+
             if (client != null && client.IsConnected == false)
             {
                 byte code = client.Connect(Guid.NewGuid().ToString());
