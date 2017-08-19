@@ -28,6 +28,7 @@ namespace CSU_PORTABLE.Droid.UI
             textViewConsumedValue = itemView.FindViewById<TextView>(Resource.Id.textViewConsumedValue);
             textViewExpectedValue = itemView.FindViewById<TextView>(Resource.Id.textViewExpectedValue);
             textViewOverusedValue = itemView.FindViewById<TextView>(Resource.Id.textViewOverusedValue);
+            textViewOverUsed = itemView.FindViewById<TextView>(Resource.Id.textViewOverUsed);
             itemView.Click += (sender, e) => listener(base.Position);
 
         }

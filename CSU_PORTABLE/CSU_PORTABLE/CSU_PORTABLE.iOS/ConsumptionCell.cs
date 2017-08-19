@@ -15,6 +15,7 @@ namespace CSU_PORTABLE.iOS
         UILabel lblConsumedCount;
         UILabel lblExpectedCount;
         UILabel lblOverusedCount;
+        UILabel lblOverused;
 
         public ConsumptionCell(NSString cellId) : base(UITableViewCellStyle.Default, cellId)
         {
@@ -76,11 +77,12 @@ namespace CSU_PORTABLE.iOS
                 TextAlignment = UITextAlignment.Center
             };
 
-            UIImageView imgOverused = new UIImageView()
-            {
-                Frame = new CGRect(0, 5, 10, 20),
-                Image = UIImage.FromBundle("Arrow_Red.png"),
-            };
+            //UIImageView imgOverused = new UIImageView()
+            //{
+            //    Frame = new CGRect(0, 5, 10, 20),
+            //    Image = UIImage.FromBundle("Arrow_Red.png"),
+            //    Tag = 1
+            //};
 
             lblOverusedCount = new UILabel()
             {
@@ -95,7 +97,7 @@ namespace CSU_PORTABLE.iOS
 
             lblConsumedCount.AddSubview(imgConsumed);
             lblExpectedCount.AddSubview(imgExpected);
-            lblOverusedCount.AddSubview(imgOverused);
+            //lblOverusedCount.AddSubview(imgOverused);
 
             UILabel lblConsumed = new UILabel()
             {
@@ -121,10 +123,10 @@ namespace CSU_PORTABLE.iOS
                 TextAlignment = UITextAlignment.Center
             };
 
-            UILabel lblOverused = new UILabel()
+            lblOverused = new UILabel()
             {
                 Frame = new CGRect(new CGPoint((lblWidth * 2) + 20, 60), new CGSize(lblWidth, 30)),
-                Text = "OVERUSED",
+                //Text = "OVERUSED",
                 Font = UIFont.FromName("Futura-Medium", 10f),
                 TextColor = UIColor.Gray,
                 BackgroundColor = UIColor.Clear,
@@ -149,6 +151,34 @@ namespace CSU_PORTABLE.iOS
             lblConsumedCount.Text = consumptionText.Consumed;
             lblExpectedCount.Text = consumptionText.Expected;
             lblOverusedCount.Text = consumptionText.Overused;
+
+            double overused = Convert.ToDouble(consumptionText.Overused.Replace('K', ' ').Trim());
+            if (overused >= 0)
+            {
+                lblOverusedCount.Text = consumptionText.Overused;
+                lblOverused.Text = "UNDERUSED";
+                UIImageView ImgView = new UIImageView()
+                {
+                    Frame = new CGRect(-2, 5, 10, 20),
+                    Image = UIImage.FromBundle("Arrow_Green.png"),
+                };
+
+                lblOverusedCount.AddSubview(ImgView);
+            }
+            else
+            {
+                lblOverusedCount.Text = Convert.ToString((-1) * overused) + " K";
+                lblOverused.Text = "OVERUSED";
+                var ImgView = lblOverusedCount.ViewWithTag(1);
+                UIImageView ImgViewRed = new UIImageView()
+                {
+                    Frame = new CGRect(-2, 5, 10, 20),
+                    Image = UIImage.FromBundle("Arrow_Red.png"),
+                };
+                lblOverusedCount.AddSubview(ImgViewRed);
+            }
+
+
         }
 
 
