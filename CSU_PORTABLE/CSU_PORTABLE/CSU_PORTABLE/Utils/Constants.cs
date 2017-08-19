@@ -54,7 +54,7 @@ namespace CSU_PORTABLE.Utils
             SIGN_UP = 2
         }
 
-        public static bool IsDemoMode = false;
+        public static bool IsDemoMode = true;
         //public static string MqttServer = "52.161.22.116";
         public static string MqttServer = "iot.eclipse.org";
         public static string[] MqttTopics = { "EMState" };

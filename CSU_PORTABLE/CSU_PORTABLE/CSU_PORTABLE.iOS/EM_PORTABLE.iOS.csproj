@@ -86,7 +86,7 @@
     <MtouchProfiling>false</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignProvision>38f1920d-cd64-460a-ac94-270bdf5d3477</CodesignProvision>
+    <CodesignProvision>ee040cd0-a812-4c31-9f6b-2d81db9e6acd</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\logo.ico</ApplicationIcon>

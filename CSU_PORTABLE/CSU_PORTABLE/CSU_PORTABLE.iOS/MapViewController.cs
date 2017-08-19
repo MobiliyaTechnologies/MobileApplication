@@ -201,7 +201,23 @@ namespace CSU_PORTABLE.iOS
             {
                 string strContent = await responseConsumption.Content.ReadAsStringAsync();
                 List<ConsumptionModel> consumptions = GetConsumptionModels(strContent);
-                SetConsumptions(consumptions);
+                if (consumptions.Count > 0)
+                {
+                    SetConsumptions(consumptions);
+                }
+                else
+                {
+                    IOSUtil.ShowMessage("No " + CurrentConsumption.ToString() + " found!", loadingOverlay, this);
+                    switch (CurrentConsumption)
+                    {
+                        case ConsumptionFor.Buildings:
+                            CurrentConsumption = ConsumptionFor.Premises;
+                            break;
+                        case ConsumptionFor.Meters:
+                            CurrentConsumption = ConsumptionFor.Buildings;
+                            break;
+                    }
+                }
             }
             else
             {
