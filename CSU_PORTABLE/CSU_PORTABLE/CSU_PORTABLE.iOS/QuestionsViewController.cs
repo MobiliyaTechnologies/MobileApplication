@@ -9,7 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using UIKit;
+using uPLibrary.Networking.M2Mqtt;
 
 namespace CSU_PORTABLE.iOS
 {
@@ -24,6 +26,7 @@ namespace CSU_PORTABLE.iOS
         //PreferenceHandler prefHandler;
         UserDetails userdetail;
         public int selectedClassRoom;
+        public string selectedClassRoomDesc;
         public List<QuestionModel> questionList;
 
         public QuestionsViewController(IntPtr handle) : base(handle)
@@ -89,6 +92,20 @@ namespace CSU_PORTABLE.iOS
         private void GetQuestionView()
         {
             this.View.BackgroundColor = IOSUtil.PrimaryColor;
+
+            try
+            {
+                if (Constants.IsDemoMode)
+                {
+                    client = new MqttClient(Constants.MqttServer);
+                    SubscribeMQTT();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
             QuestionHeader = new UILabel()
             {
                 Font = UIFont.FromName("Helvetica-Bold", 20f),
@@ -267,6 +284,7 @@ namespace CSU_PORTABLE.iOS
             {
                 InvokeOnMainThread(() =>
                 {
+                    var result = client.Publish("EMstate/feedback", Encoding.UTF8.GetBytes("{ \"feedbackMessage\":\"Feedback '" + feedbackModel.FeedbackDesc + "' recieved from room " + selectedClassRoomDesc + "\"}"));
                     submitFeedbackResponse(response);
                 });
 
@@ -295,6 +313,20 @@ namespace CSU_PORTABLE.iOS
             else
             {
                 IOSUtil.ShowMessage("Failed to submit feedback, please try again!", loadingOverlay, this);
+            }
+        }
+
+        #endregion
+
+        #region " MQTT "
+        public MqttClient client;
+        public void SubscribeMQTT()
+        {
+            if (client != null && client.IsConnected == false)
+            {
+                byte code = client.Connect(Guid.NewGuid().ToString());
+                string[] topics = Constants.MqttTopics;
+                client.Subscribe(topics, new byte[] { 0 });
             }
         }
 

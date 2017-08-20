@@ -107,22 +107,23 @@ namespace CSU_PORTABLE.Droid.UI
 
         private void CreateDashboard()
         {
-            try
-            {
-                if (Utils.Utils.CurrentStage == DemoStage.None && IsDemoMode)
-                {
-                    Utils.Utils.CurrentStage = DemoStage.Yesterday;
-                    client = new MqttClient(Constants.MqttServer);
-                    SubscribeMQTT(this);
-                }
-            }
-            catch (Exception)
-            {
-
-            }
+           
             SetDrawer();
             if (PreferenceHandler.GetUserDetails().RoleId == (int)USER_ROLE.ADMIN)
             {
+                try
+                {
+                    if (Utils.Utils.CurrentStage == DemoStage.None && IsDemoMode)
+                    {
+                        Utils.Utils.CurrentStage = DemoStage.Yesterday;
+                        client = new MqttClient(Constants.MqttServer);
+                        SubscribeMQTT(this);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
                 GetConsumptionDetails(CurrentConsumption, 0);
                 this.Title = "Dashboard";
             }
@@ -674,45 +675,6 @@ namespace CSU_PORTABLE.Droid.UI
             //Utils.Utils.ShowDialog(this, CurrentStage.ToString());
         }
 
-        //[Service]
-        //public class MQTT
-        //{
-        //    Context localContext;
-        //    DelegateShowMessage ShowMainMessage;
-        //    public void SubscribeMQTT(Context context)
-        //    {
-        //        this.localContext = context;
-        //        if (client == null)
-        //        {
-        //            client = new MqttClient("54.165.217.177");
-
-        //        }
-        //        if (client != null && client.IsConnected == false)
-        //        {
-        //            byte code = client.Connect(Guid.NewGuid().ToString());
-        //            string[] topics = { "krunal1" };
-        //            client.Subscribe(topics, new byte[] { 0 });
-        //            client.MqttMsgPublishReceived += new MqttClient.MqttMsgPublishEventHandler(client_MqttMsgPublishReceived);
-        //        }
-        //    }
-
-        //    public delegate void MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e);
-        //    public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
-        //    {
-
-        //    }
-
-        //    private void Client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
-        //    {
-        //        client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
-        //    }
-
-        //    private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-
-        //}
         #endregion
 
     }

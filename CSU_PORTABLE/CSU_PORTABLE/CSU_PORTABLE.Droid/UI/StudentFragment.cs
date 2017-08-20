@@ -20,6 +20,8 @@ using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
 using Android.Graphics;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 
 namespace CSU_PORTABLE.Droid.UI
 {
@@ -57,6 +59,7 @@ namespace CSU_PORTABLE.Droid.UI
         int selectedRoomId = -1;
         int selectedAnswerId = -1;
         int userId;
+        public static string SelectedRoom = string.Empty;
 
         public Color VeryCold = Color.Argb(0, 193, 235, 244);
         public Color Cold = Color.Argb(0, 148, 221, 242);
@@ -96,7 +99,19 @@ namespace CSU_PORTABLE.Droid.UI
             textViewCold.Alpha = 0.5f;
             textViewTooCold.Alpha = 0.5f;
 
+            try
+            {
+                if (Utils.Utils.CurrentStage == DemoStage.None && Constants.IsDemoMode)
+                {
+                    Utils.Utils.CurrentStage = DemoStage.Yesterday;
+                    client = new MqttClient(Constants.MqttServer);
+                    SubscribeMQTT();
+                }
+            }
+            catch (Exception)
+            {
 
+            }
 
 
             textViewTooHot.Click += delegate
@@ -194,6 +209,7 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "Submit button click");
                 if (selectedAnswer != null)
                 {
+                    SelectedRoom = textViewSelectedClass.Text;
                     showLayoutSubmit();
                     submitFeedback(userId);
                     ResetFeedback(view);
@@ -272,6 +288,7 @@ namespace CSU_PORTABLE.Droid.UI
                 Log.Debug(TAG, "async Response : " + response.ToString());
                 this.Activity.RunOnUiThread(() =>
                 {
+                    var result = client.Publish("EMstate/feedback", Encoding.UTF8.GetBytes("{ \"feedbackMessage\":\"Feedback '" + feedbackModel.FeedbackDesc + "' recieved from room " + SelectedRoom + "\"}"));
                     submitFeedbackResponse(response);
                 });
             }
@@ -500,5 +517,19 @@ namespace CSU_PORTABLE.Droid.UI
             textViewSelectedClass.Text = selectedClass;
             selectedRoomId = classList[position].RoomId;
         }
+
+        #region " MQTT "
+        public MqttClient client;
+        public void SubscribeMQTT()
+        {
+            if (client != null && client.IsConnected == false)
+            {
+                byte code = client.Connect(Guid.NewGuid().ToString());
+                string[] topics = Constants.MqttTopics;
+                client.Subscribe(topics, new byte[] { 0 });
+            }
+        }
+
+        #endregion
     }
 }

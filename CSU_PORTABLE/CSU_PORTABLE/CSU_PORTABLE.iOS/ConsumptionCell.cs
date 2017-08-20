@@ -160,7 +160,7 @@ namespace CSU_PORTABLE.iOS
                 UIImageView ImgView = new UIImageView()
                 {
                     Frame = new CGRect(-2, 5, 10, 20),
-                    Image = UIImage.FromBundle("Arrow_Green.png"),
+                    Image = UIImage.FromBundle("Arrow_Green_Down.png"),
                 };
 
                 lblOverusedCount.AddSubview(ImgView);

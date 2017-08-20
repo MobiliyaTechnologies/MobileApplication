@@ -561,6 +561,9 @@
     <BundleResource Include="Resources\Tick_BTN_White%402x.png" />
     <BundleResource Include="Resources\Tick_BTN_White%403x.png" />
     <Content Include="GoogleService-Info.plist" />
+    <BundleResource Include="Resources\Arrow_Green_Down.png" />
+    <BundleResource Include="Resources\Arrow_Green_Down%402x.png" />
+    <BundleResource Include="Resources\Arrow_Green_Down%403x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\..\packages\Xamarin.Firebase.iOS.Core.3.4.5\build\Xamarin.Firebase.iOS.Core.targets')" />

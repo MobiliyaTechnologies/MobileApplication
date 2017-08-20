@@ -36,7 +36,7 @@ namespace CSU_PORTABLE.iOS
             this.NavigationController.NavigationBar.TintColor = UIColor.White;
             this.NavigationController.NavigationBar.BarTintColor = IOSUtil.PrimaryColor;
             this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-            
+
 
             NavigationItem.SetRightBarButtonItem(
                 new UIBarButtonItem(UIImage.FromBundle("a")
@@ -82,6 +82,7 @@ namespace CSU_PORTABLE.iOS
                     QuestionsViewController.NavigationItem.SetHidesBackButton(true, false);
                     QuestionsViewController.questionList = questionList;
                     QuestionsViewController.selectedClassRoom = classRoomId;
+                    QuestionsViewController.selectedClassRoomDesc = roomsList.Find(x => x.RoomId == classRoomId).RoomName;
                     NavController.PushViewController(QuestionsViewController, true);
                 }
                 else
@@ -252,7 +253,7 @@ namespace CSU_PORTABLE.iOS
                 loadingOverlay.Hide();
             }
         }
-       
+
         #endregion
 
 
