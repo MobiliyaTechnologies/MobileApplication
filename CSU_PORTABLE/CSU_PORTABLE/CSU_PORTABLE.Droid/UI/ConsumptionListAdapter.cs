@@ -47,7 +47,7 @@ namespace CSU_PORTABLE.Droid.UI
             double overused = Convert.ToDouble(mConsumptionModels[position].Overused.Replace('K', ' ').Trim());
             if (overused >= 0)
             {
-                consumptionHolder.textViewOverusedValue.SetCompoundDrawablesWithIntrinsicBounds(Resource.Drawable.Arrow_Green, 0, 0, 0);
+                consumptionHolder.textViewOverusedValue.SetCompoundDrawablesWithIntrinsicBounds(Resource.Drawable.Arrow_Green_Down, 0, 0, 0);
                 consumptionHolder.textViewOverusedValue.Text = mConsumptionModels[position].Overused;
                 consumptionHolder.textViewOverUsed.Text = "UNDERUSED";
             }
