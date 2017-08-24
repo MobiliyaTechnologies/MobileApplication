@@ -1,4 +1,5 @@
 ﻿using CoreGraphics;
+using CSU_PORTABLE.iOS.Utils;
 using CSU_PORTABLE.Models;
 using Foundation;
 using System;
@@ -22,7 +23,7 @@ namespace CSU_PORTABLE.iOS
             SelectionStyle = UITableViewCellSelectionStyle.Default;
             btnInsights = new UIButton()
             {
-                Frame = new CGRect(20, 0, Bounds.Width, 98),
+                Frame = new CGRect((IOSUtil.LayoutWidth - Bounds.Width) / 2, 0, Bounds.Width, 98),
                 BackgroundColor = UIColor.Clear,
                 Font = UIFont.FromName("Futura-Medium", 12f),
             };
@@ -40,7 +41,7 @@ namespace CSU_PORTABLE.iOS
             lblConsumptionName = new UILabel()
             {
                 Frame = new CGRect(0, 5, Bounds.Width, 25),
-                Font = UIFont.PreferredTitle3,
+                Font = UIFont.FromName("Futura-Medium", 20f),
                 TextColor = UIColor.FromRGB(0, 102, 153),
                 BackgroundColor = UIColor.Clear,
                 LineBreakMode = UILineBreakMode.Clip,
@@ -51,7 +52,7 @@ namespace CSU_PORTABLE.iOS
             lblConsumedCount = new UILabel()
             {
                 Frame = new CGRect(10, 35, lblWidth, 30),
-                Font = UIFont.PreferredTitle2,
+                Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
                 LineBreakMode = UILineBreakMode.WordWrap,
@@ -69,7 +70,7 @@ namespace CSU_PORTABLE.iOS
             lblExpectedCount = new UILabel()
             {
                 Frame = new CGRect(lblWidth + 12, 35, lblWidth, 30),
-                Font = UIFont.PreferredTitle2,
+                Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
                 LineBreakMode = UILineBreakMode.WordWrap,
@@ -87,7 +88,7 @@ namespace CSU_PORTABLE.iOS
             lblOverusedCount = new UILabel()
             {
                 Frame = new CGRect((lblWidth * 2) + 12, 35, lblWidth, 30),
-                Font = UIFont.PreferredTitle2,
+                Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
                 LineBreakMode = UILineBreakMode.WordWrap,
@@ -137,7 +138,7 @@ namespace CSU_PORTABLE.iOS
 
             UIView seperator = new UIView()
             {
-                Frame = new CGRect(0, 99, Bounds.Width, 2),
+                Frame = new CGRect(0, 99, IOSUtil.LayoutWidth, 2),
                 BackgroundColor = UIColor.Gray
             };
 

@@ -82,7 +82,7 @@ namespace CSU_PORTABLE.iOS
             {
                 Frame = new CGRect(30, 0, lblWidth, 30),
                 Text = strConsumed,
-                Font = UIFont.PreferredTitle2,
+                Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
                 LineBreakMode = UILineBreakMode.WordWrap,
@@ -101,7 +101,7 @@ namespace CSU_PORTABLE.iOS
             {
                 Frame = new CGRect(lblWidth + 30, 0, lblWidth, 30),
                 Text = strExpected,
-                Font = UIFont.PreferredTitle2,
+                Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
                 LineBreakMode = UILineBreakMode.WordWrap,
@@ -109,17 +109,13 @@ namespace CSU_PORTABLE.iOS
                 TextAlignment = UITextAlignment.Center
             };
 
-            UIImageView imgOverused = new UIImageView()
-            {
-                Frame = new CGRect(5, 5, 10, 20),
-                Image = UIImage.FromBundle("Arrow_Red.png"),
-            };
+
 
             UILabel lblOverusedCount = new UILabel()
             {
                 Frame = new CGRect((lblWidth * 2) + 20, 0, lblWidth, 30),
                 Text = strOverused,
-                Font = UIFont.PreferredTitle2,
+                Font = UIFont.FromName("Futura-Medium", 18f),
                 TextColor = UIColor.DarkTextColor,
                 BackgroundColor = UIColor.Clear,
                 LineBreakMode = UILineBreakMode.WordWrap,
@@ -129,7 +125,7 @@ namespace CSU_PORTABLE.iOS
 
             lblConsumedCount.AddSubview(imgConsumed);
             lblExpectedCount.AddSubview(imgExpected);
-            lblOverusedCount.AddSubview(imgOverused);
+
 
             UILabel lblConsumed = new UILabel()
             {
@@ -167,7 +163,26 @@ namespace CSU_PORTABLE.iOS
                 TextAlignment = UITextAlignment.Center
             };
 
-            lblOverused.Text = ((Math.Round((insightDM.ConsumptionValue - insightDM.PredictedValue) / 1000, 2)) > 0 ? "OVERUSED" : "UNDERUSED");
+            if ((Math.Round((insightDM.ConsumptionValue - insightDM.PredictedValue) / 1000, 2)) > 0)
+            {
+                lblOverused.Text = "OVERUSED";
+                UIImageView imgOverused = new UIImageView()
+                {
+                    Frame = new CGRect(5, 5, 10, 20),
+                    Image = UIImage.FromBundle("Arrow_Red.png"),
+                };
+                lblOverusedCount.AddSubview(imgOverused);
+            }
+            else
+            {
+                lblOverused.Text = "UNDERUSED";
+                UIImageView imgOverused = new UIImageView()
+                {
+                    Frame = new CGRect(5, 5, 10, 20),
+                    Image = UIImage.FromBundle("Arrow_Green_Down.png"),
+                };
+                lblOverusedCount.AddSubview(imgOverused);
+            }
 
             btnInsights.AddSubviews(lblConsumed, lblExpected, lblOverused, lblConsumedCount, lblExpectedCount, lblOverusedCount);
             View.AddSubviews(btnInsights);

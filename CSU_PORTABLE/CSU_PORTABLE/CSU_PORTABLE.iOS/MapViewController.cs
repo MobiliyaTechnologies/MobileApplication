@@ -227,20 +227,21 @@ namespace CSU_PORTABLE.iOS
 
         private void SetConsumptions(List<ConsumptionModel> consumpModels)
         {
+            loadingOverlay.Hide();
             SetConsumptionBarChartWebView(consumpModels);
             UITableView _table = new UITableView();
-
+            View.BackgroundColor = UIColor.White;
             _table = new UITableView
             {
-                Frame = new CoreGraphics.CGRect(0, 370, View.Bounds.Width, View.Bounds.Height - 370),
+                Frame = new CoreGraphics.CGRect(0, 430, View.Bounds.Width, View.Bounds.Height - 430),
                 RowHeight = 100,
                 BackgroundColor = UIColor.FromRGBA(193, 214, 218, 0.3f),
                 Source = new ConsumptionSource(consumpModels, this)
             };
+            IOSUtil.LayoutWidth = View.Bounds.Width;
             _table.ReloadData();
             _table.ClipsToBounds = true;
             View.AddSubview(_table);
-            loadingOverlay.Hide();
         }
 
         private void SetConsumptionBarChartWebView(List<ConsumptionModel> consumpModels)
