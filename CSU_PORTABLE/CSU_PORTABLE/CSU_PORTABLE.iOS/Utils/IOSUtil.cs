@@ -16,6 +16,7 @@ namespace CSU_PORTABLE.iOS.Utils
     {
         public static NavController NavController { get; private set; }
         public static DemoStage CurrentStage = DemoStage.None;
+        public static double LayoutWidth;
 
         public static void ShowMessage(string message, LoadingOverlay loadingOverlay, UIViewController viewController)
         {

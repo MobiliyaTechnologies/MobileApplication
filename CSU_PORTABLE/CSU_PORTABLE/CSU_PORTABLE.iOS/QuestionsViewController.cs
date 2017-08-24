@@ -239,11 +239,12 @@ namespace CSU_PORTABLE.iOS
                 }
 
             };
-
-            segAnswers.SetBackgroundImage(imageWithColor(segAnswers.BackgroundColor), UIControlState.Normal, UIBarMetrics.Default);
-            segAnswers.SetBackgroundImage(imageWithColor(segAnswers.TintColor), UIControlState.Selected, UIBarMetrics.Default);
-            segAnswers.SetDividerImage(imageWithColor(UIColor.Clear), UIControlState.Normal, UIControlState.Normal, UIBarMetrics.Default);
-
+            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+            {
+                segAnswers.SetBackgroundImage(imageWithColor(segAnswers.BackgroundColor), UIControlState.Normal, UIBarMetrics.Default);
+                segAnswers.SetBackgroundImage(imageWithColor(segAnswers.TintColor), UIControlState.Selected, UIBarMetrics.Default);
+                segAnswers.SetDividerImage(imageWithColor(UIColor.Clear), UIControlState.Normal, UIControlState.Normal, UIBarMetrics.Default);
+            }
 
             View.AddSubviews(QuestionHeader, QuestionSubHeader, btnBack, btnSubmit, segAnswers, lblSelectedAnswer);
         }
