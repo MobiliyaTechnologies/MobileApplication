@@ -120,15 +120,18 @@ namespace CSU_PORTABLE.iOS
             });
 
             // Request notification permissions from the user
-            try
+            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
-                UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert, (approved, err) =>
+                try
                 {
-                    // Handle approval
-                });
-            }
-            catch (Exception)
-            {
+                    UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert, (approved, err) =>
+                    {
+                        // Handle approval
+                    });
+                }
+                catch (Exception)
+                {
+                }
             }
             //FCM integration end
 
