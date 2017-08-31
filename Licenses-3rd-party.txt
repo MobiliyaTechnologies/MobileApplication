@@ -1,0 +1,47 @@
+This document contains the list of Third Party Software included with
+EM Mobile Applications, along with the license information.
+
+Third Party Software may impose additional restrictions and it is the
+user's responsibility to ensure that they have met the licensing
+requirements of Data-Service and the relevant license of the Third Party
+Software they are using.
+
+Sidebar Navigation
+url - https://github.com/jdehlin/Xamarin-Sidebar
+License - Apache 2.0
+Reference - https://components.xamarin.com/license/sidebarnavigation
+
+Firebase Analytics
+url - https://www.xamarin.com/
+License - MIT
+Reference - https://components.xamarin.com/license/firebaseiosanalytics
+
+Xamarin Firebase cloud messaging
+url - https://www.xamarin.com/
+License - MIT
+Reference - https://components.xamarin.com/license/firebaseioscloudmessaging
+
+Xamarin Firebase instance id
+url - https://github.com/xamarin/GoogleApisForiOSComponents/tree/master/Firebase.InstanceID
+License - MIT
+Reference - https://github.com/xamarin/GoogleApisForiOSComponents/blob/master/Firebase.InstanceID/License.md
+
+Xamarin Firebase core
+url - https://github.com/xamarin/GoogleApisForiOSComponents/tree/master/Firebase.Core
+License - MIT
+Reference - https://github.com/xamarin/GoogleApisForiOSComponents/blob/master/Firebase.Core/License.md/
+
+Android support components
+url - https://github.com/xamarin/AndroidSupportComponents
+License - MIT
+Reference - https://github.com/xamarin/AndroidSupportComponents/blob/master/LICENSE.md
+
+Google Play services Client
+url - https://github.com/xamarin/GooglePlayServicesComponents/
+License - MIT
+Reference - https://github.com/xamarin/GooglePlayServicesComponents/blob/master/LICENSE.md
+
+Chart.js
+url - https://github.com/chartjs/Chart.js
+License - MIT
+Reference - https://github.com/chartjs/Chart.js/blob/master/LICENSE.md
