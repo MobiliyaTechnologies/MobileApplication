@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--CSU-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController storyboardIdentifier="ViewController" id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="CSU" id="299"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-83" y="-15"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="174">
+            <objects>
+                <navigationController id="175" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="177">
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="300"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="178" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-626" y="-278"/>
+        </scene>
+        <!--DASHBOARD-->
+        <scene sceneID="547">
+            <objects>
+                <viewController storyboardIdentifier="MapViewController" title="DASHBOARD" useStoryboardIdentifierAsRestorationIdentifier="YES" id="548" customClass="MapViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="545"/>
+                        <viewControllerLayoutGuide type="bottom" id="546"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="549">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="550" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="460" y="-17"/>
+        </scene>
+        <!--Forgot Password-->
+        <scene sceneID="560">
+            <objects>
+                <viewController storyboardIdentifier="ForgotPasswordController" title="Forgot Password" id="561" customClass="ForgotPasswordController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="558"/>
+                        <viewControllerLayoutGuide type="bottom" id="559"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="562">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="693">
+                                <rect key="frame" x="40" y="155" width="295" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="694">
+                                <rect key="frame" x="40" y="228" width="295" height="30"/>
+                                <color key="backgroundColor" red="0.23921568627450981" green="0.41176470588235292" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Submit">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <real key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="ForgotButton_TouchUpInside:" destination="561" eventType="touchUpInside" id="695"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="693" firstAttribute="leading" secondItem="562" secondAttribute="leading" constant="40" id="765"/>
+                            <constraint firstAttribute="trailing" secondItem="693" secondAttribute="trailing" constant="40" id="766"/>
+                            <constraint firstItem="693" firstAttribute="top" secondItem="558" secondAttribute="bottom" constant="91" id="767"/>
+                            <constraint firstItem="694" firstAttribute="top" secondItem="693" secondAttribute="bottom" constant="62" id="768"/>
+                            <constraint firstAttribute="trailing" secondItem="694" secondAttribute="trailing" constant="40" id="769"/>
+                            <constraint firstItem="694" firstAttribute="leading" secondItem="562" secondAttribute="leading" constant="40" id="770"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="Email" destination="693" id="name-outlet-693"/>
+                        <outlet property="ForgotButton" destination="694" id="name-outlet-694"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="563" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-98" y="744"/>
+        </scene>
+        <!--Content Controller-->
+        <scene sceneID="720">
+            <objects>
+                <viewController storyboardIdentifier="ContentController" id="721" customClass="ContentController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="718"/>
+                        <viewControllerLayoutGuide type="bottom" id="719"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="722">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="723" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="449" y="750"/>
+        </scene>
+        <!--CSU Menu-->
+        <scene sceneID="751">
+            <objects>
+                <viewController storyboardIdentifier="MyMenuController" title="CSU Menu" id="752" customClass="MyMenuController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="749"/>
+                        <viewControllerLayoutGuide type="bottom" id="750"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="753">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="754" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="929" y="743"/>
+        </scene>
+        <!--Change Password-->
+        <scene sceneID="804">
+            <objects>
+                <viewController storyboardIdentifier="ChangePasswordController" title="Change Password" id="805" customClass="ChangePasswordController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="802"/>
+                        <viewControllerLayoutGuide type="bottom" id="803"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="806">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="809">
+                                <rect key="frame" x="57" y="208" width="261" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="813">
+                                <rect key="frame" x="57" y="285" width="261" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="817">
+                                <rect key="frame" x="57" y="127" width="261" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="818">
+                                <rect key="frame" x="57" y="385" width="261" height="30"/>
+                                <color key="backgroundColor" red="0.23921568627450981" green="0.41176470588235292" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Submit">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <real key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="Submit_TouchUpInside:" destination="805" eventType="touchUpInside" id="819"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="809" secondAttribute="trailing" constant="57" id="811"/>
+                            <constraint firstItem="809" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57" id="812"/>
+                            <constraint firstAttribute="trailing" secondItem="813" secondAttribute="trailing" constant="57" id="814"/>
+                            <constraint firstItem="813" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57" id="815"/>
+                            <constraint firstItem="813" firstAttribute="top" secondItem="809" secondAttribute="bottom" constant="49" id="816"/>
+                            <constraint firstItem="817" firstAttribute="top" secondItem="802" secondAttribute="bottom" constant="107" id="820"/>
+                            <constraint firstItem="809" firstAttribute="top" secondItem="817" secondAttribute="bottom" constant="45" id="821"/>
+                            <constraint firstItem="817" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57" id="905"/>
+                            <constraint firstAttribute="trailing" secondItem="817" secondAttribute="trailing" constant="57" id="906"/>
+                            <constraint firstItem="818" firstAttribute="leading" secondItem="806" secondAttribute="leading" constant="57" id="1011"/>
+                            <constraint firstAttribute="trailing" secondItem="818" secondAttribute="trailing" constant="57" id="1012"/>
+                            <constraint firstItem="818" firstAttribute="top" secondItem="813" secondAttribute="bottom" constant="70" id="1013"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="ConfirmPassword" destination="813" id="name-outlet-813"/>
+                        <outlet property="Password" destination="809" id="name-outlet-809"/>
+                        <outlet property="Submit" destination="818" id="name-outlet-818"/>
+                        <outlet property="Username" destination="817" id="name-outlet-817"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="807" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1581" y="727"/>
+        </scene>
+        <!--Meter Report Controller-->
+        <scene sceneID="704">
+            <objects>
+                <viewController storyboardIdentifier="MeterReportController" id="705" customClass="MeterReportController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="702"/>
+                        <viewControllerLayoutGuide type="bottom" id="703"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="706">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <color key="tintColor" colorSpace="calibratedRGB" red="0" green="0.52549019607843139" blue="1" alpha="1"/>
+                        </variation>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="707" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="940" y="-20"/>
+        </scene>
+        <!--Report Controller-->
+        <scene sceneID="728">
+            <objects>
+                <viewController storyboardIdentifier="ReportController" id="729" customClass="ReportController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="726"/>
+                        <viewControllerLayoutGuide type="bottom" id="727"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="730">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="731" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-735" y="730"/>
+        </scene>
+        <!--Class Rooms-->
+        <scene sceneID="1212">
+            <objects>
+                <viewController storyboardIdentifier="ClassRoomController" title="Class Rooms" id="1213" customClass="ClassRoomController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1210"/>
+                        <viewControllerLayoutGuide type="bottom" id="1211"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1214">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1215" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-91" y="1510"/>
+        </scene>
+        <!--Alerts-->
+        <scene sceneID="1231">
+            <objects>
+                <viewController storyboardIdentifier="AlertsViewController" title="Alerts" id="1232" customClass="AlertsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1229"/>
+                        <viewControllerLayoutGuide type="bottom" id="1230"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1233">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1234" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="448" y="1514"/>
+        </scene>
+        <!--Feedback-->
+        <scene sceneID="1267">
+            <objects>
+                <viewController storyboardIdentifier="FeedbackViewController" title="Feedback" id="1268" customClass="FeedbackViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1265"/>
+                        <viewControllerLayoutGuide type="bottom" id="1266"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1269">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1270" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1407" y="1493"/>
+        </scene>
+        <!--Feedback-->
+        <scene sceneID="1295">
+            <objects>
+                <viewController storyboardIdentifier="ThankYouViewController" title="Feedback" id="1296" customClass="ThankYouViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1293"/>
+                        <viewControllerLayoutGuide type="bottom" id="1294"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1297">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1298" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1978" y="1475"/>
+        </scene>
+        <!--Feedback-->
+        <scene sceneID="1317">
+            <objects>
+                <viewController storyboardIdentifier="QuestionsViewController" title="Feedback" id="1318" customClass="QuestionsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1315"/>
+                        <viewControllerLayoutGuide type="bottom" id="1316"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1319">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1320" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2404" y="1458"/>
+        </scene>
+        <!--Insights-->
+        <scene sceneID="1339">
+            <objects>
+                <viewController storyboardIdentifier="InsightsViewController" title="Insights" id="1340" customClass="InsightsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1337"/>
+                        <viewControllerLayoutGuide type="bottom" id="1338"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1341">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <connections/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1342" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2152" y="720"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="1426">
+            <objects>
+                <viewController storyboardIdentifier="LoginViewController" id="1427" customClass="LoginViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1424"/>
+                        <viewControllerLayoutGuide type="bottom" id="1425"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1428">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1429" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-88" y="-818"/>
+        </scene>
+        <!--Configuration Controller-->
+        <scene sceneID="1481">
+            <objects>
+                <viewController storyboardIdentifier="ConfigurationController" id="1482" customClass="ConfigurationController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1479"/>
+                        <viewControllerLayoutGuide type="bottom" id="1480"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1483">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" red="0.0" green="0.52549019607843139" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1484" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1402" y="-32"/>
+        </scene>
+        <scene sceneID="1508">
+            <objects>
+                <viewController id="1509" sceneMemberID="viewController" customClass="ConsumptionController" storyboardIdentifier="ConsumptionController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1506"/>
+                        <viewControllerLayoutGuide type="bottom" id="1507"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1510">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1511" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1910" y="-117"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Arrow_Blue.png" width="9" height="19"/>
+        <image name="Arrow_Green.png" width="9" height="19"/>
+        <image name="Arrow_Red.png" width="9" height="19"/>
+        <image name="Back_BTN_White.png" width="86" height="86"/>
+        <image name="Back_Icon.png" width="23" height="23"/>
+        <image name="Cold_Icon.png" width="130" height="130"/>
+        <image name="Cold_Icon_Opacity.png" width="97" height="97"/>
+        <image name="CSU_logo.png" width="102" height="103"/>
+        <image name="CSU_Logo.png" width="102" height="102.333336"/>
+        <image name="Down_Arrow_Icon.png" width="36" height="36"/>
+        <image name="Electricity_Icon.png" width="11" height="11"/>
+        <image name="Graph_Icon_Selected-15.png" width="26" height="26"/>
+        <image name="Graph_Icon_Selected.png" width="26" height="26"/>
+        <image name="Hot_Icon.png" width="130" height="130"/>
+        <image name="Hot_Icon_Opacity.png" width="97" height="97"/>
+        <image name="Insights_BG.png" width="376" height="77"/>
+        <image name="Lock_Icon.png" width="17" height="17"/>
+        <image name="Lock_Icon_Green.png" width="34" height="34"/>
+        <image name="Lock_Icon_White.png" width="34" height="34"/>
+        <image name="Login_BG.jpg" width="640" height="1136"/>
+        <image name="logo.png" width="89" height="99"/>
+        <image name="Logo_01.png" width="269" height="269"/>
+        <image name="Logo_02.png" width="204" height="204"/>
+        <image name="Logo_03.png" width="189" height="189"/>
+        <image name="Mail_Icon.png" width="17" height="18"/>
+        <image name="Mail_Icon_Green.png" width="34" height="34"/>
+        <image name="Mail_Icon_White.png" width="34" height="34"/>
+        <image name="Map_Icon_Selected-14.png" width="27" height="26"/>
+        <image name="Map_Icon_Selected.png" width="27" height="26"/>
+        <image name="Next_BTN_White.png" width="86" height="86"/>
+        <image name="Normal_Icon.png" width="130" height="130"/>
+        <image name="Normal_Icon_Opacity.png" width="97" height="97"/>
+        <image name="Notification_Icon.png" width="24" height="23"/>
+        <image name="Retype_Icon_White.png" width="34" height="34"/>
+        <image name="Smiley_Angry_Icon.png" width="22" height="22"/>
+        <image name="Smiley_Happy_Icon.png" width="22" height="22"/>
+        <image name="Smiley_Sad_Icon.png" width="22" height="22"/>
+        <image name="Smiley_Very_Happy_Icon.png" width="22" height="22"/>
+        <image name="splash.png" width="300" height="100"/>
+        <image name="Thank_You_Icon.png" width="244" height="162"/>
+        <image name="threelines.png" width="30" height="30"/>
+        <image name="Tick_BTN_White.png" width="86" height="86"/>
+        <image name="Up_Arrow_Icon.png" width="36" height="36"/>
+        <image name="User_Icon_Selected-13.png" width="26" height="26"/>
+        <image name="User_Icon_Selected.png" width="26" height="26"/>
+        <image name="Very_Cold_Icon.png" width="130" height="130"/>
+        <image name="Very_Cold_Icon_Opacity.png" width="97" height="97"/>
+        <image name="Very_Hot_Icon.png" width="130" height="130"/>
+        <image name="Very_Hot_Icon_Opacity.png" width="97" height="97"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedScreenMetrics key="destination" type="retina47"/>
+    </simulatedMetricsContainer>
+</document>

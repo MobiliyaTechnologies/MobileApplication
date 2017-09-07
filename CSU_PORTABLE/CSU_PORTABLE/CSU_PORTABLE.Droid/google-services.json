@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "976024703467",
+    "firebase_url": "https://emtest-186ce.firebaseio.com",
+    "project_id": "emtest-186ce",
+    "storage_bucket": "emtest-186ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976024703467:android:bee4b3455d91bd0a",
+        "android_client_info": {
+          "package_name": "com.mobiliya.em"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976024703467-qqu75oaibaa1krue367i3lee079ubslt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWN9CYrF7MiZ0kh9w8Bt91sEjtj_eTTCI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

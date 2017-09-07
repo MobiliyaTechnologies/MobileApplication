@@ -1,0 +1,60 @@
+<html>
+<head>
+    <div style="width:95%;height:280px;">
+        <canvas id="myChart" width="400" height="320"></canvas>
+    </div>
+    <script src="ChartJS"></script>
+    <script>
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [LabelsData],
+                datasets: [{
+                    label: 'Consumed',
+                    data: [ConsumedData],
+                    backgroundColor: 'rgba(148, 221, 242, 0.9)',
+                    borderColor: 'rgba(148, 221, 242, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Expected',
+                    data: [ExpectedData],
+                    backgroundColor: 'rgba(210, 207, 235, 0.9)',
+                    borderColor: 'rgba(210, 207, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Overused',
+                    data: [OverusedData],
+                    backgroundColor: 'rgba(150, 197, 245, 0.9)',
+                    borderColor: 'rgba(150, 197, 245, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                layout: {
+                    padding: {
+                        left: 50,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            offsetGridLines: true
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</head>
+</html>

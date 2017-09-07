@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/layout_insight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_insights"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="University Insights"
+                    android:gravity="right"
+                    android:textSize="18sp"
+                    android:layout_alignParentTop="true"
+                    android:textColor="@color/white"
+                    android:elevation="10dp"
+                    android:padding="30dp" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignBottom="@id/tv_insights"
+                    android:background="@drawable/Insights_BG" />
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/layout_insight_data"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_fade"
+                android:padding="10dp"
+                android:weightSum="3">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_top_consumed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="30sp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textColor="@color/text_gray_dark"
+                        android:maxLines="1"
+                        android:drawableLeft="@drawable/Arrow_Blue" />
+                    <TextView
+                        android:id="@+id/tv_bottom_consumed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:gravity="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_gray_dark"
+                        android:text="Consumed"
+                        android:maxLines="1" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_top_expected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="30sp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textColor="@color/text_gray_dark"
+                        android:maxLines="1"
+                        android:drawableLeft="@drawable/Arrow_Green" />
+                    <TextView
+                        android:id="@+id/tv_bottom_expected"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/text_gray_dark"
+                        android:textAllCaps="true"
+                        android:text="Expected"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_top_overused"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="30sp"
+                        android:textColor="@color/text_gray_dark"
+                        android:text=""
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:drawableLeft="@drawable/Arrow_Red" />
+                    <TextView
+                        android:id="@+id/tv_bottom_overused"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_gray_dark"
+                        android:text="Overused"
+                        android:gravity="center"
+                        android:maxLines="1" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_below="@id/layout_insight"
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:id="@+id/layout_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_trans_dark"
+            android:gravity="center">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </RelativeLayout>
+    <android.support.design.widget.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:id="@+id/nav_view"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/nav_menu" />
+</android.support.v4.widget.DrawerLayout>
